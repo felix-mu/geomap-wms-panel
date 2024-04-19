@@ -1,0 +1,9 @@
+# Configuration file version
+apiVersion: 1
+
+datasources:
+  - name: FROST Intranet
+    type: iosb-sensorthings-datasource
+    access: proxy
+    url: https://geoportal-konfig-test2.muenchen.de/vis/v1.1
+    isDefault: false

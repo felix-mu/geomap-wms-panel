@@ -1,0 +1,42 @@
+{
+  "type": "panel",
+  "name": "Geomap WMS",
+  "id": "geomap-wms-panel",
+  "state": "beta",
+  "info": {
+    "description": "Extension of the Orchestra Cities Map-Plugin by OGC Web Map Service Integration",
+    "author": {
+      "name": "Geodaten Service München",
+      "url": "https://stadt.muenchen.de/infos/portrait-geodatenservice.html"
+    },
+    "keywords": [
+      "map",
+      "geojson",
+      "icons",
+      "idw"
+    ],
+    "logos": {
+      "small": "img/Marke_geodatenservice_in.jpg",
+      "large": "img/Marke_geodatenservice_in.jpg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://git.muenchen.de/geodatenservicemuenchen/grafana/-/tree/main/geomap_wms"
+      },
+      {
+        "name": "License",
+        "url": ""
+      }
+    ],
+    "screenshots": [
+      
+    ],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=8.2.0",
+    "plugins": []
+  }
+}
