@@ -26,11 +26,8 @@ jobs:
       run: docker compose up -d
     - name: Check if Grafana is ready
       run: | 
-        STATUS=$(curl --insecure -s -o /dev/null -w "%{response_code}" http://localhost:3000/api/health)
-        echo $STATUS
-        while [ "$STATUS" != "200" ]; do 
+        while [[ $(curl --insecure -s -o /dev/null -w "%{response_code}" http://localhost:3000/api/health) != "200" ]]; do 
             sleep 1
-            STATUS=$(curl --insecure -s -o /dev/null -w "%{response_code}" http://localhost:3000/api/health)
         done
     - name: Run e2e tests with cypress
       run: npm run e2e
