@@ -1,4 +1,4 @@
-[![pipeline status](https://git.muenchen.de/geodatenservicemuenchen/grafana/badges/main/pipeline.svg)](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/commits/main)
+![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg)
 
 # Geomap WMS
 Dieses Plugin ist eine Weiterentwicklung des [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel) um die Integration eines [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) als Basemap-Layer. Zusätzlich bietet das Plugin eine Interaktive räumliche Filterfunktion an.
