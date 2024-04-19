@@ -25,7 +25,7 @@ jobs:
     - name: Run docker compose
       run: docker compose up -d
     - name: Check if Grafana is ready
-      run: status="0"; while [status -ne "200"]; do status=$(status=$(curl -o /dev/null -w "%{response_code}" localhost:3000/api/health); done
+      run: status="0"; while [status -ne "200"]; do status=$(curl -o /dev/null -w "%{response_code}" localhost:3000/api/health); done
     - name: Run e2e tests with cypress
       run: npm run e2e
     
