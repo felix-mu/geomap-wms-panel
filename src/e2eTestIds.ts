@@ -7,5 +7,5 @@ export const testIds = {
 
 export const ariaLabels = {
     baseLayerField: 'Base layer Base layer field property editor',
-    urlField: 'Layer config URL * field property editor',
+    urlField: 'URL input',
 };

@@ -44,13 +44,12 @@ describe('Open test dashboard with geomap panel and enter edit mode', () => {
         ariaLabelsSelectors.baseLayerField().contains('div', baseLayerName).should('be.visible');
         
         e2e.components.PanelEditor.OptionsPane.content().
-        within(() => {
-                ariaLabelsSelectors.urlField().should('be.visible').within((subject) => {
-                    e2e().get('input', {withinSubject: subject}).type(wmsUrl, {force: true}).
+		within(() => {
+                ariaLabelsSelectors.urlField().should('be.visible').type(wmsUrl, {force: true}).
                     trigger("keyup", { keyCode: 13, which: 13 }).
                     should('have.value', wmsUrl);
-                });
             }
+        );
         );
             
         e2e.components.PanelEditor.applyButton().click({force: true});

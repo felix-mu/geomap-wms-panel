@@ -77,7 +77,7 @@ export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props
       {/* <Label description={'URL to WMS endpoint (required)'}>
         URL
       </Label> */}
-      <Input value={url}
+      <Input value={url} aria-label="URL input"
           onChange={e => {
             setURL(e.currentTarget.value);
             setOptions([]);
