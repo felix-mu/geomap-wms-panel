@@ -1,0 +1,32 @@
+# https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#create-a-persistentvolume
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+  # name: task-pv-volume
+  # labels:
+    # type: local
+# spec:
+  # storageClassName: manual
+  # persistentVolumeReclaimPolicy: Delete
+  # capacity:
+    # storage: 10Gi
+  # accessModes:
+    # - ReadWriteOnce
+  # hostPath:
+    # path: /mnt/grafana/
+# ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume-geomap-wms
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  persistentVolumeReclaimPolicy: Delete
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadOnlyMany
+  hostPath:
+    path: /geomap_wms

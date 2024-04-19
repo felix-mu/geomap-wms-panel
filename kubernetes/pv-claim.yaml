@@ -1,0 +1,23 @@
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+  # name: task-pv-claim
+# spec:
+  # storageClassName: manual
+  # accessModes:
+    # - ReadWriteOnce
+  # resources:
+    # requests:
+      # storage: 3Gi
+# ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: task-pv-claim-geomap-wms
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 3Gi

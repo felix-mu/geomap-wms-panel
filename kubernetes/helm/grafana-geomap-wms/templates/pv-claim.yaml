@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  {{- with first .Values.grafana.extraVolumes }}
+  name: {{ .existingClaim }}
+  {{- end }}
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 3Gi

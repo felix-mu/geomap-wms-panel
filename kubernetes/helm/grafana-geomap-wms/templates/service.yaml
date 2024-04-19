@@ -1,0 +1,17 @@
+{{- range $index, $element := until (int .Values.grafana.replicas) | default 1 }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-grafana-service-{{ $index }}
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: {{ $.Release.Name }}-{{ $index }}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 500{{ $index }}
+      targetPort: 3000
+      # name: external-service-{{ $index }}-port
+      portName: external-grafana-service-{{ $index }}-port
+---
+{{- end }}

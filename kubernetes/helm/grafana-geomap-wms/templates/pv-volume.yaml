@@ -1,0 +1,18 @@
+# https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#create-a-persistentvolume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  {{- with first .Values.grafana.extraVolumes }}
+  name: {{ .name }}
+  {{- end }}
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  persistentVolumeReclaimPolicy: Delete
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadOnlyMany
+  hostPath:
+    path: {{ .Values.hostpathMountingPath }}
