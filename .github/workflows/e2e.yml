@@ -27,7 +27,7 @@ jobs:
     - name: Check if Grafana is ready
       run: | 
         STATUS=$(curl -s -o /dev/null -w "%{response_code}" localhost:3000/api/health)
-        while [STATUS -ne "200"]; do 
+        while [[$STATUS -ne "200"]]; do 
             sleep 1
             STATUS=$(curl -s -o /dev/null -w "%{response_code}" localhost:3000/api/health)
         done
