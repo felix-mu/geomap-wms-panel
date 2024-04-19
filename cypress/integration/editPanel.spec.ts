@@ -50,7 +50,6 @@ describe('Open test dashboard with geomap panel and enter edit mode', () => {
                     should('have.value', wmsUrl);
             }
         );
-        );
             
         e2e.components.PanelEditor.applyButton().click({force: true});
 
