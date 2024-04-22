@@ -1,4 +1,4 @@
-![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg) ![e2e](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/e2e.yml/badge.svg)
+![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg) ![e2e Cypress](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/e2e.yml/badge.svg) ![e2e Playwright](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/playwright.yml/badge.svg)
 
 # Geomap WMS
 Dieses Plugin ist eine Weiterentwicklung des [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel) um die Integration eines [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) als Basemap-Layer. Zusätzlich bietet das Plugin eine interaktive räumliche Filterfunktion an.
