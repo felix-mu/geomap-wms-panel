@@ -3,53 +3,6 @@ import { wmsEndpoint } from './test_config';
 import { Locator } from '@playwright/test';
 // import { selectors} from '@playwright/test';
 
-test('Should have the base map layer type "OGC Web Map Service" selected', async ({
-  gotoPanelEditPage,
-  readProvisionedDashboard,
-  selectors
-}) => {
-  const dashboard = await readProvisionedDashboard({ fileName: 'dashboard_e2e.json' });
-  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '1' });
-  // const showTableHeaderSwitch = panelEditPage
-  //   .getByGrafanaSelector(selectors.components.PanelEditor.OptionsPane.fieldLabel('Table Show table header'))
-  //   .getByLabel('Toggle switch');
-  // selectors.setTestIdAttribute("aria-label");
-  expect(panelEditPage.panel.getByGrafanaSelector("Base layer Base layer field property editor").getByText("OGC Web Map Service")).toHaveCount(1);
-});
-
-test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in the URL form', async ({
-  gotoPanelEditPage,
-  readProvisionedDashboard,
-  selectors
-}) => {
-  const dashboard = await readProvisionedDashboard({ fileName: 'dashboard_e2e.json' });
-  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '1' });
-  // const showTableHeaderSwitch = panelEditPage
-  //   .getByGrafanaSelector(selectors.components.PanelEditor.OptionsPane.fieldLabel('Table Show table header'))
-  //   .getByLabel('Toggle switch');
-  // selectors.setTestIdAttribute("aria-label");
-  await panelEditPage.panel.getByGrafanaSelector("URL input").fill(wmsEndpoint);
-  
-  const multiSelect: Locator = panelEditPage.panel.getByGrafanaSelector("wms layer multiselect");
-  await multiSelect.click();
-
-  setTimeout(() => {}, 3000);
-
-  const selectOptions: Locator = panelEditPage.getByGrafanaSelector("Select options menu").getByLabel("Select option");
-  await selectOptions.first().click();
-
-  // Add two more layers
-  for (let i = 0; i < 2; ++i) {
-    await multiSelect.click();
-    await selectOptions.first().click();
-  }
-
-  // Click outside of multi select
-  await panelEditPage.panel.locator.click();
-
-  // Expect assert will be possible when API call is mocked and the layer values are known
-});
-
 test('Should toggle the spatial filter tool', async ({
   gotoPanelEditPage,
   gotoDashboardPage,
