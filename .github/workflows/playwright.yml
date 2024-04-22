@@ -29,6 +29,7 @@ jobs:
         done
         echo "Grafana server ready to accept connections."
     - name: Run Playwright tests
+      id: run-tests
       run: npm run e2e
     - uses: actions/upload-artifact@v4
       if: ${{ (always() && steps.run-tests.outcome == 'success') || (failure() && steps.run-tests.outcome == 'failure') }}
