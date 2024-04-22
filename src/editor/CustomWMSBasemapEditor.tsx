@@ -86,7 +86,7 @@ export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props
       <Label description={'Select the layers to be displayed in base map'}>
         Layers
       </Label>
-      <MultiSelect options={options} value={selection} onChange={(selectableValue) => {
+      <MultiSelect aria-label="wms layer multiselect" options={options} value={selection} onChange={(selectableValue) => {
         setSelection(selectableValue);
         onChange({url: url, layers: selectableValue.map((e) => e.value!)}); // onChange sets the config.wms property; Only change it when layers are selected
         }}></MultiSelect>

@@ -36,3 +36,9 @@ plugin-validator
 junit.xml
 
 .eslintcache
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+/playwright/.auth/
