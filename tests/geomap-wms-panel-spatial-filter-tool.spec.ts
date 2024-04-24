@@ -53,6 +53,8 @@ test('Using the spatial filter tool should alter the "geomap_wms_spatial_filter_
 
   const urlBefore: string = page.url();
 
+  await geomapContainer.focus();
+
   // Draw triangle
   await geomapContainer.click({
     button: "left",
@@ -85,6 +87,10 @@ test('Using the spatial filter tool should alter the "geomap_wms_spatial_filter_
       y: Math.round(boundingBox.height * 0.8)
     }
   });
+
+  // await page.waitForTimeout(1000);
+
+  await page.getByTitle("Geomap WMS Panel").click();
 
   expect(page.url()).not.toEqual(urlBefore);
 
