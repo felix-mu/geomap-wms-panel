@@ -47,6 +47,7 @@ import { DataHoverView } from './components/DataHoverView';
 import { ExtendMapLayerOptions } from './extension';
 import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
+import { Global } from '@emotion/react';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
 
@@ -63,6 +64,7 @@ export let lastGeomapPanelInstance: GeomapPanel | undefined = undefined;
 type Props = PanelProps<GeomapPanelOptions>;
 interface State extends OverlayProps {
   ttip?: GeomapHoverPayload;
+  ttipOpen: boolean;
 }
 
 // Initialize index variable for data sources
@@ -95,7 +97,13 @@ export class GeomapPanel extends Component<Props, State> {
 
   constructor(props: Props/*, state: State*/) {
     super(props);
-    this.state = {};
+    // this.state = {};
+    this.state = { ttipOpen: false };
+
+    // Clear tooltip
+    this.props.eventBus.getStream(DataSelectEvent).subscribe((event) => {
+
+    });
 
     // Data links (click on feature and set variable. Works e.g. with name)
     // E.g.: http://localhost:8002/d/dfe46662-eff7-43b7-8cce-dcea307d3b7d/20240227-qet-poc-copy?orgId=1&var-qet_name=${__data.fields["NAME"]}
@@ -344,7 +352,7 @@ export class GeomapPanel extends Component<Props, State> {
         }
         let frame = props['frame'];
         const thisLayer = layer.getProperties();
-        if (frame) {
+        if (thisLayer.displayProperties.length > 0 && frame) {
           for (let thisLayerName of typeof thisLayer.displayProperties !== 'undefined'
             ? thisLayer.displayProperties
             : []) {
@@ -567,15 +575,33 @@ export class GeomapPanel extends Component<Props, State> {
     this.setState({ topRight });
   }
 
+  clearTooltip = () => {
+    if (this.state.ttip && !this.state.ttipOpen) {
+      this.tooltipPopupClosed();
+    }
+  };
+
+  tooltipPopupClosed = () => {
+    this.setState({ ttipOpen: false, ttip: undefined });
+  };
+
   render() {
     const { ttip, topRight, bottomLeft } = this.state;
+
+    // Tooltip handling from: https://github.com/grafana/grafana/blob/17a3ec52b651a082bbf5604f75975c12cd2ba9ed/public/app/plugins/panel/geomap/GeomapPanel.tsx#L386
+    // let { ttip, ttipOpen, topRight1, legends, topRight2 } = this.state;
+    // const { options } = this.props;
+    // const showScale = options.controls.showScale;
+    // if (!ttipOpen && options.tooltip?.mode === TooltipMode.None) {
+    //   ttip = undefined;
+    // }
 
     return (
       <>
         {
-          //<Global styles={this.globalCSS} />
+          <Global styles={this.globalCSS} />
         }
-        <div className={this.style.wrap} data-testid={testIds.geomapPanel.container}>
+        <div className={this.style.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
           <div className={this.style.map} ref={this.initMapRef}></div>
           <GeomapOverlay bottomLeft={bottomLeft} topRight={topRight} />
         </div>

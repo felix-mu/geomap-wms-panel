@@ -159,7 +159,7 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
           settings: {
             allowCustomValue: false,
             options: [],
-            placeholder: 'All Properties',
+            // placeholder: 'All Properties',
             getOptions: async (context: FieldOverrideContext) => {
               const options = [];
               if (context && context.data && context.data.length > 0 && context.options && context.options.query && context.options.query.options) {
@@ -191,7 +191,13 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
           },
           //showIf: (opts) => typeof opts.query !== 'undefined',
           defaultValue: '',
-        });
+        })
+        /*.addBooleanSwitch({
+          path: 'tooltip',
+          name: 'Display tooltip',
+          description: 'Show the tooltip for layer',
+          defaultValue: true,
+        })*/;
     }
     if (layer.registerOptionsUI) {
       layer.registerOptionsUI(builder);

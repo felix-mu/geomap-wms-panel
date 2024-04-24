@@ -1,5 +1,5 @@
 import { test, expect, DashboardPage } from '@grafana/plugin-e2e';
-import { wmsEndpoint } from './test_config';
+import { WMS_ENDPOINT } from './test_config';
 import { Locator } from '@playwright/test';
 // import { selectors} from '@playwright/test';
 
