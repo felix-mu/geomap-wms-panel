@@ -28,15 +28,15 @@ type Props = StandardEditorProps<ConfigUrlLayer>;
 export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props) => {
   // const styles = useStyles2(getStyles);
   
-  const [url, setURL] = useState<string | undefined>('');
+  const [url, setURL] = useState<string | undefined>(context.options.config.wms.url); // ''
   const [options, setOptions] = useState<Array<SelectableValue<string>>>([]);  // SelectableValue
   const [selection, setSelection] = useState<Array<SelectableValue<string>>>([]);
 
   // If the panel is accessed after refresh set the URL which triggers the useEffect hook
-  if ((context.options.config && context.options.config.wms && context.options.config.wms.url) 
-      && url!.length === 0) {
-        setURL(context.options.config.wms.url);
-  }
+  // if ((context.options.config && context.options.config.wms && context.options.config.wms.url) 
+  //     && url!.length === 0) {
+  //       setURL(context.options.config.wms.url);
+  // }
 
   // Update the select options when the url changes
   useEffect(() => {
@@ -80,6 +80,7 @@ export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props
       <Input value={url} aria-label="URL input"
           onChange={e => {
             setURL(e.currentTarget.value);
+            (context.options.config.wms.layers as string[]).splice(-1);
             setOptions([]);
             setSelection([]);
             }}></Input>
