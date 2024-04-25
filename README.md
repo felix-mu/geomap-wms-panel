@@ -94,7 +94,7 @@ This repository refers to the following version of its original: https://github.
 - Grafana >= 10.0.2 as Docker container with [bind mounts to host filesystem](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#use-bind-mounts) mounting following conatiner directory _/var/lib/grafana/plugins_
 - node v20.3.1
 - npm 10.5.0
-- Linux-basiertes OS oder WSL
+- Linux-based OS Windows with WSL
 <!-- - Docker (Desktop) -->
 <!-- - Minikube
 - Helm -->
@@ -126,7 +126,7 @@ npm run dev
 ```
 
 ## Deploy the (unsigned) plugin to the docker container (for debugging)
-The packed plugin (either [production build](#building-the-plugin) or [development build](#building-the-plugin-for-development/debugging)) is found in the output folder `./geomap-wms-panel`.
+The packed plugin (either [production build](#building-the-plugin) or [development build](#building-the-plugin-for-developmentdebugging)) is found in the output folder `./geomap-wms-panel`.
 To allow grafana to load an _unsigned_ plugin the container environment variable `GF_PLUGINS_ALLOW_UNSIGNED_PLUGINS=<comma separated list of plugin-ids>` must be set to "geomap-wms-panel".
 Additionally it is required to configure a _bind mount_ of the _plugins_ container directory to the host filesystem where the bundled Geomap WMS Panel Plugin is located.
 
