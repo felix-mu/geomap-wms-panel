@@ -1,0 +1,32 @@
+name: Plugin validation
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+    - name: Install node modules
+      run: npm install
+    - run: npm run build
+      name: Build the plugin
+    - name: Zip the plugin
+      uses: montudor/action-zip@v1
+      with:
+        args: zip -qr geomap-wms-panel.zip geomap-wms-panel
+    - name: Run validator
+      run: npx --yes @grafana/plugin-validator@latest
+    # - name: Clean up
+    #   run: rm -r geomap-wms-panel.zip
+
+    
