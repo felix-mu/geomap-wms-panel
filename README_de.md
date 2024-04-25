@@ -129,7 +129,7 @@ npm run dev
 Das gebündelte Plugin ist nach dem erfolgreichen Build (entweder [Deployment-Build](#build-prozess) oder [Development-Build](#build-prozess-für-developmentdebugging)) im Ausgabe-Ordner `./geomap-wms-panel` im Root-Directory des Projekts zu finden. Um ein _unsigned_ (inoffizielles) Plugin in einer Docker-Container-Instanz von Grafana zu installieren, muss der Container mit der Environment-Variable `GF_PLUGINS_ALLOW_UNSIGNED_PLUGINS=<comma separated list of plugin-ids>` gestartet werden. Zusätzlich muss ein _bind mounts_ zu einem Verzeichnis des Host File Systems etabliert sein. Dort wird im Unterverzeichnis _plugins_ ein Ordner mit Namen der Pugin-ID aus dem _plugin.json_ angelegt. In diesen Ordner werden die Inhalte aus dem Ausgabe-Ordner `./geomap-wms-panel` kopiert. Grafana wird das Plugin nur installieren, wenn es vor Start des Docker-Containers im _plugins_-Ordner bereitgestellt wurde.
 
 **Shortcut:**
-Starten des [docker-compose.yaml](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/docker-compose.yaml)
+Starten des [docker-compose.yaml](./docker-compose.yaml)
 
 Wurde das Plugin mit dem Befehl `npm run dev` erstellt, werden die Webpack-Verzeichnisse mit in den Browser geladen, wenn im Editier-Modus des Dashboards das Geomap-Panel als Visualisierung ausgewählt wird. <br>
 Die Javascript/Typescript-Dateien können dann durch mittels des Debuggers der Entwicklungswerkzeuge des Browsers unter den Sources geöffnet werden und Breakpoints gesetzt werden, um die Funktionsweise des Quell-Codes zu überprüfen.
@@ -142,28 +142,28 @@ Nach erneutem Build wegen Änderungen am Code muss der Docker-Container gestoppt
 
 ## Changelog
 ### Migration des Plugins
-Das ursprüngliche Plugin wurde mittels des _@grafana/toolkit_ entwickelt, welches mittlerweile veraltet ist. Um die Migration auf das aktuelle Plugin-Tool durchzuführen wird das Werkzeug [@grafana/create-plugin](https://grafana.github.io/plugin-tools/docs/migrating-from-toolkit) verwendet:
+Das ursprüngliche Plugin wurde mittels des _@grafana/toolkit_ entwickelt, welches mittlerweile veraltet ist. Um die Migration auf das aktuelle Plugin-Tool durchzuführen wird das Werkzeug [@grafana/create-plugin](https://https://grafana.com/developers/plugin-tools/docs/migrating-from-toolkit) verwendet:
 
 ```bash
 npx @grafana/create-plugin@latest migrate
 ```
 ### Hinzufügen des WMS-Basemap-Layers
-In der Datei [wms.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/wms.ts) wird ein Karten-Instanz vom Type WMS erzeugt. Das neue Modul muss in [index.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/index.ts) importiert werden, um es im Plugin verwenden zu können.
+In der Datei [wms.ts](./src/layers/basemaps/wms.ts) wird ein Karten-Instanz vom Type WMS erzeugt. Das neue Modul muss in [index.ts](./src/layers/basemaps/index.ts) importiert werden, um es im Plugin verwenden zu können.
 
 ### Änderung der Variablen-Deklaration
 Im Build-Prozess kam es zu Fehlermeldungen, die es erfordern, in einigen Dateien die `var` Statements zu `let` zu ändern:
-- [GeomapPanel.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/GeomapPanel.tsx)
-- [MapViewEditor.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/editor/MapViewEditor.tsx)
-- [nextzen.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/nextzen.ts)
-- [idwMap.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/data/idwMap.tsx)
+- [GeomapPanel.tsx](./src/GeomapPanel.tsx)
+- [MapViewEditor.tsx](./src/editor/MapViewEditor.tsx)
+- [nextzen.ts](./src/layers/basemaps/nextzen.ts)
+- [idwMap.tsx](./src/layers/data/idwMap.tsx)
 
 ### Änderung der render()-Funktion
- - [ObservationPropsWrapper.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/components/ObservablePropsWrapper.tsx)
+ - [ObservationPropsWrapper.tsx](./src/components/ObservablePropsWrapper.tsx)
 
 ## Weitere Ressourcen
 - [Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
 - [Konfigurieren von Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
-- [Build Tool für Plugins](https://grafana.com/developers/plugin-tools/)
+- [Build Tools für Plugins](https://grafana.com/developers/plugin-tools/)
 - [Erstellen eines Panel-Plugins](https://grafana.com/docs/grafana/latest/developers/plugins/create-a-grafana-plugin/develop-a-plugin/build-a-panel-plugin/)
 - [Beispiele für Grafana-Plugins](https://github.com/grafana/grafana-plugin-examples/tree/main/examples)
 
@@ -171,7 +171,7 @@ Im Build-Prozess kam es zu Fehlermeldungen, die es erfordern, in einigen Dateien
 ## How-to: Hinzufügen eines neuen Basemap-Layers
 Die Das Karten-Panel basiert bzlg. der Kartendarstellung auf [OpenLayers](https://openlayers.org/). Somit können im Prinzip alle Funktionalitäten bzw. Kartentypen, die von OpenLayers angeboten werden im Plugin genutzt werden.
 
-Um einen neuen Basemap-Layer zu erstellen bietet sich es an das Modul [generic.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/generic.ts) als Template zu verwenden und dieses anzupassen. Dafür wird die Datei einfach im selben Ordner kopiert und enstprechend des zu erstellenden Basemap-Layer-Typs umbenannt.
+Um einen neuen Basemap-Layer zu erstellen bietet sich es an das Modul [generic.tsx](./src/layers/basemaps/generic.ts) als Template zu verwenden und dieses anzupassen. Dafür wird die Datei einfach im selben Ordner kopiert und enstprechend des zu erstellenden Basemap-Layer-Typs umbenannt.
 Soll, wie in diesem Repo, z.B. ein WMS-Basemap-Layer erstellt werden, so müssen die importierten Module entsprechenden geändert werden:
 ``` diff
 -import { GrafanaTheme2 } from '@grafana/data';
@@ -297,7 +297,7 @@ Schließlich wird das Layer-Objekt exportiert:
 +export const wmsLayers = [wms];
 
 ```
-Um den neuen Basmap-Layer im Panel nutzen zu können, muss dieser über das [index.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/index.ts)-Modul exportiert werden, da von diesem Modul die Basmaps geladen werden:
+Um den neuen Basmap-Layer im Panel nutzen zu können, muss dieser über das [index.ts](./src/layers/basemaps/index.ts)-Modul exportiert werden, da von diesem Modul die Basmaps geladen werden:
 ```diff
 import { cartoLayers } from './carto';
 import { esriLayers } from './esri';
