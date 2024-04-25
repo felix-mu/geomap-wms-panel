@@ -100,10 +100,9 @@ export class GeomapPanel extends Component<Props, State> {
     // this.state = {};
     this.state = { ttipOpen: false };
 
-    // Clear tooltip
-    this.props.eventBus.getStream(DataSelectEvent).subscribe((event) => {
+    // this.props.eventBus.getStream(DataSelectEvent).subscribe((event) => {
 
-    });
+    // });
 
     // Data links (click on feature and set variable. Works e.g. with name)
     // E.g.: http://localhost:8002/d/dfe46662-eff7-43b7-8cce-dcea307d3b7d/20240227-qet-poc-copy?orgId=1&var-qet_name=${__data.fields["NAME"]}
