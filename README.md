@@ -1,21 +1,153 @@
 ![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg) ![e2e Playwright](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/playwright.yml/badge.svg)
 
-# Geomap WMS
-Dieses Plugin ist eine Weiterentwicklung des [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel) um die Integration eines [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) als Basemap-Layer. Zusätzlich bietet das Plugin eine interaktive räumliche Filterfunktion an.
+# Geomap WMS Panel Plugin
+This plugin evolved from the [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel). It extends original version by the functionality of the intergration of an [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) as a base map layer. Additionally the plugin ships with an interactive filter tool to query the data by spatial conditions.
 
-## Status des originalen Repositorys
-Dieses Repository bezieht sich auf folgende Version des Originals: https://github.com/orchestracities/map-panel/tree/c0d3a19ce910b9c3ab8416f5a609afb10ff8c0fe
+## Features
+* Integration of OGC WMS 1.3.0 as base map layer
+* Interactive spatial filter
 
-## Technisches Setup
-- Grafana 10.0.2 als Docker-Container mit [bind mounts zu Host File System](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#use-bind-mounts) zum Container-Verzeichnis _/var/lib/grafana/plugins_
+## Using the Geomap WMS Panel Plugin
+> ⚠️ Currently only WMS of version 1.3.0 is supported ⚠️
+1. In the selection _Base layer_ choose the type _OGC Web Map Sevice_
+2. In the text field _URL_ type in the base url of the WMS endpoint (NOTE: Only the URL of the service endpoint **WITHOUT** request parameters, z.B. https://geoportal.muenchen.de/geoserver/gsm/wms)
+3. Successively choose layers from the drop down list
+
+![](./grafana_multiple_layers.PNG)
+
+### Example 1): Basemap with three layers
+Layer names:
+- g_stadtkarte_gesamt_gtay
+- g_stadtspaziergang_moosach_route_a
+- baustellen_2_weeks
+
+![](./multiple_layers_wms.PNG)
+
+### Example 2): Basemap with three layers (layer names have whitespaces)
+Layer names:
+- Blöcke
+- Linie_u_Stadtplanü. bis 150k
+- stehende Gewässer generalisiert
+
+![](./mutli-layer-whitespaces.PNG)
+
+## Using the spatial filter tool
+An additional feature of the Geomap WMS Plugin is the spatial filter tool that allows drawing a polygon on the map panel to be used as filter for a data query. The polygon is representated as [Well-known-text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and stored in a dashboard variable "geomap_wms_spatial_filter_geometry".
+
+> ⚠️ It is mandatory to name the dashbaord variable "geomap_wms_spatial_filter_geometry" ⚠️
+
+> ⚠️ 
+The spatial filter tool uses the geographic coordinate system _urn:ogc:def:crs:OGC::CRS84_. The axis order is _longitude, latitude_. Openlayers (dependency of the geomap plugin) uses the CRS _CSR:84_ as alias for _EPSG:4326_ ([Quelle](https://openlayers.org/en/latest/apidoc/module-ol_proj_Projection-Projection.html)), even if the official axis order of _EPSG:4326_ would be _latitude_, _longitude_. This is because the  [Proj4Js-Library](https://github.com/proj4js/proj4js?tab=readme-ov-file#axis-order) uses the order `[x=longitude,y=latitude]` by default.
+⚠️
+
+To enable the spatial filter tool follow the steps below:
+
+1. Create a [dashboard variable](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/) of type "Constant" and the name "geomap_wms_spatial_filter_geometry" (**using a different name will result in the spatial filter tool to not work**). As initial value use e.g. `POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))`, to selec all, if no polygon is drawn.
+
+![](./spatial_filter_2.png)
+
+2. Use the dashboard variable in a datasource query, e.g. the SensorThings API, which allows the filtering by providing a WKT in the geometry function:
+
+`/Things?$expand=Locations&$filter=substringof(name,'${tree_sensor:csv}') and st_intersects(Locations/location, geography'${geomap_wms_spatial_filter_geometry}')`
+
+![](./spatial_filter_5.png)
+
+3. Enable the tool in the panel editor, press save or apply and leave edit mode
+
+![](./spatial_filter_3.png)
+
+4. Activate the tool in the panel
+
+![](./spatial_filter_0.png)
+
+5. Draw a polygon as spatial filter geometry. To apply the geometry set the last point on the starting point. After that the panels and datasources which use the variable "geomap_wms_spatial_filter_geometry" are updated automatically. To delete the geometry click on the cross symbol.
+
+![](./spatial_filter_1.png)
+
+![](./spatial_filter_4.png)
+
+## Using data links
+The Geomap WMS Panel Plugin allows the use of [dataLinks](https://grafana.com/docs/grafana/latest/panels-visualizations/configure-data-links/) to update a dashboard variable with data of the clicked feature. This enables interactions between the map panel and other panels in the dashbaord, which use the same dashboard variable in their data queries.
+To make use of this functionality a datalink has to be created (see the [official documentation](https://grafana.com/docs/grafana/latest/panels-visualizations/configure-data-links/#add-a-data-link)) on how to do that.
+
+> ⚠️ As of now the plugin is only able to handle on (the first) data link ⚠️
+
+This example demonstrates how to configure the Geomap WMS Panel Plugin to update a dashboard variable "ladestationen" with the value of the data field of name "name" by clicking on a feature on the map.
+
+![alt text](datalinks_3.png)
+
+![alt text](datalinks_0.png)
+
+Clicking on a certain feature on the map results in both, updating the map as well as all the panels which use the dashboard variable "ladestationen" in their queries.
+
+Before:
+![alt text](datalinks_1.png)
+
+After:
+![alt text](datalinks_2.png)
+
+# Development
+## Status of the original repository
+This repository refers to the following version of its original: https://github.com/orchestracities/map-panel/tree/c0d3a19ce910b9c3ab8416f5a609afb10ff8c0fe
+
+## Technical setup
+- Grafana >= 10.0.2 as Docker container with [bind mounts to host filesystem](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#use-bind-mounts) mounting following conatiner directory _/var/lib/grafana/plugins_
 - node v20.3.1
-- npm 9.6.7
+- npm 10.5.0
 - Linux-basiertes OS oder WSL
-- Docker (Desktop)
-- Minikube
-- Helm
+<!-- - Docker (Desktop) -->
+<!-- - Minikube
+- Helm -->
 
-## Changelog
+## Building the plugin
+1. Clone the repository
+```bash
+git clone https://git.muenchen.de/geodatenservicemuenchen/grafana.git
+```
+2. Navigate in the directory _geomap-wms-panel_
+```bash
+cd ./geomap-wms-panel
+```
+3. Install the node modules
+```bash
+npm install
+```
+4. Run build script
+```bash
+npm run build
+```
+
+## Building the plugin for development/debugging
+Repeat the steps 1 to 3 from [Building the plugin](#Building%20the%20plugin).
+
+Then run:
+```bash
+npm run dev
+```
+
+## Deploy the (unsigned) plugin to the docker container (for debugging)
+The packed plugin (either [production build](#Building%20the%20plugin) or [development build](#Building%20the%20plugin%20for%20development/debugging)) is found in the output folder `./geomap-wms-panel`.
+To allow grafana to load an _unsigned_ plugin the container environment variable `GF_PLUGINS_ALLOW_UNSIGNED_PLUGINS=<comma separated list of plugin-ids>` must be set to "geomap-wms-panel".
+Additionally it is required to configure a _bind mount_ of the _plugins_ container directory to the host filesystem where the bundled Geomap WMS Panel Plugin is located.
+
+**Shortcut:**
+Run the [docker-compose.yaml](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/docker-compose.yaml)
+
+If the plugin was build with `npm run dev` the Webpack directories are loaded to the browser. This enables the use of developmer tools of the browser to set breakpoints and debug the plugin source code (it is recommended to deactivate the cache).
+
+![](./debugging_1.PNG)
+![](./debugging.PNG)
+
+## Troubleshooting
+After each build the Docker-Container must be restarted to reload the new version of the plugin. If the changes of the plugin are **not** noticed it might help to clear the browser cache and refresh the page.
+
+## Further ressources
+- [Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
+- [Konfigurieren von Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
+- [Build Tool für Plugins](https://grafana.github.io/plugin-tools/docs/getting-started)
+- [Erstellen eines Panel-Plugins](https://grafana.com/docs/grafana/latest/developers/plugins/create-a-grafana-plugin/develop-a-plugin/build-a-panel-plugin/)
+
+<!-- ## Changelog
 ### Migration des Plugins
 Das ursprüngliche Plugin wurde mittels des _@grafana/toolkit_ entwickelt, welches mittlerweile veraltet ist. Um die Migration auf das aktuelle Plugin-Tool durchzuführen wird das Werkzeug [@grafana/create-plugin](https://grafana.github.io/plugin-tools/docs/migrating-from-toolkit) verwendet:
 
@@ -34,97 +166,6 @@ Im Build-Prozess kam es zu Fehlermeldungen, die es erfordern, in einigen Dateien
 
 ### Änderung der render()-Funktion
  - [ObservationPropsWrapper.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/components/ObservablePropsWrapper.tsx)
-
-## Build-Prozess
-1. Repository klonen
-```bash
-git clone https://git.muenchen.de/geodatenservicemuenchen/grafana.git
-```
-2. In den Ordner _geomap_wms_ navigieren
-```bash
-cd ./grafana/geomap_wms
-```
-3. Node-Module installieren
-```bash
-npm install
-```
-4. Build-Skript ausführen
-```bash
-npm run build
-```
-
-## Build-Prozess für Development/Debugging
-Schritte 1 bis 3 aus [Build-Prozess](#build-prozess) befolgen.
-
-Im 4. Schritt jedoch folgenden Befehl ausführen:
-```bash
-npm run dev
-```
-
-## Deployment des (unsigned) Plugins im Docker-Container für das Debugging des Plugins
-Das gebündelte Plugin ist nach dem erfolgreichen Build (entweder [Deployment-Build](#build-prozess) oder [Development-Build](#build-prozess-für-developmentdebugging)) im Ausgabe-Ordner `./geomap-wms-panel` im Root-Directory des Projekts zu finden. Um ein _unsigned_ (inoffizielles) Plugin in einer Docker-Container-Instanz von Grafana zu installieren, muss der Container mit der Environment-Variable `GF_PLUGINS_ALLOW_UNSIGNED_PLUGINS=<comma separated list of plugin-ids>` gestartet werden. Zusätzlich muss ein _bind mounts_ zu einem Verzeichnis des Host File Systems etabliert sein. Dort wird im Unterverzeichnis _plugins_ ein Ordner mit Namen der Pugin-ID aus dem _plugin.json_ angelegt. In diesen Ordner werden die Inhalte aus dem Ausgabe-Ordner `./geomap-wms-panel` kopiert. Grafana wird das Plugin nur installieren, wenn es vor Start des Docker-Containers im _plugins_-Ordner bereitgestellt wurde.
-
-Wurde das Plugin mit dem Befehl `npm run dev` erstellt, werden die Webpack-Verzeichnisse mit in den Browser geladen, wenn im Editier-Modus des Dashboards das Geomap-Panel als Visualisierung ausgewählt wird. <br>
-Die Javascript/Typescript-Dateien können dann durch mittels des Debuggers der Entwicklungswerkzeuge des Browsers unter den Sources geöffnet werden und Breakpoints gesetzt werden, um die Funktionsweise des Quell-Codes zu überprüfen.
-
-![](./debugging_1.PNG)
-![](./debugging.PNG)
-
-**Shortcut:**
-Starten des [docker-compose.yaml](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/docker-compose.yaml)
-
-## Troubleshooting
-Nach erneutem Build wegen Änderungen am Code muss der Docker-Container gestoppt werden, das Plugin erneut deployed werden und anschließend erneut gestartet werden. Falls die Änderungen des Plugins in Grafana **nicht** sichtbar werden kann es helfen den Browser-Cache zu leeren und den Docker-Container neu zu starten.
-
-## Weitere Ressourcen
-- [Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
-- [Konfigurieren von Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
-- [Build Tool für Plugins](https://grafana.github.io/plugin-tools/docs/getting-started)
-- [Erstellen eines Panel-Plugins](https://grafana.com/docs/grafana/latest/developers/plugins/create-a-grafana-plugin/develop-a-plugin/build-a-panel-plugin/)
-
-## Nutzung des Geo Map WMS Panels
-> ⚠️ Aktuell wird nur WMS der Version 1.3.0 untersützt ⚠️
-1. In der Auswahl _Base layer_ den Typ _OGC Web Map Sevice_ auswählen
-2. Im Textfeld _URL_ die Base-URL zum WMS-Server eingeben (WICHTIG: Nur die URL des Service-Endpunktes **OHNE** Request-Parameter, z.B. https://geoportal.muenchen.de/geoserver/gsm/wms)
-3. Nacheinander **Namen** der Layer aus der Drop-Down-Liste auswählen
-
-![](./grafana_multiple_layers.PNG)
-
-### Beispiel 1): Karten-Anzeige mit drei Layern
-Layer-Names:
-- g_stadtkarte_gesamt_gtay
-- g_stadtspaziergang_moosach_route_a
-- baustellen_2_weeks
-
-![](./multiple_layers_wms.PNG)
-
-### Beispiel 2): Karten-Anzeige mit drei Layern mit Leerzeichen im Layer-Namen
-Layer-Names:
-- Blöcke
-- Linie_u_Stadtplanü. bis 150k
-- stehende Gewässer generalisiert
-
-![](./mutli-layer-whitespaces.PNG)
-
-## Nutzung des räumlichen Filters des Geomap WMS Panels
-Um die Funktion eines interaktiven räumlichen Filters zu aktivieren sind folgende Schritte notwendig:
-
-1. Anlegen einer [Dashbord-Variable](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/) des Typs "Constant" mit dem Namen "geomap_wms_spatial_filter_geometry" (**Wird die Variable anders benannt, wird der räumliche Filter nicht funktionieren**). Als initialer Wert wird für diese Variable in dem Value-Feld `POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))` eingetragen.
-
-![](./spatial_filter_2.png)
-
-2. Aktivierung des Tools im Geomap WMS Panel-Editor
-
-![](./spatial_filter_3.png)
-
-3. Aktivierung des Tools im Panel
-
-![](./spatial_filter_0.png)
-
-4. Zeichnen eines Polygons als räumlicher Filter (zum Abschließen des Polygons letzten Punkt auf den Startpunkt setzen). Nachdem das Polygon gezeichnet wurde, werden die Panels und Datenquellen, welche die Variable "geomap_wms_spatial_filter_geometry" nutzen, automatisch aktualisiert. Zum löschen des Filters wird auf das nun sichtbare Kreuz-Symbol geklickt.
-
-![](./spatial_filter_1.png)
-
 
 ## How-to: Hinzufügen eines neuen Basemap-Layers
 Die Das Karten-Panel basiert bzlg. der Kartendarstellung auf [OpenLayers](https://openlayers.org/). Somit können im Prinzip alle Funktionalitäten bzw. Kartentypen, die von OpenLayers angeboten werden im Plugin genutzt werden.
@@ -501,4 +542,4 @@ Mögliche Behebgun: `docker context use default`
 
 Ansicht der minikube-Profile mit teilweise Konfiguration: `minikube profile list`
 
-(siehe auch https://github.com/kubernetes/minikube/issues/7949#issuecomment-621931097)
+(siehe auch https://github.com/kubernetes/minikube/issues/7949#issuecomment-621931097) -->

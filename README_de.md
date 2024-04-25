@@ -1,13 +1,13 @@
 ![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg) ![e2e Playwright](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/playwright.yml/badge.svg)
 
-# Geomap WMS
+# Geomap WMS Panel Plugin
 Dieses Plugin ist eine Weiterentwicklung des [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel) um die Integration eines [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) als Basemap-Layer. Zusätzlich bietet das Plugin eine interaktive räumliche Filterfunktion an.
 
 ## Features
 * OGC WMS 1.3.0 als Base-Layer
 * Interaktiver räumlicher Filter
 
-## Nutzung des Geo Map WMS Panels
+## Nutzung des Geomap WMS Panel Plugins
 > ⚠️ Aktuell wird nur WMS der Version 1.3.0 untersützt ⚠️
 1. In der Auswahl _Base layer_ den Typ _OGC Web Map Sevice_ auswählen
 2. Im Textfeld _URL_ die Base-URL zum WMS-Server eingeben (WICHTIG: Nur die URL des Service-Endpunktes **OHNE** Request-Parameter, z.B. https://geoportal.muenchen.de/geoserver/gsm/wms)
@@ -78,10 +78,12 @@ In diesem Beispiel wird konfiguriert, dass bei Klick auf ein Feature die Dashboa
 
 ![alt text](datalinks_0.png)
 
-2. Wenn nun auf ein bestimmtes Feature in der Karte geklickt wird aktualisieren sich sowohl Karte als auch andere Dashboard-Panels (vorausgesetzt sie nutzen die vom Datalink referenzierte Dashboard-Variable entsprechend in ihren Abfragen).
+Wenn nun auf ein bestimmtes Feature in der Karte geklickt wird aktualisieren sich sowohl Karte als auch andere Dashboard-Panels (vorausgesetzt sie nutzen die vom Datalink referenzierte Dashboard-Variable entsprechend in ihren Abfragen).
 
+Vorher:
 ![alt text](datalinks_1.png)
 
+Nachher:
 ![alt text](datalinks_2.png)
 
 # Development
@@ -97,34 +99,14 @@ Dieses Repository bezieht sich auf folgende Version des Originals: https://githu
 - Minikube
 - Helm
 
-## Changelog
-### Migration des Plugins
-Das ursprüngliche Plugin wurde mittels des _@grafana/toolkit_ entwickelt, welches mittlerweile veraltet ist. Um die Migration auf das aktuelle Plugin-Tool durchzuführen wird das Werkzeug [@grafana/create-plugin](https://grafana.github.io/plugin-tools/docs/migrating-from-toolkit) verwendet:
-
-```bash
-npx @grafana/create-plugin@latest migrate
-```
-### Hinzufügen des WMS-Basemap-Layers
-In der Datei [wms.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/wms.ts) wird ein Karten-Instanz vom Type WMS erzeugt. Das neue Modul muss in [index.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/index.ts) importiert werden, um es im Plugin verwenden zu können.
-
-### Änderung der Variablen-Deklaration
-Im Build-Prozess kam es zu Fehlermeldungen, die es erfordern, in einigen Dateien die `var` Statements zu `let` zu ändern:
-- [GeomapPanel.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/GeomapPanel.tsx)
-- [MapViewEditor.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/editor/MapViewEditor.tsx)
-- [nextzen.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/nextzen.ts)
-- [idwMap.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/data/idwMap.tsx)
-
-### Änderung der render()-Funktion
- - [ObservationPropsWrapper.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/components/ObservablePropsWrapper.tsx)
-
 ## Build-Prozess
 1. Repository klonen
 ```bash
 git clone https://git.muenchen.de/geodatenservicemuenchen/grafana.git
 ```
-2. In den Ordner _geomap_wms_ navigieren
+2. In den Ordner _geomap-wms-panel_ navigieren
 ```bash
-cd ./grafana/geomap_wms
+cd ./geomap-wms-panel
 ```
 3. Node-Module installieren
 ```bash
@@ -146,17 +128,37 @@ npm run dev
 ## Deployment des (unsigned) Plugins im Docker-Container für das Debugging des Plugins
 Das gebündelte Plugin ist nach dem erfolgreichen Build (entweder [Deployment-Build](#build-prozess) oder [Development-Build](#build-prozess-für-developmentdebugging)) im Ausgabe-Ordner `./geomap-wms-panel` im Root-Directory des Projekts zu finden. Um ein _unsigned_ (inoffizielles) Plugin in einer Docker-Container-Instanz von Grafana zu installieren, muss der Container mit der Environment-Variable `GF_PLUGINS_ALLOW_UNSIGNED_PLUGINS=<comma separated list of plugin-ids>` gestartet werden. Zusätzlich muss ein _bind mounts_ zu einem Verzeichnis des Host File Systems etabliert sein. Dort wird im Unterverzeichnis _plugins_ ein Ordner mit Namen der Pugin-ID aus dem _plugin.json_ angelegt. In diesen Ordner werden die Inhalte aus dem Ausgabe-Ordner `./geomap-wms-panel` kopiert. Grafana wird das Plugin nur installieren, wenn es vor Start des Docker-Containers im _plugins_-Ordner bereitgestellt wurde.
 
+**Shortcut:**
+Starten des [docker-compose.yaml](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/docker-compose.yaml)
+
 Wurde das Plugin mit dem Befehl `npm run dev` erstellt, werden die Webpack-Verzeichnisse mit in den Browser geladen, wenn im Editier-Modus des Dashboards das Geomap-Panel als Visualisierung ausgewählt wird. <br>
 Die Javascript/Typescript-Dateien können dann durch mittels des Debuggers der Entwicklungswerkzeuge des Browsers unter den Sources geöffnet werden und Breakpoints gesetzt werden, um die Funktionsweise des Quell-Codes zu überprüfen.
 
 ![](./debugging_1.PNG)
 ![](./debugging.PNG)
 
-**Shortcut:**
-Starten des [docker-compose.yaml](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/docker-compose.yaml)
-
 ## Troubleshooting
 Nach erneutem Build wegen Änderungen am Code muss der Docker-Container gestoppt werden, das Plugin erneut deployed werden und anschließend erneut gestartet werden. Falls die Änderungen des Plugins in Grafana **nicht** sichtbar werden kann es helfen den Browser-Cache zu leeren und den Docker-Container neu zu starten.
+
+## Changelog
+### Migration des Plugins
+Das ursprüngliche Plugin wurde mittels des _@grafana/toolkit_ entwickelt, welches mittlerweile veraltet ist. Um die Migration auf das aktuelle Plugin-Tool durchzuführen wird das Werkzeug [@grafana/create-plugin](https://grafana.github.io/plugin-tools/docs/migrating-from-toolkit) verwendet:
+
+```bash
+npx @grafana/create-plugin@latest migrate
+```
+### Hinzufügen des WMS-Basemap-Layers
+In der Datei [wms.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/wms.ts) wird ein Karten-Instanz vom Type WMS erzeugt. Das neue Modul muss in [index.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/index.ts) importiert werden, um es im Plugin verwenden zu können.
+
+### Änderung der Variablen-Deklaration
+Im Build-Prozess kam es zu Fehlermeldungen, die es erfordern, in einigen Dateien die `var` Statements zu `let` zu ändern:
+- [GeomapPanel.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/GeomapPanel.tsx)
+- [MapViewEditor.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/editor/MapViewEditor.tsx)
+- [nextzen.ts](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/basemaps/nextzen.ts)
+- [idwMap.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/layers/data/idwMap.tsx)
+
+### Änderung der render()-Funktion
+ - [ObservationPropsWrapper.tsx](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/src/components/ObservablePropsWrapper.tsx)
 
 ## Weitere Ressourcen
 - [Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
