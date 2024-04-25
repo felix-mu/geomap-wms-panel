@@ -163,8 +163,9 @@ Im Build-Prozess kam es zu Fehlermeldungen, die es erfordern, in einigen Dateien
 ## Weitere Ressourcen
 - [Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
 - [Konfigurieren von Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
-- [Build Tool für Plugins](https://grafana.github.io/plugin-tools/docs/getting-started)
+- [Build Tool für Plugins](https://grafana.com/developers/plugin-tools/)
 - [Erstellen eines Panel-Plugins](https://grafana.com/docs/grafana/latest/developers/plugins/create-a-grafana-plugin/develop-a-plugin/build-a-panel-plugin/)
+- [Beispiele für Grafana-Plugins](https://github.com/grafana/grafana-plugin-examples/tree/main/examples)
 
 
 ## How-to: Hinzufügen eines neuen Basemap-Layers

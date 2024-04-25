@@ -118,7 +118,7 @@ npm run build
 ```
 
 ## Building the plugin for development/debugging
-Repeat the steps 1 to 3 from [Building the plugin](#Building%20the%20plugin).
+Repeat the steps 1 to 3 from [Building the plugin](#building-the-plugin).
 
 Then run:
 ```bash
@@ -126,12 +126,12 @@ npm run dev
 ```
 
 ## Deploy the (unsigned) plugin to the docker container (for debugging)
-The packed plugin (either [production build](#Building%20the%20plugin) or [development build](#Building%20the%20plugin%20for%20development/debugging)) is found in the output folder `./geomap-wms-panel`.
+The packed plugin (either [production build](#building-the-plugin) or [development build](#building-the-plugin-for-development/debugging)) is found in the output folder `./geomap-wms-panel`.
 To allow grafana to load an _unsigned_ plugin the container environment variable `GF_PLUGINS_ALLOW_UNSIGNED_PLUGINS=<comma separated list of plugin-ids>` must be set to "geomap-wms-panel".
 Additionally it is required to configure a _bind mount_ of the _plugins_ container directory to the host filesystem where the bundled Geomap WMS Panel Plugin is located.
 
 **Shortcut:**
-Run the [docker-compose.yaml](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/docker-compose.yaml)
+Run the [docker-compose.yaml](https://git.muenchen.de/geodatenservicemuenchen/grafana/-/blob/main/geomap_wms/docker-compose.yaml) with `docker compose up`
 
 If the plugin was build with `npm run dev` the Webpack directories are loaded to the browser. This enables the use of developmer tools of the browser to set breakpoints and debug the plugin source code (it is recommended to deactivate the cache).
 
@@ -142,10 +142,11 @@ If the plugin was build with `npm run dev` the Webpack directories are loaded to
 After each build the Docker-Container must be restarted to reload the new version of the plugin. If the changes of the plugin are **not** noticed it might help to clear the browser cache and refresh the page.
 
 ## Further ressources
-- [Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
-- [Konfigurieren von Grafana mit Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
-- [Build Tool für Plugins](https://grafana.github.io/plugin-tools/docs/getting-started)
-- [Erstellen eines Panel-Plugins](https://grafana.com/docs/grafana/latest/developers/plugins/create-a-grafana-plugin/develop-a-plugin/build-a-panel-plugin/)
+- [Grafana and Docker](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
+- [Configure Grafana in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
+- [Build tool for plugins](https://grafana.com/developers/plugin-tools/)
+- [Create a panel plugin](https://grafana.com/docs/grafana/latest/developers/plugins/create-a-grafana-plugin/develop-a-plugin/build-a-panel-plugin/)
+- [Sample plugins](https://github.com/grafana/grafana-plugin-examples/tree/main/examples)
 
 <!-- ## Changelog
 ### Migration des Plugins
