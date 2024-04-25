@@ -25,7 +25,7 @@ jobs:
       with:
         args: zip -qr geomap-wms-panel.zip geomap-wms-panel
     - name: Run validator
-      run: npx --yes @grafana/plugin-validator@latest
+      run: npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. geomap-wms-panel.zip # https://github.com/grafana/plugin-validator
     # - name: Clean up
     #   run: rm -r geomap-wms-panel.zip
 
