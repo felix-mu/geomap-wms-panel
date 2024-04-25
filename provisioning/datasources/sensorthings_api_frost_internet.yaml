@@ -1,9 +1,0 @@
-# Configuration file version
-apiVersion: 1
-
-datasources:
-  - name: FROST Internet
-    type: iosb-sensorthings-datasource
-    access: proxy
-    url: https://geoportal-konfig-test.muenchen.de/frostk11/v1.1
-    isDefault: false

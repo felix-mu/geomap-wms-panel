@@ -18,19 +18,26 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 54,
   "links": [],
   "liveNow": false,
   "panels": [
     {
       "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
+        "type": "grafana-testdata-datasource",
+        "uid": "uid-test-data-123"
       },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "links": [
+            {
+              "title": "",
+              "url": "http://localhost:3000/d/bdjtpgo45296ob/dashboard-e2e-copy?var-datalink_test=${__data.fields.name}"
+            }
+          ],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -69,15 +76,118 @@
           "showSpatialFilter": false,
           "showZoom": true
         },
+        "layers": [
+          {
+            "config": {
+              "cluster": false,
+              "clusterDistance": 20,
+              "clusterMinDistance": 0,
+              "clusterValue": "size",
+              "color": {
+                "fixed": "dark-green"
+              },
+              "enableGradient": false,
+              "enableShadow": false,
+              "fillOpacity": 0.4,
+              "geoJsonStrokeSize": {
+                "fixed": 5,
+                "max": 10,
+                "min": 1
+              },
+              "iconSize": 9,
+              "pinShape": "marker",
+              "shape": "circle",
+              "showLegend": true,
+              "showPin": false,
+              "size": {
+                "fixed": 5,
+                "max": 15,
+                "min": 2
+              }
+            },
+            "location": {
+              "latitude": "Y",
+              "longitude": "X",
+              "mode": "coords"
+            },
+            "name": "Test data",
+            "query": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "type": "markers"
+          }
+        ],
         "view": {
           "id": "coords",
-          "lat": 48.138132,
-          "lon": 11.565519,
-          "zoom": 13.57
+          "lat": 48.12622,
+          "lon": 11.577509,
+          "zoom": 12.55
         }
       },
+      "targets": [
+        {
+          "csvContent": "X,Y,id,name\r\n11.5624734687586,48.1124784080786,1,\"Point 1\"\r\n11.5507255958882,48.1174377336411,2,\"Point 2\"\r\n11.5683192640278,48.1389435109252,3,\"Point 3\"\r\n11.5796695601224,48.130505868826,4,\"Point 4\"\r\n11.5856016503162,48.1224164966297,5,\"Point 5\"\r\n11.5687129102152,48.1196130685219,6,\"Point 6\"\r\n11.6002930000666,48.1376937121368,7,\"Point 7\"",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "uid-test-data-123"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        }
+      ],
       "title": "Geomap WMS Panel",
       "type": "geomap-wms-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "uid-test-data-123"
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# ${datalink_test}\n",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.4.2",
+      "title": "Datalink test",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "uid-test-data-123"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 12,
+        "y": 3
+      },
+      "id": 3,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# ${geomap_wms_spatial_filter_geometry}\n",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.4.2",
+      "title": "Spatial filter geometry",
+      "type": "text"
     }
   ],
   "refresh": "",
@@ -91,6 +201,13 @@
         "query": "POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))",
         "skipUrlSync": false,
         "type": "constant"
+      },
+      {
+        "hide": 2,
+        "name": "datalink_test",
+        "query": "constant",
+        "skipUrlSync": false,
+        "type": "constant"
       }
     ]
   },
@@ -100,8 +217,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "dashboard_e2e",
-  "uid": "b023342f-16fb-4fd8-a398-b29a17497d1b",
-  "version": 1,
+  "title": "dashboard_e2e Copy",
+  "uid": "bdjtpgo45296ob",
+  "version": 5,
   "weekStart": ""
 }

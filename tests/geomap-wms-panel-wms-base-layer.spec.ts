@@ -57,7 +57,7 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
 
   if(UPDATE_HAR) {
     // CAUTION: Encoding of URL is important
-    const layer1Response =  page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1282022.6960121626%2C6128308.37005719%2C1292912.675667699%2C6131423.470620593");
+    const layer1Response =  page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307");
     await selectOptions.first().click();
     console.log(await layer1Response);
     // await page.waitForTimeout(5000);
@@ -66,13 +66,13 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
     // for (let i = 0; i < 2; ++i) {
     await multiSelect.click();
     // CAUTION: Encoding of URL is important
-    const layer2Response = page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1282022.6960121626%2C6128308.37005719%2C1292912.675667699%2C6131423.470620593");
+    const layer2Response = page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307");
     await selectOptions.first().click();
     console.log(await layer2Response);
 
     await multiSelect.click();
     // CAUTION: Encoding of URL is important
-    const layer3Response = page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte%2Cg_lagekarte_2016&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1282022.6960121626%2C6128308.37005719%2C1292912.675667699%2C6131423.470620593");
+    const layer3Response = page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte%2Cg_lagekarte_2016&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307");
     await selectOptions.first().click();
     await layer3Response;
   } else {
