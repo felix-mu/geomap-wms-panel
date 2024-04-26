@@ -6,7 +6,7 @@
     "description": "Extension of the Geomap-Plugin by OGC Web Map Service integration",
     "author": {
       "name": "Felix Müller",
-      "url": "https://stadt.muenchen.de/infos/portrait-geodatenservice.html"
+      "url": "https://github.com/felix-mu"
     },
     "keywords": [
       "map",
@@ -16,8 +16,8 @@
       "wms"
     ],
     "logos": {
-      "small": "img/Marke_geodatenservice_in.jpg",
-      "large": "img/Marke_geodatenservice_in.jpg"
+      "small": "img/geomap-wms-logo.svg",
+      "large": "img/geomap-wms-logo.svg"
     },
     "links": [
       {
@@ -26,7 +26,7 @@
       },
       {
         "name": "License",
-        "url": ""
+        "url": "https://github.com/felix-mu/geomap-wms-panel/tree/main?tab=AGPL-3.0-1-ov-file"
       }
     ],
     "screenshots": [

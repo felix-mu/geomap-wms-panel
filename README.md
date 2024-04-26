@@ -1,11 +1,13 @@
-![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg) ![e2e Playwright](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/playwright.yml/badge.svg) ![Plugin validation](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/validate.yaml/badge.svg)
+![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg) ![e2e Playwright](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/playwright.yml/badge.svg) ![Plugin validation](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/validate.yml/badge.svg)
 
 # Geomap WMS Panel Plugin
-This plugin evolved from the [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel). It extends original version by the functionality of the intergration of an [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) as a base map layer. Additionally the plugin ships with an interactive filter tool to query the data by spatial conditions.
+This plugin evolved from the [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel). It extends the original version by the functionality of the intergration of an [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) as a base map layer. Additionally the plugin ships with an interactive filter tool to query data by spatial conditions.
+Also a minimal implementation of datalinks is provided to update dashboard variables by clicking on a map feature.
 
 ## Features
 * Integration of OGC WMS 1.3.0 as base map layer
 * Interactive spatial filter
+* Minimal datalinks implementation
 
 ## Using the Geomap WMS Panel Plugin
 > ⚠️ Currently only WMS of version 1.3.0 is supported ⚠️
@@ -13,7 +15,7 @@ This plugin evolved from the [Orchestra Cities Map Panel-Plugins](https://github
 2. In the text field _URL_ type in the base url of the WMS endpoint (NOTE: Only the URL of the service endpoint **WITHOUT** request parameters, z.B. https://geoportal.muenchen.de/geoserver/gsm/wms)
 3. Successively choose layers from the drop down list
 
-![](./grafana_multiple_layers.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/grafana_multiple_layers.PNG)
 
 ### Example 1): Basemap with three layers
 Layer names:
@@ -21,7 +23,7 @@ Layer names:
 - g_stadtspaziergang_moosach_route_a
 - baustellen_2_weeks
 
-![](./multiple_layers_wms.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/multiple_layers_wms.PNG)
 
 ### Example 2): Basemap with three layers (layer names have whitespaces)
 Layer names:
@@ -29,7 +31,7 @@ Layer names:
 - Linie_u_Stadtplanü. bis 150k
 - stehende Gewässer generalisiert
 
-![](./mutli-layer-whitespaces.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/mutli-layer-whitespaces.PNG)
 
 ## Using the spatial filter tool
 An additional feature of the Geomap WMS Plugin is the spatial filter tool that allows drawing a polygon on the map panel to be used as filter for a data query. The polygon is representated as [Well-known-text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and stored in a dashboard variable "geomap_wms_spatial_filter_geometry".
@@ -37,34 +39,34 @@ An additional feature of the Geomap WMS Plugin is the spatial filter tool that a
 > ⚠️ It is mandatory to name the dashbaord variable "geomap_wms_spatial_filter_geometry" ⚠️
 
 > ⚠️ 
-The spatial filter tool uses the geographic coordinate system _urn:ogc:def:crs:OGC::CRS84_. The axis order is _longitude, latitude_. Openlayers (dependency of the geomap plugin) uses the CRS _CSR:84_ as alias for _EPSG:4326_ ([Quelle](https://openlayers.org/en/latest/apidoc/module-ol_proj_Projection-Projection.html)), even if the official axis order of _EPSG:4326_ would be _latitude_, _longitude_. This is because the  [Proj4Js-Library](https://github.com/proj4js/proj4js?tab=readme-ov-file#axis-order) uses the order `[x=longitude,y=latitude]` by default.
+The spatial filter tool uses the geographic coordinate system _urn:ogc:def:crs:OGC::CRS84_. The axis order is _longitude, latitude_. Openlayers (dependency of the geomap plugin) uses the CRS _CSR:84_ as alias for _EPSG:4326_ ([source](https://openlayers.org/en/latest/apidoc/module-ol_proj_Projection-Projection.html)), even if the official axis order of _EPSG:4326_ would be _latitude_, _longitude_. This is because the  [Proj4Js-Library](https://github.com/proj4js/proj4js?tab=readme-ov-file#axis-order) uses the order `[x=longitude,y=latitude]` by default.
 ⚠️
 
 To enable the spatial filter tool follow the steps below:
 
 1. Create a [dashboard variable](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/) of type "Constant" and the name "geomap_wms_spatial_filter_geometry" (**using a different name will result in the spatial filter tool to not work**). As initial value use e.g. `POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))`, to selec all, if no polygon is drawn.
 
-![](./spatial_filter_2.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_2.png)
 
 2. Use the dashboard variable in a datasource query, e.g. the SensorThings API, which allows the filtering by providing a WKT in the geometry function:
 
 `/Things?$expand=Locations&$filter=substringof(name,'${tree_sensor:csv}') and st_intersects(Locations/location, geography'${geomap_wms_spatial_filter_geometry}')`
 
-![](./spatial_filter_5.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_5.png)
 
 3. Enable the tool in the panel editor, press save or apply and leave edit mode
 
-![](./spatial_filter_3.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_3.png)
 
 4. Activate the tool in the panel
 
-![](./spatial_filter_0.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_0.png)
 
 5. Draw a polygon as spatial filter geometry. To apply the geometry set the last point on the starting point. After that the panels and datasources which use the variable "geomap_wms_spatial_filter_geometry" are updated automatically. To delete the geometry click on the cross symbol.
 
-![](./spatial_filter_1.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_1.png)
 
-![](./spatial_filter_4.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_4.png)
 
 ## Using data links
 The Geomap WMS Panel Plugin allows the use of [dataLinks](https://grafana.com/docs/grafana/latest/panels-visualizations/configure-data-links/) to update a dashboard variable with data of the clicked feature. This enables interactions between the map panel and other panels in the dashbaord, which use the same dashboard variable in their data queries.
@@ -74,17 +76,17 @@ To make use of this functionality a datalink has to be created (see the [officia
 
 This example demonstrates how to configure the Geomap WMS Panel Plugin to update a dashboard variable "ladestationen" with the value of the data field of name "name" by clicking on a feature on the map.
 
-![alt text](datalinks_3.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/datalinks_3.png)
 
-![alt text](datalinks_0.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/datalinks_0.png)
 
 Clicking on a certain feature on the map results in both, updating the map as well as all the panels which use the dashboard variable "ladestationen" in their queries.
 
 Before:
-![alt text](datalinks_1.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/datalinks_1.png)
 
 After:
-![alt text](datalinks_2.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/datalinks_2.png)
 
 # Development
 ## Status of the original repository
@@ -102,7 +104,7 @@ This repository refers to the following version of its original: https://github.
 ## Building the plugin
 1. Clone the repository
 ```bash
-git clone https://git.muenchen.de/geodatenservicemuenchen/grafana.git
+git clone https://github.com/felix-mu/geomap-wms-panel.git
 ```
 2. Navigate in the directory _geomap-wms-panel_
 ```bash
@@ -135,8 +137,8 @@ Run the [docker-compose.yaml](./docker-compose.yaml) with `docker compose up`
 
 If the plugin was build with `npm run dev` the Webpack directories are loaded to the browser. This enables the use of developmer tools of the browser to set breakpoints and debug the plugin source code (it is recommended to deactivate the cache).
 
-![](./debugging_1.PNG)
-![](./debugging.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/debugging_1.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/debugging.PNG)
 
 ## Troubleshooting
 After each build the Docker-Container must be restarted to reload the new version of the plugin. If the changes of the plugin are **not** noticed it might help to clear the browser cache and refresh the page.
@@ -156,22 +158,22 @@ Das ursprüngliche Plugin wurde mittels des _@grafana/toolkit_ entwickelt, welch
 npx @grafana/create-plugin@latest migrate
 ```
 ### Hinzufügen des WMS-Basemap-Layers
-In der Datei [wms.ts](./src/layers/basemaps/wms.ts) wird ein Karten-Instanz vom Type WMS erzeugt. Das neue Modul muss in [index.ts](./src/layers/basemaps/index.ts) importiert werden, um es im Plugin verwenden zu können.
+In der Datei [wms.ts](https://github.com/felix-mu/geomap-wms-panel/blob/main/src/layers/basemaps/wms.ts) wird ein Karten-Instanz vom Type WMS erzeugt. Das neue Modul muss in [index.ts](https://github.com/felix-mu/geomap-wms-panel/blob/main/src/layers/basemaps/index.ts) importiert werden, um es im Plugin verwenden zu können.
 
 ### Änderung der Variablen-Deklaration
 Im Build-Prozess kam es zu Fehlermeldungen, die es erfordern, in einigen Dateien die `var` Statements zu `let` zu ändern:
-- [GeomapPanel.tsx](./src/GeomapPanel.tsx)
-- [MapViewEditor.tsx](./src/editor/MapViewEditor.tsx)
-- [nextzen.ts](./src/layers/basemaps/nextzen.ts)
-- [idwMap.tsx](./src/layers/data/idwMap.tsx)
+- [GeomapPanel.tsx](https://github.com/felix-mu/geomap-wms-panel/blob/main/src/GeomapPanel.tsx)
+- [MapViewEditor.tsx](https://github.com/felix-mu/geomap-wms-panel/blob/main/src/editor/MapViewEditor.tsx)
+- [nextzen.ts](https://github.com/felix-mu/geomap-wms-panel/blob/main/src/layers/basemaps/nextzen.ts)
+- [idwMap.tsx](https://github.com/felix-mu/geomap-wms-panel/blob/main/src/layers/data/idwMap.tsx)
 
 ### Änderung der render()-Funktion
- - [ObservationPropsWrapper.tsx](./src/components/ObservablePropsWrapper.tsx)
+ - [ObservationPropsWrapper.tsx](https://github.com/felix-mu/geomap-wms-panel/blob/main/src/components/ObservablePropsWrapper.tsx)
 
 ## How-to: Hinzufügen eines neuen Basemap-Layers
 Die Das Karten-Panel basiert bzlg. der Kartendarstellung auf [OpenLayers](https://openlayers.org/). Somit können im Prinzip alle Funktionalitäten bzw. Kartentypen, die von OpenLayers angeboten werden im Plugin genutzt werden.
 
-Um einen neuen Basemap-Layer zu erstellen bietet sich es an das Modul [generic.tsx](./src/layers/basemaps/generic.ts) als Template zu verwenden und dieses anzupassen. Dafür wird die Datei einfach im selben Ordner kopiert und enstprechend des zu erstellenden Basemap-Layer-Typs umbenannt.
+Um einen neuen Basemap-Layer zu erstellen bietet sich es an das Modul [generic.tsx](https://github.com/felix-mu/geomap-wms-panel/blob/main/src/layers/basemaps/generic.ts) als Template zu verwenden und dieses anzupassen. Dafür wird die Datei einfach im selben Ordner kopiert und enstprechend des zu erstellenden Basemap-Layer-Typs umbenannt.
 Soll, wie in diesem Repo, z.B. ein WMS-Basemap-Layer erstellt werden, so müssen die importierten Module entsprechenden geändert werden:
 ``` diff
 -import { GrafanaTheme2 } from '@grafana/data';
@@ -297,7 +299,7 @@ Schließlich wird das Layer-Objekt exportiert:
 +export const wmsLayers = [wms];
 
 ```
-Um den neuen Basmap-Layer im Panel nutzen zu können, muss dieser über das [index.ts](./src/layers/basemaps/index.ts)-Modul exportiert werden, da von diesem Modul die Basmaps geladen werden:
+Um den neuen Basmap-Layer im Panel nutzen zu können, muss dieser über das [index.ts](https://github.com/felix-mu/geomap-wms-panel/blob/main/src/layers/basemaps/index.ts)-Modul exportiert werden, da von diesem Modul die Basmaps geladen werden:
 ```diff
 import { cartoLayers } from './carto';
 import { esriLayers } from './esri';
