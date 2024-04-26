@@ -1,6 +1,9 @@
-![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg) ![e2e Playwright](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/playwright.yml/badge.svg) ![Plugin validation](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/validate.yml/badge.svg)
+<h1>
+<img src="src/img/geomap-wms-logo.svg" width="100px"/>
+Geomap WMS Panel Plugin
+</h1>
 
-# Geomap WMS Panel Plugin
+![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg) ![e2e Playwright](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/playwright.yml/badge.svg) ![Plugin validation](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/validate.yml/badge.svg)
 This plugin evolved from the [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel). It extends the original version by the functionality of the intergration of an [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) as a base map layer. Additionally the plugin ships with an interactive filter tool to query data by spatial conditions.
 Also a minimal implementation of datalinks is provided to update dashboard variables by clicking on a map feature.
 
@@ -133,7 +136,7 @@ To allow grafana to load an _unsigned_ plugin the container environment variable
 Additionally it is required to configure a _bind mount_ of the _plugins_ container directory to the host filesystem where the bundled Geomap WMS Panel Plugin is located.
 
 **Shortcut:**
-Run the [docker-compose.yaml](./docker-compose.yaml) with `docker compose up`
+Run the [docker-compose.yaml](https://github.com/felix-mu/geomap-wms-panel/blob/main/docker-compose.yaml) with `docker compose up`
 
 If the plugin was build with `npm run dev` the Webpack directories are loaded to the browser. This enables the use of developmer tools of the browser to set breakpoints and debug the plugin source code (it is recommended to deactivate the cache).
 
