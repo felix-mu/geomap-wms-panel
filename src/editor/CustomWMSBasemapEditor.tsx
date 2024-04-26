@@ -28,7 +28,8 @@ type Props = StandardEditorProps<ConfigUrlLayer>;
 export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props) => {
   // const styles = useStyles2(getStyles);
   
-  const [url, setURL] = useState<string | undefined>(context.options.config.wms.url); // ''
+  const [url, setURL] = useState<string | undefined>(context.options.config.wms === undefined || 
+    context.options.config.wms.url === undefined ? "" : context.options.config.wms.url); // ''
   const [options, setOptions] = useState<Array<SelectableValue<string>>>([]);  // SelectableValue
   const [selection, setSelection] = useState<Array<SelectableValue<string>>>([]);
 

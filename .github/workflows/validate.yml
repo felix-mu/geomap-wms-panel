@@ -1,4 +1,4 @@
-name: Plugin validation
+name: Plugin Validation
 on:
   push:
     branches: [ "main" ]

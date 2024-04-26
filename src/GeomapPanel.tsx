@@ -351,7 +351,7 @@ export class GeomapPanel extends Component<Props, State> {
         }
         let frame = props['frame'];
         const thisLayer = layer.getProperties();
-        if (thisLayer.displayProperties.length > 0 && frame) { // if display properties is empty do not show tooltip
+        if (frame) { // if display properties is empty do not show tooltip // thisLayer.displayProperties !== undefined && thisLayer.displayProperties.length > 0 && 
           for (let thisLayerName of typeof thisLayer.displayProperties !== 'undefined'
             ? thisLayer.displayProperties
             : []) {
@@ -362,7 +362,7 @@ export class GeomapPanel extends Component<Props, State> {
           }
           hoverPayload.icon = thisLayer.icon ? thisLayer.icon : '';
           hoverPayload.data = ttip.data = frame as DataFrame;
-          hoverPayload.propsToShow = propsToShow.length > 0 ? propsToShow : frame.fields;
+          hoverPayload.propsToShow = propsToShow.length > 0 ? propsToShow : undefined; // frame.fields;
           hoverPayload.titleField = frame.fields.filter((obj: { name: any }) => {
             return obj.name === thisLayer.titleField;
           });
@@ -377,13 +377,15 @@ export class GeomapPanel extends Component<Props, State> {
     this.hoverPayload.features = features.length ? features : undefined;
 
     // this.map.getTargetElement().style.cursor = features.length ? 'pointer' : '';
-    this.map.getTargetElement().style.cursor = features.length && this.hoverPayload.data !== undefined ? 'pointer' : '';
+    this.map.getTargetElement().style.cursor = features.length ? 'pointer' : ''; // && this.hoverPayload.data !== undefined
 
     this.props.eventBus.publish(this.hoverEvent);
 
     const currentTTip = this.state.ttip;
     if (ttip.data !== currentTTip?.data || ttip.rowIndex !== currentTTip?.rowIndex) {
-      this.setState({ ttip: { ...hoverPayload } });
+      if (hoverPayload.propsToShow !== undefined || hoverPayload.data === undefined) { // only update/show tooltip if data is not undefined (hovering over feature) or data is undefined (not hovering over feature)
+        this.setState({ ttip: { ...hoverPayload } });
+      }
     }
   };
 
