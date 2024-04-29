@@ -59,9 +59,9 @@ on:
       run: npm run sign
       shell: bash
       env:
-        GRAFANA_ACCESS_POLICY_TOKEN: ${{ inputs.policy_token }}
-        GRAFANA_API_KEY: ${{ inputs.grafana_token }}
-      if: ${{ inputs.policy_token != '' }}
+        GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
+      if: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN != '' }}
+      
       - name: Get plugin metadata
       id: metadata
       run: |
@@ -104,7 +104,7 @@ on:
       with:
         draft: true
         generate_release_notes: true
-        token: ${{ github.token }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         files: |
           ./${{ steps.metadata.outputs.archive }}
           ./${{ steps.metadata.outputs.archive-sha1sum }}
