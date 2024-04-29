@@ -1,0 +1,22 @@
+# https://github.com/grafana/grafana-plugin-examples#api-compatibility
+name: Compatibility check
+on: [push]
+
+jobs:
+  compatibilitycheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Build plugin
+        run: npm run build
+      - name: Compatibility check
+        uses: grafana/plugin-actions/is-compatible@v1
+        with:
+          module: './src/module.ts'
+          comment-pr: 'yes'
+          fail-if-incompatible: 'no'

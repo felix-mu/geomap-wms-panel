@@ -4,6 +4,7 @@
 name: Build
 
 on:
+  workflow_call: # https://docs.github.com/en/actions/using-workflows/reusing-workflows
   push:
     branches: [ "main" ]
   pull_request:
