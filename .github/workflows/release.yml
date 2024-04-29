@@ -64,7 +64,7 @@ jobs:
       shell: bash
       env:
         GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
-      if: $GRAFANA_ACCESS_POLICY_TOKEN != '' # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#using-secrets-in-a-workflow
+      if: ${{ env.GRAFANA_ACCESS_POLICY_TOKEN != '' }} # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#using-secrets-in-a-workflow
 
     - name: Get plugin metadata
       id: metadata
