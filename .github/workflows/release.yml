@@ -88,6 +88,8 @@ jobs:
       with:
         node-version: 18
     - uses: actions/checkout@v3
+    - run: npm install
+    - run: npm run build
     - name: Sign plugin
       run: npm run sign
       shell: bash
