@@ -22,6 +22,7 @@ on:
 
     e2e:
       needs: [test, build]
+      steps:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run docker compose
@@ -40,6 +41,7 @@ on:
           CI: 'true' # https://playwright.dev/docs/ci
     
     validate:
+      steps:
       - name: Zip the dist folder
         run: zip -qr geomap-wms-panel.zip geomap-wms-panel
       - name: Run validator
@@ -52,6 +54,7 @@ on:
       # - uses: grafana/plugin-actions/build-plugin@release
       #   with:
       #     grafana_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
+      steps:
       - name: Sign plugin
       run: npm run sign
       shell: bash
@@ -121,4 +124,3 @@ on:
             - Paste this [.zip.sha1 link](https://github.com/${{ github.repository }}/releases/download/v${{ steps.metadata.outputs.plugin-version }}/${{ steps.metadata.outputs.archive-sha1sum }}) in the SHA1 field
 
           Once done please remove these instructions and publish this release.
-          
