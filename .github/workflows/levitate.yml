@@ -1,6 +1,8 @@
 # https://github.com/grafana/grafana-plugin-examples#api-compatibility
 name: Compatibility check
-on: [push]
+on:
+  push:
+    branches: [ "main" ]
 
 jobs:
   compatibilitycheck:

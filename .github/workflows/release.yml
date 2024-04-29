@@ -7,69 +7,73 @@ on:
     tags:
       - v[0-9]*.[0-9]*.[0-9]*
 
-  jobs:
-    lint:
-      uses: ./.github/workflows/linting.yml
+jobs:
+  lint:
+    uses: ./.github/workflows/linting.yml
 
-    test:
-      uses: ./.github/workflows/test.yml
+  test:
+    uses: ./.github/workflows/test.yml
 
-    build:
-      needs: test
-      steps:
-      - run: npm install
-      - run: npm run build
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - run: npm install
+    - run: npm run build
 
-    e2e:
-      needs: [test, build]
-      steps:
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run docker compose
-        run: docker compose up -d
-      - name: Check if Grafana is ready
-        run: | 
-          while [[ "$(curl --insecure -s -o /dev/null -w "%{response_code}" http://localhost:3000/api/health)" != "200" ]]; do 
-              sleep 1
-              echo "Grafana server not ready."
-          done
-          echo "Grafana server ready to accept connections."
-      - name: Run Playwright tests
-        id: run-tests
-        run: npm run e2e
-        env:
-          CI: 'true' # https://playwright.dev/docs/ci
-    
-    validate:
-      steps:
-      - name: Zip the dist folder
-        run: zip -qr geomap-wms-panel.zip geomap-wms-panel
-      - name: Run validator
-        run: npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. geomap-wms-panel.zip # https://github.com/grafana/plugin-validator
-    
-    release:
-      needs: [lint, test, build, e2e, validate]
-      # Not applicable since uses dist folder as build output directory
-      # https://github.com/grafana/plugin-actions/blob/main/build-plugin/action.yml
-      # - uses: grafana/plugin-actions/build-plugin@release
-      #   with:
-      #     grafana_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
-      steps:
-      - name: Sign plugin
+  e2e:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run docker compose
+      run: docker compose up -d
+    - name: Check if Grafana is ready
+      run: | 
+        while [[ "$(curl --insecure -s -o /dev/null -w "%{response_code}" http://localhost:3000/api/health)" != "200" ]]; do 
+            sleep 1
+            echo "Grafana server not ready."
+        done
+        echo "Grafana server ready to accept connections."
+    - name: Run Playwright tests
+      id: run-tests
+      run: npm run e2e
+      env:
+        CI: 'true' # https://playwright.dev/docs/ci
+  
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Zip the dist folder
+      run: zip -qr geomap-wms-panel.zip geomap-wms-panel
+    - name: Run validator
+      run: npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. geomap-wms-panel.zip # https://github.com/grafana/plugin-validator
+  
+  release:
+    runs-on: ubuntu-latest
+    needs: [lint, test, build, e2e, validate]
+    # Not applicable since uses dist folder as build output directory
+    # https://github.com/grafana/plugin-actions/blob/main/build-plugin/action.yml
+    # - uses: grafana/plugin-actions/build-plugin@release
+    #   with:
+    #     grafana_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
+    steps:
+    - name: Sign plugin
       run: npm run sign
       shell: bash
       env:
         GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
       if: ${{ GRAFANA_ACCESS_POLICY_TOKEN != '' }} # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#using-secrets-in-a-workflow
 
-      - name: Get plugin metadata
+    - name: Get plugin metadata
       id: metadata
       run: |
         sudo apt-get install jq
 
-        export GRAFANA_PLUGIN_ID=$(cat dist/plugin.json | jq -r .id)
-        export GRAFANA_PLUGIN_VERSION=$(cat dist/plugin.json | jq -r .info.version)
-        export GRAFANA_PLUGIN_TYPE=$(cat dist/plugin.json | jq -r .type)
+        export GRAFANA_PLUGIN_ID=$(cat src/plugin.json | jq -r .id)
+        export GRAFANA_PLUGIN_VERSION=$(cat src/plugin.json | jq -r .info.version)
+        export GRAFANA_PLUGIN_TYPE=$(cat src/plugin.json | jq -r .type)
         export GRAFANA_PLUGIN_ARTIFACT=${GRAFANA_PLUGIN_ID}-${GRAFANA_PLUGIN_VERSION}.zip
         export GRAFANA_PLUGIN_ARTIFACT_SHA1SUM=${GRAFANA_PLUGIN_ARTIFACT}.sha1
 
