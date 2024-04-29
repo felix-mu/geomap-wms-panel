@@ -18,6 +18,11 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - uses: actions/checkout@v3
     - run: npm install
     - run: npm run build
 
@@ -25,6 +30,11 @@ jobs:
     needs: [test, build]
     runs-on: ubuntu-latest
     steps:
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - uses: actions/checkout@v3
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run docker compose
@@ -43,8 +53,16 @@ jobs:
         CI: 'true' # https://playwright.dev/docs/ci
   
   validate:
+    needs: build
     runs-on: ubuntu-latest
     steps:
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - uses: actions/checkout@v3
+    - run: npm install
+    - run: npm run build
     - name: Zip the dist folder
       run: zip -qr geomap-wms-panel.zip geomap-wms-panel
     - name: Run validator
@@ -59,6 +77,11 @@ jobs:
     #   with:
     #     grafana_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
     steps:
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - uses: actions/checkout@v3
     - name: Sign plugin
       run: npm run sign
       shell: bash
