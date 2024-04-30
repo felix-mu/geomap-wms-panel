@@ -11,7 +11,7 @@ jobs:
       targets: "@grafana/data,@grafana/ui,@grafana/runtime,@grafana/schema,@grafana/e2e-selectors,@grafana/experimental"
       comment-pr: 'yes'
       skip-comment-if-compatible: 'no'
-      fail-if-incompatible: 'no'
+      fail-if-incompatible: 'yes'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -56,7 +56,7 @@ jobs:
             Levitate is-compatible report:
 
             ${{ steps.run-levitate.outputs.is-compatible-stdout }}
-      - if: ${{ env.fail-if-incompatible == 'yes' }}
+      - if: env.fail-if-incompatible == 'yes'
         run: |
           echo "Possible incompatibilities found. Check Levitate output for further information"
           exit 1
