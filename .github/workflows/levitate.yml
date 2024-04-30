@@ -12,9 +12,53 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
-      - name: Compatibility check
-        uses: grafana/plugin-actions/is-compatible@v1
-        with:
+      - name: Install dependencies
+        run: npm install
+      - name: Build plugin
+        run: npm run build
+      # - name: Compatibility check
+        # uses: grafana/plugin-actions/is-compatible@v1
+        # with:
+        #   module: './src/module.ts'
+        #   comment-pr: 'yes'
+        #   fail-if-incompatible: 'yes'
+      - id: run-levitate
+        env:
           module: './src/module.ts'
-          comment-pr: 'no'
-          fail-if-incompatible: 'yes'
+          targets: "@grafana/data,@grafana/ui,@grafana/runtime,@grafana/schema,@grafana/e2e-selectors,@grafana/experimental"
+          comment-pr: 'yes'
+          skip-comment-if-compatible: 'no'
+          fail-if-incompatible: 'no'
+
+        run: |
+          # RUN levitate is-compatible. Save the output to .levitate_output
+          npx --yes @grafana/levitate@latest is-compatible --path ${{ env.module }} --target ${{ env.targets }} --markdown | tee .levitate_output || true
+          # Detect the exit code based on the levitate output
+          CODE=$(if [[ -n $(cat .levitate_output | grep "not fully compatible") ]]; then echo 1; else echo 0; fi)
+          # Capture levitate output in an ENV variable
+          IS_COMPATIBLE=$(cat .levitate_output)
+          # Save outputs in github contexts
+          echo "is-compatible-stdout<<EOF" >> $GITHUB_OUTPUT
+          echo "$IS_COMPATIBLE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "is-compatible-exit-code=$CODE" >> $GITHUB_OUTPUT
+        shell: "bash"
+      # find the current PR (if running in one)
+      - uses: jwalton/gh-find-current-pr@v1
+        id: finder
+        if: (inputs.comment-pr == 'yes' && steps.run-levitate.outputs.code == 1) || (env.comment-pr == 'yes' && env.skip-comment-if-compatible == 'no')
+      # write a comment with levitate output
+      - uses: marocchino/sticky-pull-request-comment@v2
+        if: (env.comment-pr == 'yes' && steps.run-levitate.outputs.code == 1) || (env.comment-pr == 'yes' && env.skip-comment-if-compatible == 'no')
+        with:
+          number: ${{ steps.finder.outputs.pr }}
+          message: |
+            Levitate is-compatible report:
+
+            ${{ steps.run-levitate.outputs.is-compatible-stdout }}
+      - if: inputs.fail-if-incompatible == 'yes' && steps.run-levitate.outputs.is-compatible-exit-code == 1
+        run: |
+          echo "Possible incompatibilities found. Check Levitate output for further information"
+          exit 1
+        shell: "bash"
