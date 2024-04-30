@@ -1,4 +1,6 @@
 # Changelog
+## [1.2.1](https://github.com/mokkapps/changelog-generator-demo/compare/v1.2.0...v1.2.1) (2024-04-30)
+
 ## 1.2.0 (2024-04-30)
 
 
