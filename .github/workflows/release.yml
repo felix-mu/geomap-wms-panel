@@ -5,7 +5,7 @@ on:
   push:
     branches: [ "main" ]
     tags:
-      - v[0-9]*.[0-9]*.[0-9]*
+      - v[0-9]*.[0-9]*.[0-9]* # semver.org
 
 permissions:
   contents: write # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
