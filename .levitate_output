@@ -1,0 +1,131 @@
+🔍 Resolving @grafana/data@latest...
+🔍 Resolving @grafana/ui@latest...
+🔍 Resolving @grafana/runtime@latest...
+🔍 Resolving @grafana/schema@latest...
+🔍 Resolving @grafana/e2e-selectors@latest...
+🔍 Resolving @grafana/experimental@latest...
+
+
+🔬 Checking compatibility between ./src/module.ts and @grafana/data@10.4.2...
+✔ Found @grafana/data version 9.1.2 locally
+
+Comparing @grafana/data@9.1.2 to @grafana/data@10.4.2
+
+  INCOMPATIBILITIES (8)
+
+1) Removed `MatcherConfig.options` used in `/home/felix/geomap-wms-panel/src/editor/FrameSelectionEditor.tsx:85`
+2) Changed `PanelOptionsEditorBuilder.addTextInput` used in `/home/felix/geomap-wms-panel/src/editor/LayerEditor.tsx:92`
+```diff
+Parameter type changed:
+
++ Added- Removed
+
+-PanelOptionsEditorConfig
++interface PanelOptionsEditorConfig<TOptions, TSettings = any, TValue = any> extends OptionEditorConfig<TOptions, TSettings, TValue> {
++}
+
+
+```
+3) Changed `PanelOptionsEditorBuilder.addMultiSelect` used in `/home/felix/geomap-wms-panel/src/editor/LayerEditor.tsx:103`
+```diff
+Parameter type changed:
+
++ Added- Removed
+
+-PanelOptionsEditorConfig
++interface PanelOptionsEditorConfig<TOptions, TSettings = any, TValue = any> extends OptionEditorConfig<TOptions, TSettings, TValue> {
++}
+
+
+```
+4) Changed `PanelOptionsEditorBuilder.addRadio` used in `/home/felix/geomap-wms-panel/src/editor/LayerEditor.tsx:107`
+```diff
+Parameter type changed:
+
++ Added- Removed
+
+-PanelOptionsEditorConfig
++interface PanelOptionsEditorConfig<TOptions, TSettings = any, TValue = any> extends OptionEditorConfig<TOptions, TSettings, TValue> {
++}
+
+
+```
+5) Changed `PanelOptionsEditorBuilder.addFieldNamePicker` used in `/home/felix/geomap-wms-panel/src/editor/LayerEditor.tsx:121`
+```diff
+Parameter type changed:
+
++ Added- Removed
+
+-PanelOptionsEditorConfig
++interface PanelOptionsEditorConfig<TOptions, TSettings = any, TValue = any> extends OptionEditorConfig<TOptions, TSettings, TValue> {
++}
+
+
+```
+6) Changed `PanelPlugin.setPanelChangeHandler` used in `src/module.ts:103`
+```diff
+Parameter type changed:
+
++ Added- Removed
+
+-PanelTypeChangedHandler
++type PanelTypeChangedHandler<TOptions = any> = (panel: PanelModel<TOptions>, prevPluginId: string, prevOptions: Record<string, any>, prevFieldConfig: FieldConfigSource) => Partial<TOptions>;
+
+
+```
+7) Changed `PanelPlugin.setPanelOptions` used in `src/module.ts:103`
+```diff
+Parameter type changed:
+
++ Added- Removed
+
+-export declare type PanelOptionsSupplier<TOptions> = (builder: PanelOptionsEditorBuilder<TOptions>, context: StandardEditorContext<TOptions>) => void;
++type PanelOptionsSupplier<TOptions> = (builder: PanelOptionsEditorBuilder<TOptions>, context: StandardEditorContext<TOptions>) => void;
+
+
+```
+8) Changed `PanelPlugin.useFieldConfig` used in `src/module.ts:103`
+```diff
+Parameter type changed:
+
++ Added- Removed
+
+-export interface SetFieldConfigOptionsArgs<TFieldConfigOptions = any> {
++interface SetFieldConfigOptionsArgs<TFieldConfigOptions = any> {
+     /**
+      * Configuration object of the standard field config properites
+      *
+      * @example
+
+
+```
+
+
+🔬 Checking compatibility between ./src/module.ts and @grafana/ui@10.4.2...
+✔ Found @grafana/ui version 9.1.2 locally
+
+
+🔬 Checking compatibility between ./src/module.ts and @grafana/runtime@10.4.2...
+✔ Found @grafana/runtime version 9.1.2 locally
+
+
+🔬 Checking compatibility between ./src/module.ts and @grafana/schema@10.4.2...
+   Skipping package @grafana/schema because it is not used in the project or not installed locally.
+   did you forget to run yarn install or npm install?
+
+
+
+🔬 Checking compatibility between ./src/module.ts and @grafana/e2e-selectors@10.4.2...
+✔ Found @grafana/e2e-selectors version 9.5.3 locally
+
+
+🔬 Checking compatibility between ./src/module.ts and @grafana/experimental@1.7.10...
+   Skipping package @grafana/experimental because it is not used in the project or not installed locally.
+   did you forget to run yarn install or npm install?
+
+
+
+./src/module.ts is not fully compatible with @grafana/data,@grafana/ui,@grafana/runtime,@grafana/schema,@grafana/e2e-selectors,@grafana/experimental
+Please read over the compatibility report above and update possible issues.
+
+If you think the compatibility issues are not a problem (e.g. only type changes), it is adviced to update the target list of packages to their latest version in your project.
