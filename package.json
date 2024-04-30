@@ -1,6 +1,6 @@
 {
   "name": "geomap-wms-panel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
@@ -18,7 +18,9 @@
     "test:all": "jest --coverage",
     "test": "jest --watch --onlyChanged",
     "test:ci": "jest --passWithNoTests --maxWorkers 4",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "commit": "cz",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "author": "Felix Müller",
   "license": "Apache-2.0",
@@ -39,8 +41,11 @@
     "@types/lodash": "^4.14.194",
     "@types/node": "^18.15.11",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext@^2.3.0",
+    "commit-and-tag-version": "^12.4.1",
+    "commitizen": "^4.3.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint-webpack-plugin": "^4.0.1",
     "fork-ts-checker-webpack-plugin": "^8.0.0",
     "glob": "^10.2.7",
@@ -86,5 +91,10 @@
     "tslib": "2.5.3",
     "yarn": "^1.22.17"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@1.22.19",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
