@@ -1,6 +1,6 @@
 
 <h1>
-<img src="src/img/geomap-wms-logo.svg" width="100px"/>
+<img src="src/img/geomap-wms-logo.svg" width="150px"/>
 Geomap WMS Panel Plugin
 
 
