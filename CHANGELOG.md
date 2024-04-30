@@ -1,9 +1,5 @@
 # Changelog
-## [1.2.2](https://github.com/mokkapps/changelog-generator-demo/compare/v1.2.1...v1.2.2) (2024-04-30)
-
-## [1.2.1](https://github.com/mokkapps/changelog-generator-demo/compare/v1.2.0...v1.2.1) (2024-04-30)
-
-## 1.2.0 (2024-04-30)
+## 1.1.0 (2024-04-30)
 
 
 ### Features
@@ -24,5 +20,3 @@
 * Make features clickable also when they do not have props to display. ([4437597](https://github.com/mokkapps/changelog-generator-demo/commits/44375971d03c96924de6382ed40852539c1c4b22))
 * Make URL text field able to be clear ([98b7caa](https://github.com/mokkapps/changelog-generator-demo/commits/98b7caacccb8726bbe847c39498ab50c6d25a1e9))
 * Remove external network from grafana container ([d686f2a](https://github.com/mokkapps/changelog-generator-demo/commits/d686f2a80bcb6219bb85125faa9a065c183fd7e5))
-
-## [1.1.2](https://github.com/mokkapps/changelog-generator-demo/compare/v1.1.1...v1.1.2) (2024-04-30)
