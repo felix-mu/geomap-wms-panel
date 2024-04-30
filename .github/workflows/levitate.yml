@@ -57,7 +57,7 @@ jobs:
             Levitate is-compatible report:
 
             ${{ steps.run-levitate.outputs.is-compatible-stdout }}
-      - if: env.fail-if-incompatible == 'yes'
+      - if: ${{ env.fail-if-incompatible == 'yes' }}
         run: |
           echo "Possible incompatibilities found. Check Levitate output for further information"
           exit 1
