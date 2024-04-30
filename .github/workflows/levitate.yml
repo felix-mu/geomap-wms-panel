@@ -46,17 +46,17 @@ jobs:
       # find the current PR (if running in one)
       - uses: jwalton/gh-find-current-pr@v1
         id: finder
-        if: (inputs.comment-pr == 'yes' && steps.run-levitate.outputs.code == 1) || (env.comment-pr == 'yes' && env.skip-comment-if-compatible == 'no')
+        if: (inputs.comment-pr == 'yes' && steps.run-levitate.outputs.is-compatible-exit-code == 1) || (env.comment-pr == 'yes' && env.skip-comment-if-compatible == 'no')
       # write a comment with levitate output
       - uses: marocchino/sticky-pull-request-comment@v2
-        if: (env.comment-pr == 'yes' && steps.run-levitate.outputs.code == 1) || (env.comment-pr == 'yes' && env.skip-comment-if-compatible == 'no')
+        if: (env.comment-pr == 'yes' && steps.run-levitate.outputs.is-compatible-exit-code == 1) || (env.comment-pr == 'yes' && env.skip-comment-if-compatible == 'no')
         with:
           number: ${{ steps.finder.outputs.pr }}
           message: |
             Levitate is-compatible report:
 
             ${{ steps.run-levitate.outputs.is-compatible-stdout }}
-      - if: env.fail-if-incompatible == 'yes'
+      - if: env.fail-if-incompatible == 'yes' && steps.run-levitate.is-compatible-exit-code == 1
         run: |
           echo "Possible incompatibilities found. Check Levitate output for further information"
           exit 1
