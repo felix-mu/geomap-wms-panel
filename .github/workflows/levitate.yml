@@ -6,6 +6,12 @@ on:
 
 jobs:
   compatibilitycheck:
+    env:
+      module: './src/module.ts'
+      targets: "@grafana/data,@grafana/ui,@grafana/runtime,@grafana/schema,@grafana/e2e-selectors,@grafana/experimental"
+      comment-pr: 'yes'
+      skip-comment-if-compatible: 'no'
+      fail-if-incompatible: 'no'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,13 +29,6 @@ jobs:
         #   comment-pr: 'yes'
         #   fail-if-incompatible: 'yes'
       - id: run-levitate
-        env:
-          module: './src/module.ts'
-          targets: "@grafana/data,@grafana/ui,@grafana/runtime,@grafana/schema,@grafana/e2e-selectors,@grafana/experimental"
-          comment-pr: 'yes'
-          skip-comment-if-compatible: 'no'
-          fail-if-incompatible: 'no'
-
         run: |
           # RUN levitate is-compatible. Save the output to .levitate_output
           npx --yes @grafana/levitate@latest is-compatible --path ${{ env.module }} --target ${{ env.targets }} --markdown | tee .levitate_output || true
