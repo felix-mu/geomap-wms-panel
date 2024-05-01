@@ -13,7 +13,7 @@ Also a minimal implementation of datalinks is provided to update dashboard varia
 ## Features
 * Integration of OGC WMS 1.3.0 as base map layer
 * Interactive spatial filter
-* Minimal datalinks implementation
+* Minimal data links implementation
 
 ## Using the Geomap WMS Panel Plugin
 > ⚠️ Currently only WMS of version 1.3.0 is supported ⚠️
@@ -23,7 +23,7 @@ Also a minimal implementation of datalinks is provided to update dashboard varia
 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/grafana_multiple_layers.PNG)
 
-### Example 1): Basemap with three layers
+### Example 1): WMS Basemap with 3 layers
 Layer names:
 - g_stadtkarte_gesamt_gtay
 - g_stadtspaziergang_moosach_route_a
@@ -31,7 +31,7 @@ Layer names:
 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/multiple_layers_wms.PNG)
 
-### Example 2): Basemap with three layers (layer names have whitespaces)
+### Example 2): WMS Basemap with 3 layers (layer names have whitespaces)
 Layer names:
 - Blöcke
 - Linie_u_Stadtplanü. bis 150k
@@ -45,12 +45,12 @@ An additional feature of the Geomap WMS Plugin is the spatial filter tool that a
 > ⚠️ It is mandatory to name the dashbaord variable "geomap_wms_spatial_filter_geometry" ⚠️
 
 > ⚠️ 
-The spatial filter tool uses the geographic coordinate system _urn:ogc:def:crs:OGC::CRS84_. The axis order is _longitude, latitude_. Openlayers (dependency of the geomap plugin) uses the CRS _CSR:84_ as alias for _EPSG:4326_ ([source](https://openlayers.org/en/latest/apidoc/module-ol_proj_Projection-Projection.html)), even if the official axis order of _EPSG:4326_ would be _latitude_, _longitude_. This is because the  [Proj4Js-Library](https://github.com/proj4js/proj4js?tab=readme-ov-file#axis-order) uses the order `[x=longitude,y=latitude]` by default.
+The spatial filter tool uses the geographic coordinate system _urn:ogc:def:crs:OGC::CRS84_ with the axis order _longitude, latitude_. Openlayers (dependency of the geomap plugin) uses the CRS _CSR:84_ as alias for _EPSG:4326_ ([source](https://openlayers.org/en/latest/apidoc/module-ol_proj_Projection-Projection.html)), even if the official axis order of _EPSG:4326_ defines _latitude_, _longitude_. This is because the  [Proj4Js-Library](https://github.com/proj4js/proj4js?tab=readme-ov-file#axis-order) uses the order `[x=longitude,y=latitude]` by default.
 ⚠️
 
 To enable the spatial filter tool follow the steps below:
 
-1. Create a [dashboard variable](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/) of type "Constant" and the name "geomap_wms_spatial_filter_geometry" (**using a different name will result in the spatial filter tool to not work**). As initial value use e.g. `POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))`, to selec all, if no polygon is drawn.
+1. Create a [dashboard variable](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/) of type "Constant" and the name "geomap_wms_spatial_filter_geometry" (**the spatial filter tool will update this variable internally and as for now does not provide the functionality of setting a different variable name externally**). As initial value use e.g. `POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))`, to selec all, if no polygon is drawn.
 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_2.png)
 
@@ -78,7 +78,7 @@ To enable the spatial filter tool follow the steps below:
 The Geomap WMS Panel Plugin allows the use of [dataLinks](https://grafana.com/docs/grafana/latest/panels-visualizations/configure-data-links/) to update a dashboard variable with data of the clicked feature. This enables interactions between the map panel and other panels in the dashbaord, which use the same dashboard variable in their data queries.
 To make use of this functionality a datalink has to be created (see the [official documentation](https://grafana.com/docs/grafana/latest/panels-visualizations/configure-data-links/#add-a-data-link)) on how to do that.
 
-> ⚠️ As of now the plugin is only able to handle on (the first) data link ⚠️
+> ⚠️ As of now the plugin is only able to handle 1 (the first) data link ⚠️
 
 This example demonstrates how to configure the Geomap WMS Panel Plugin to update a dashboard variable "ladestationen" with the value of the data field of name "name" by clicking on a feature on the map.
 
