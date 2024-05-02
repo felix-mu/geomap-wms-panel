@@ -146,7 +146,7 @@ Updating, improving and correcting the documentation
 
 ## Styleguides
 ### Commit Messages
-For automated changelog and release note generation commit messages should follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/). In particular the types defined in https://github.com/commitizen/conventional-commit-types are recommended.
+For automated changelog and release note generation commit messages should follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) and in particular the types defined in https://github.com/commitizen/conventional-commit-types.
 
 <!-- ## Join The Project Team -->
 <!-- TODO -->

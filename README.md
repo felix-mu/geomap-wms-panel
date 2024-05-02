@@ -152,7 +152,10 @@ If the plugin was build with `npm run dev` the Webpack directories are loaded to
 ## Troubleshooting
 After each build the Docker-Container must be restarted to reload the new version of the plugin. If the changes of the plugin are **not** noticed it might help to clear the browser cache and refresh the page.
 
-## Further resources
+## Contributing
+See [Contributing guide](https://github.com/felix-mu/geomap-wms-panel/blob/main/CONTRIBUTING.md) for how to contribute to the project.
+
+# Further resources
 - [Grafana and Docker](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/)
 - [Configure Grafana in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)
 - [Build tools for plugins](https://grafana.com/developers/plugin-tools/)
