@@ -22,6 +22,13 @@
     "commit": "cz",
     "release": "commit-and-tag-version"
   },
+  "commit-and-tag-version": {
+    "skip": {
+      "bump": true,
+      "commit": true,
+      "tag": true
+    }
+  },
   "author": "Felix Müller",
   "license": "Apache-2.0",
   "devDependencies": {
