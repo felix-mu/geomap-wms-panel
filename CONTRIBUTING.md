@@ -29,7 +29,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the
-[Geomap WMS Panel Plugin Code of Conduct](https://github.com/felix-mu/geomap-wms-panelblob/master/CODE_OF_CONDUCT.md).
+[Geomap WMS Panel Plugin Code of Conduct](https://github.com/felix-mu/geomap-wms-panel/blob/main/CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code. Please report unacceptable behavior
 to .
 
@@ -134,15 +134,12 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/felix-
 <!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
 
 ### Your First Code Contribution
-For how to set up the devlopment environment see the [Development](https://github.com/felix-mu/geomap-wms-panel/tree/main?tab=readme-ov-file#development) section in the README file.
+For how to set up the development environment see the [Development](https://github.com/felix-mu/geomap-wms-panel#development) section in the README file.
 
 Use [forks and pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks) to work on features and propose them to the upstream repository.
 
 ### Improving The Documentation
-<!-- TODO
-Updating, improving and correcting the documentation
-
--->
+For updating, improving and correcting the documentation please open an [Issue](https://github.com/felix-mu/geomap-wms-panel/issues/new).
 
 ## Styleguides
 ### Commit Messages
