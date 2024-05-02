@@ -158,6 +158,7 @@ After each build the Docker-Container must be restarted to reload the new versio
 - [Build tools for plugins](https://grafana.com/developers/plugin-tools/)
 - [Create a panel plugin](https://grafana.com/docs/grafana/latest/developers/plugins/create-a-grafana-plugin/develop-a-plugin/build-a-panel-plugin/)
 - [Sample plugins](https://github.com/grafana/grafana-plugin-examples/tree/main/examples)
+- [Grafana UI catalog](https://developers.grafana.com/ui/latest/index.html)
 
 <!-- ## Changelog
 ### Migration des Plugins

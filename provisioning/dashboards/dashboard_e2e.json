@@ -106,9 +106,10 @@
               }
             },
             "location": {
+              "geojson": "geometry",
               "latitude": "Y",
               "longitude": "X",
-              "mode": "coords"
+              "mode": "geojson"
             },
             "name": "Test data",
             "query": {
@@ -127,7 +128,7 @@
       },
       "targets": [
         {
-          "csvContent": "X,Y,id,name\r\n11.5624734687586,48.1124784080786,1,\"Point 1\"\r\n11.5507255958882,48.1174377336411,2,\"Point 2\"\r\n11.5683192640278,48.1389435109252,3,\"Point 3\"\r\n11.5796695601224,48.130505868826,4,\"Point 4\"\r\n11.5856016503162,48.1224164966297,5,\"Point 5\"\r\n11.5687129102152,48.1196130685219,6,\"Point 6\"\r\n11.6002930000666,48.1376937121368,7,\"Point 7\"",
+          "csvContent": "\"geom\",\"id\",\"name\"\r\n\"{\"\"type\"\":\"\"Feature\"\",\"\"properties\"\":{},\"\"geometry\"\":{\"\"type\"\":\"\"Polygon\"\",\"\"coordinates\"\":[[[11.528,48.157],[11.525,48.101],[11.611,48.098],[11.613,48.155],[11.613,48.155],[11.528,48.157]]]}}\",1,\"Polygon feature\"",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "uid-test-data-123"
@@ -137,6 +138,14 @@
         }
       ],
       "title": "Geomap WMS Panel",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "source": "geom"
+          }
+        }
+      ],
       "type": "geomap-wms-panel"
     },
     {
