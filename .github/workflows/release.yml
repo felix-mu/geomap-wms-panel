@@ -73,9 +73,9 @@ jobs:
     - run: npm install
     - run: npm run build
     - name: Zip the dist folder
-      run: zip -qr geomap-wms-panel.zip geomap-wms-panel
+      run: zip -qr felixrelleum-geomapwms-panel.zip felixrelleum-geomapwms-panel
     - name: Run validator
-      run: npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. geomap-wms-panel.zip # https://github.com/grafana/plugin-validator
+      run: npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. felixrelleum-geomapwms-panel.zip # https://github.com/grafana/plugin-validator
   
   release:
     runs-on: ubuntu-latest
@@ -105,9 +105,9 @@ jobs:
       run: |
         sudo apt-get install jq
 
-        export GRAFANA_PLUGIN_ID=$(cat geomap-wms-panel/plugin.json | jq -r .id)
-        export GRAFANA_PLUGIN_VERSION=$(cat geomap-wms-panel/plugin.json | jq -r .info.version)
-        export GRAFANA_PLUGIN_TYPE=$(cat geomap-wms-panel/plugin.json | jq -r .type)
+        export GRAFANA_PLUGIN_ID=$(cat felixrelleum-geomapwms-panel/plugin.json | jq -r .id)
+        export GRAFANA_PLUGIN_VERSION=$(cat felixrelleum-geomapwms-panel/plugin.json | jq -r .info.version)
+        export GRAFANA_PLUGIN_TYPE=$(cat felixrelleum-geomapwms-panel/plugin.json | jq -r .type)
         export GRAFANA_PLUGIN_ARTIFACT=${GRAFANA_PLUGIN_ID}-${GRAFANA_PLUGIN_VERSION}.zip
         export GRAFANA_PLUGIN_ARTIFACT_SHA1SUM=${GRAFANA_PLUGIN_ARTIFACT}.sha1
 

@@ -137,8 +137,8 @@ npm run dev
 ```
 
 ## Deploy the (unsigned) plugin to the docker container (for debugging)
-The packed plugin (either [production build](#building-the-plugin) or [development build](#building-the-plugin-for-developmentdebugging)) is found in the output folder `./geomap-wms-panel`.
-To allow grafana to load an _unsigned_ plugin the container environment variable `GF_PLUGINS_ALLOW_UNSIGNED_PLUGINS=<comma separated list of plugin-ids>` must be set to "geomap-wms-panel".
+The packed plugin (either [production build](#building-the-plugin) or [development build](#building-the-plugin-for-developmentdebugging)) is found in the output folder `./felixrelleum-geomapwms-panel`.
+To allow grafana to load an _unsigned_ plugin the container environment variable `GF_PLUGINS_ALLOW_UNSIGNED_PLUGINS=<comma separated list of plugin-ids>` must be set to "felixrelleum-geomapwms-panel".
 Additionally it is required to configure a _bind mount_ of the _plugins_ container directory to the host filesystem where the bundled Geomap WMS Panel Plugin is located.
 
 **Shortcut:**

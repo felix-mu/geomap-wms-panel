@@ -59,7 +59,7 @@ grafana: # Since grafana is a subchart those variables must be in an object 'gra
 
   grafana.ini:
     plugins:
-      allow_loading_unsigned_plugins: geomap-wms-panel
+      allow_loading_unsigned_plugins: felixrelleum-geomapwms-panel
 
   datasources:
     datasource.yaml:
@@ -95,13 +95,13 @@ grafana: # Since grafana is a subchart those variables must be in an object 'gra
   # Needs to be added to make available for extraVolumeMounts: https://github.com/grafana/helm-charts/blob/ec78147220603e8fba6c77ba4e2a13288edf67e3/charts/grafana/templates/_pod.tpl#L1250
   extraVolumes:
     - name: task-pv-claim-geomap-wms
-      mountPath: /var/lib/grafana/plugins/geomap-wms-panel
+      mountPath: /var/lib/grafana/plugins/felixrelleum-geomapwms-panel
       readOnly: true
       existingClaim: task-pv-claim-geomap-wms
 
   extraVolumeMounts:
     - name: task-pv-claim-geomap-wms
-      mountPath: /var/lib/grafana/plugins/geomap-wms-panel
+      mountPath: /var/lib/grafana/plugins/felixrelleum-geomapwms-panel
       readOnly: true
       existingClaim: task-pv-claim-geomap-wms
   
@@ -122,7 +122,7 @@ grafana: # Since grafana is a subchart those variables must be in an object 'gra
       - /bin/mkdir
       - -p
       - --mode=777
-      - /var/lib/grafana/plugins/geomap-wms-panel
+      - /var/lib/grafana/plugins/felixrelleum-geomapwms-panel
     volumeMounts:
       - name: storage
         mountPath: "/var/lib/grafana"

@@ -57,7 +57,7 @@ egress:
 
 grafana.ini:
   plugins:
-    allow_loading_unsigned_plugins: geomap-wms-panel
+    allow_loading_unsigned_plugins: felixrelleum-geomapwms-panel
 
 datasources:
   datasource.yaml:
@@ -91,13 +91,13 @@ env:
 
 extraVolumes:
   - name: task-pv-claim-geomap-wms
-    mountPath: /var/lib/grafana/plugins/geomap-wms-panel
+    mountPath: /var/lib/grafana/plugins/felixrelleum-geomapwms-panel
     readOnly: true
     existingClaim: task-pv-claim-geomap-wms
 
 extraVolumeMounts:
   - name: task-pv-claim-geomap-wms
-    mountPath: /var/lib/grafana/plugins/geomap-wms-panel
+    mountPath: /var/lib/grafana/plugins/felixrelleum-geomapwms-panel
     readOnly: true
     existingClaim: task-pv-claim-geomap-wms
     
@@ -118,7 +118,7 @@ extraInitContainers:
      - /bin/mkdir
      - -p
      - --mode=777
-     - /var/lib/grafana/plugins/geomap-wms-panel
+     - /var/lib/grafana/plugins/felixrelleum-geomapwms-panel
    volumeMounts:
      - name: storage
        mountPath: "/var/lib/grafana"

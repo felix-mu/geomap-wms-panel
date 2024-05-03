@@ -24,10 +24,10 @@ jobs:
     - name: Zip the plugin
       uses: montudor/action-zip@v1
       with:
-        args: zip -qr geomap-wms-panel.zip geomap-wms-panel
+        args: zip -qr felixrelleum-geomapwms-panel.zip felixrelleum-geomapwms-panel
     - name: Run validator
-      run: npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. geomap-wms-panel.zip # https://github.com/grafana/plugin-validator
+      run: npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. felixrelleum-geomapwms-panel.zip # https://github.com/grafana/plugin-validator
     - name: Clean up
-      run: rm -r geomap-wms-panel.zip
+      run: rm -r felixrelleum-geomapwms-panel.zip
 
     
