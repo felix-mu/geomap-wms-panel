@@ -1,7 +1,7 @@
 {
   "type": "panel",
   "name": "Geomap Panel WMS",
-  "id": "geomap-wms-panel",
+  "id": "felixrelleum-geomap-wms-panel",
   "info": {
     "description": "Extension of the Geomap-Plugin by OGC Web Map Service integration",
     "author": {

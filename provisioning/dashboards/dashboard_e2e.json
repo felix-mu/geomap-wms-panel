@@ -146,7 +146,7 @@
           }
         }
       ],
-      "type": "geomap-wms-panel"
+      "type": "felixrelleum-geomap-wms-panel"
     },
     {
       "datasource": {
