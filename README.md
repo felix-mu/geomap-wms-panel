@@ -17,6 +17,7 @@ Also a minimal implementation of datalinks is provided to update dashboard varia
 * Integration of OGC WMS 1.3.0 as base map layer
 * Interactive spatial filter
 * Minimal data links implementation
+* TODO: Overview map control
 
 ## Using the Geomap WMS Panel Plugin
 > ⚠️ Currently only WMS of version 1.3.0 is supported ⚠️
