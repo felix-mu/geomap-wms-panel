@@ -30,7 +30,10 @@
       }
     ],
     "screenshots": [
-      
+      {
+        "name": "logo",
+        "path": "img/geomap-wms-logo.svg"
+      }
     ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
