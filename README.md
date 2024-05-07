@@ -42,6 +42,27 @@ Layer names:
 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/mutli-layer-whitespaces.PNG)
 
+## Troubleshooting data layers when merging to multiple datasource queries into one map layer
+In some occasions it might be necessary to join mutliple datasource queries into one output dataset to summarize information coming from different sources in a single map layer. This can be achieved by applying [transformations](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/) on the returned data frames.
+
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/mutliple_queries.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/transform_data.png)
+
+This often results in data structure like the following which might be inspected by the [debug](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#debug-a-transformation) view in the transformations panel.
+
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe_after_transformation.png)
+
+This data structure is not compatible with the Geomap Panel Plugin which expects either a data frame with metadata fields like "refId" or a field "meta".
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe.png)
+
+A workaround to solve this problem is to use the [prepare time series transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#prepare-time-series) with the setting _"Wide time series"_ as last transformation in the processing chain.
+
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/preparetimeseries.png)
+
+This adds a "meta" field to the data object and therefore can now be processed by the Geomap Panel Plugin.
+
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe_final.png)
+
 ## Using the spatial filter tool
 An additional feature of the Geomap WMS Plugin is the spatial filter tool that allows drawing a polygon on the map panel to be used as filter for a data query. The polygon is representated as [Well-known-text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and stored in a dashboard variable "geomap_wms_spatial_filter_geometry".
 
