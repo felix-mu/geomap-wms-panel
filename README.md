@@ -42,17 +42,19 @@ Layer names:
 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/mutli-layer-whitespaces.PNG)
 
-## Troubleshooting data layers when merging to multiple datasource queries into one map layer
+## ⚠️ Troubleshooting data layers when merging to multiple datasource queries into one map layer
 In some occasions it might be necessary to join mutliple datasource queries into one output dataset to summarize information coming from different sources in a single map layer. This can be achieved by applying [transformations](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/) on the returned data frames.
 
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/mutliple_queries.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/multiple_queries.png)
+
 ![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/transform_data.png)
 
-This often results in data structure like the following which might be inspected by the [debug](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#debug-a-transformation) view in the transformations panel.
+This often results in data structure like the following which might be inspected in the [debug](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#debug-a-transformation) view in the transformations panel missing the metadata properties like query "name" and "refId".
 
 ![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe_after_transformation.png)
 
-This data structure is not compatible with the Geomap Panel Plugin which expects either a data frame with metadata fields like "refId" or a field "meta".
+The above data structure is not compatible with Geomap Panel Plugin's query input which expects either a data frame with metadata fields like "refId" or "meta".
+
 ![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe.png)
 
 A workaround to solve this problem is to use the [prepare time series transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#prepare-time-series) with the setting _"Wide time series"_ as last transformation in the processing chain.
@@ -170,7 +172,7 @@ If the plugin was build with `npm run dev` the Webpack directories are loaded to
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/debugging_1.PNG)
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/debugging.PNG)
 
-## Troubleshooting
+## ⚠️ Troubleshooting
 After each build the Docker-Container must be restarted to reload the new version of the plugin. If the changes of the plugin are **not** noticed it might help to clear the browser cache and refresh the page.
 
 ## Contributing
