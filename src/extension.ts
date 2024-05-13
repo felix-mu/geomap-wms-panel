@@ -50,7 +50,6 @@ export interface ExtendMapLayerOptions<TConfig = any> {
   displayProperties?: string[];
   titleField?: string;
   timeField?: string;
-  apiKey?: string;
 }
 
 export interface ExtendMapLayerRegistryItem<TConfig = ExtendMapLayerOptions> extends RegistryItemWithOptions {
