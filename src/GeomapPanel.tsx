@@ -123,7 +123,7 @@ export class GeomapPanel extends Component<Props, State> {
         frame: dataFrame,
         rowIndex: rowIndex
       });
-      console.log(proxyObject);
+      // console.log(proxyObject);
 
       const scopedVars: ScopedVars = { ...{} }; // https://github.com/grafana/grafana/blob/61934588c579005de80c54b15f42f0d9449efd93/public/app/features/explore/utils/links.ts#L131
       scopedVars['__data'] = {
@@ -144,7 +144,7 @@ export class GeomapPanel extends Component<Props, State> {
           scopedVars);
         // console.log(urlString);
       } catch (error) {
-        console.log("Might have no links defined.");
+        // console.log("Might have no links defined.");
         console.error(error);
       }
 
@@ -297,7 +297,7 @@ export class GeomapPanel extends Component<Props, State> {
   };
 
   singleClickListener = (evt: MapBrowserEvent<UIEvent>) => {
-    console.log("Fired single click event");
+    // console.log("Fired single click event");
     
     if (!this.map) {
       return;
@@ -474,7 +474,7 @@ export class GeomapPanel extends Component<Props, State> {
         if (v.id === MapCenterID.Coordinates || v.id === MapCenterID.Auto) {
           coord = [config.lon ?? 0, config.lat ?? 0];
         } else {
-          console.log('TODO, view requires special handling', v);
+          // console.log('TODO, view requires special handling', v);
         }
       } else {
         coord = [v.lon ?? 0, v.lat ?? 0];

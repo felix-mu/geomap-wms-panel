@@ -43,18 +43,18 @@ export async function getProjDefinition(urlAsString: URL): Promise<string> {
 }
 
 export async function getWMSCapabilitiesFromService(url: string): Promise<Node> {
-  console.log(url);
+  // console.log(url);
   const wmsCapabilitesURL = new URL(url);
   wmsCapabilitesURL.search = "?service=WMS&request=GetCapabilities";
-  console.log(url);
+  // console.log(url);
 
 	const responseCapabilities = await fetch(wmsCapabilitesURL);
 	const xmlCapabilities = await responseCapabilities.text();
-	console.log(xmlCapabilities);
+	// console.log(xmlCapabilities);
 
 	const parser = new DOMParser();
 	const xmlDoc = parser.parseFromString(xmlCapabilities, "text/xml");
-	console.log(xmlDoc);
+	// console.log(xmlDoc);
 
   const capabilityNode = xmlDoc.documentElement.getElementsByTagName("Capability")[0];
 
@@ -84,7 +84,7 @@ export async function getProjection(capabilityNode: Node): Promise<string | unde
     
   }
 
-  console.log(epsgCodes);
+  // console.log(epsgCodes);
 
   let proj4String = undefined; // If this stays undefined no transformation is needed since WMS supports the default CRS
   
@@ -93,7 +93,7 @@ export async function getProjection(capabilityNode: Node): Promise<string | unde
     proj4String = await getProjDefinition(epsgCodes[Object.keys(epsgCodes)[0]]);
   }
 
-  console.log(proj4String);
+  // console.log(proj4String);
 
   if (typeof proj4String !== 'undefined') {
     const firstEPSGCode = Object.keys(epsgCodes)[0];
@@ -271,7 +271,7 @@ export const wms: ExtendMapLayerRegistryItem<WMSConfig> = {
     // Dummy promise returns epsgCode from the constants which is then used to initialize the image layer
     return new Promise<string>((resolve) => { resolve(epsgCode) }).then((crsCode) => ({ // Promise.resolve(epsgCode)
         init: () => {
-          console.log(crsCode);
+          // console.log(crsCode);
 
           // const layers = Array(cfg.layer).join(',');
           // selectedWmsLayers = selectedWmsLayers.filter((layerName) => {

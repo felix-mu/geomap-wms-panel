@@ -55,7 +55,7 @@ export const lastPointTracker: ExtendMapLayerRegistryItem<LastPointConfig> = {
         if (frame && frame.length) {
           const info = dataFrameToPoints(frame, matchers);
           if (info.warning) {
-            console.log('WARN', info.warning);
+            // console.log('WARN', info.warning);
             return; // ???
           }
 

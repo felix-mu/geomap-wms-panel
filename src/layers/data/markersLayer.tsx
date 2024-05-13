@@ -360,7 +360,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
           if ((options.query && options.query.options === frame.refId) || (frame.meta)) {
             const info = dataFrameToPoints(frame, matchers);
             if (info.warning) {
-              console.log('Could not find locations', info.warning);
+              // console.log('Could not find locations', info.warning);
               continue; // ???
             }
 

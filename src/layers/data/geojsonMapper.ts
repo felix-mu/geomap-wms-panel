@@ -46,11 +46,11 @@ export const geojsonMapper: ExtendMapLayerRegistryItem<GeoJSONMapperConfig> = {
     return {
       init: () => vectorLayer,
       update: (data: PanelData) => {
-        console.log('todo... find values matching the ID and update');
+        // console.log('todo... find values matching the ID and update');
 
         // Update each feature
         source.getFeatures().forEach((f) => {
-          console.log('Find: ', f.getId(), f.getProperties());
+          // console.log('Find: ', f.getId(), f.getProperties());
         });
       },
     };
