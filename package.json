@@ -30,7 +30,7 @@
     }
   },
   "author": "Felix Müller",
-  "license": "Apache-2.0",
+  "license": "AGPL-3.0",
   "devDependencies": {
     "@babel/core": "^7.21.4",
     "@grafana/e2e": "9.5.3",
