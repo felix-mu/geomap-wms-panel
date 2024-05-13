@@ -7,11 +7,13 @@ Geomap WMS Panel Plugin
 ![Build](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/build.yml/badge.svg) ![Test](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/test.yml/badge.svg) ![e2e Playwright](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/playwright.yml/badge.svg) ![Plugin validation](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/validate.yml/badge.svg) ![Linting](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/linting.yml/badge.svg) ![Compatibility](https://github.com/felix-mu/geomap-wms-panel/actions/workflows/levitate.yml/badge.svg) ![GitHub Release](https://img.shields.io/github/v/release/felix-mu/geomap-wms-panel)
 </h1>
 
-> 🛈 This project uses [semantic versioning](https://semver.org/).
+> 💡 This project uses [semantic versioning](https://semver.org/).
 
 ## About
 This plugin evolved from the [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel). It extends the original version by the functionality of the intergration of an [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) as a base map layer. Additionally the plugin ships with an interactive filter tool to query data by spatial conditions.
 Also a minimal implementation of datalinks is provided to update dashboard variables by clicking on a map feature.
+
+Due to Grafana Labs' [plugin guidelines](https://grafana.com/legal/plugins/#plugin-publishing-and-signing-criteria) it was necessary to remove the Nextzen basemap layer, since it required to store the API key in the config, which should be avoided in panel plugins.
 
 ## Features
 * Integration of OGC WMS 1.3.0 as base map layer
