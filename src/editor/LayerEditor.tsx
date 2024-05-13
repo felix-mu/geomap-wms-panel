@@ -265,7 +265,7 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
         onChange={(v) => {
           const layer = geomapLayerRegistry.getIfExists(v.value);
           if (!layer) {
-            console.warn('layer does not exist', v);
+            // console.warn('layer does not exist', v);
             return;
           }
 

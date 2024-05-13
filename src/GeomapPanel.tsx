@@ -137,7 +137,7 @@ export class GeomapPanel extends Component<Props, State> {
 
       let urlString: string | undefined = undefined;
       try {
-        console.warn("Currently only one link (the 1st one) is processed.");
+        // console.warn("Currently only one link (the 1st one) is processed.");
 
         // Interpolate url
         urlString = this.props.replaceVariables(this.props.fieldConfig.defaults.links![0].url, // dataFrame.fields[0].config.links![0].url
@@ -427,7 +427,7 @@ export class GeomapPanel extends Component<Props, State> {
     for (const overlay of layers) {
       const item = geomapLayerRegistry.getIfExists(overlay.type);
       if (!item) {
-        console.warn('unknown layer type: ', overlay);
+        // console.warn('unknown layer type: ', overlay);
         continue; // TODO -- panel warning?
       }
 

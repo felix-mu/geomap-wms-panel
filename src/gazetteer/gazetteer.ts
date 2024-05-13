@@ -55,7 +55,7 @@ export async function getGazetteer(path?: string): Promise<Gazetteer> {
       const data = await getBackendSrv().get(path!);
       lookup = loadGazetteer(path, data);
     } catch (err) {
-      console.warn('Error loading placename lookup', path, err);
+      // console.warn('Error loading placename lookup', path, err);
       lookup = {
         path,
         error: 'Error loading URL',
