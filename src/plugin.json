@@ -3,7 +3,7 @@
   "name": "Geomap Panel WMS",
   "id": "felixrelleum-geomapwms-panel",
   "info": {
-    "description": "Extension of the Geomap-Plugin by OGC Web Map Service integration",
+    "description": "Display data on top of a OGC WMS 1.3.0 base map layer",
     "author": {
       "name": "Felix Müller",
       "url": "https://github.com/felix-mu"
