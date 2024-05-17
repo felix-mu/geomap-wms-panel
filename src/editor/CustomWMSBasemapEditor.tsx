@@ -41,33 +41,29 @@ export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props
 
   // Update the select options when the url changes
   useEffect(() => {
-    try {
-      getWMSCapabilitiesFromService(url!).then(async (node) => {
-        let layers = getWMSLayers(node);
-        setOptions(layers);
+    getWMSCapabilitiesFromService(url!).then(async (node) => {
+      let layers = getWMSLayers(node);
+      setOptions(layers);
 
-        // If layers are provided because of a repeating entry in edit mode while editing or after refresh
-        // set the selection to show the user the current layer selection
-        if (context.options.config && context.options.config.wms.layers) {
-          let selection_tmp: Array<SelectableValue<string>> = [];
-          
-          // Generate selection from the available options by comparing the value keys with the layer names of the config
-          (context.options.config.wms.layers as string[]).forEach(
-            (el) => {
-              selection_tmp = selection_tmp.concat(
-                // User layers since options are update in next render and therefore might be empty
-                layers.filter((currentValue) => {
-                  return currentValue.value === el;
-                })
-              );
-            }
-          );
-          setSelection(selection_tmp);
-        }
-      });
-    } catch (error) {
-
-    }
+      // If layers are provided because of a repeating entry in edit mode while editing or after refresh
+      // set the selection to show the user the current layer selection
+      if (context.options.config && context.options.config.wms.layers) {
+        let selection_tmp: Array<SelectableValue<string>> = [];
+        
+        // Generate selection from the available options by comparing the value keys with the layer names of the config
+        (context.options.config.wms.layers as string[]).forEach(
+          (el) => {
+            selection_tmp = selection_tmp.concat(
+              // User layers since options are update in next render and therefore might be empty
+              layers.filter((currentValue) => {
+                return currentValue.value === el;
+              })
+            );
+          }
+        );
+        setSelection(selection_tmp);
+      }
+    }).catch(err => {});
   // eslint-disable-next-line
   }, [url]);
 
