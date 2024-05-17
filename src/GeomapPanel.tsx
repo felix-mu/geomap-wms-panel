@@ -350,7 +350,7 @@ export class GeomapPanel extends Component<Props, State> {
           props = props['features'][0].getProperties();
         }
         let frame = props['frame'];
-        const thisLayer = layer.getProperties();
+        const thisLayer = layer !== null ? layer.getProperties() : {};
         if (frame) { // if display properties is empty do not show tooltip // thisLayer.displayProperties !== undefined && thisLayer.displayProperties.length > 0 && 
           for (let thisLayerName of typeof thisLayer.displayProperties !== 'undefined'
             ? thisLayer.displayProperties
