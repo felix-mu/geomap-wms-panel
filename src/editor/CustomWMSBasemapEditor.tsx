@@ -77,7 +77,9 @@ export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props
       <Input value={url} aria-label="URL input"
           onChange={e => {
             setURL(e.currentTarget.value);
-            (context.options.config.wms.layers as string[]).splice(-1);
+            if (context.options.config.wms) {
+              (context.options.config.wms.layers as string[]).splice(-1);
+            }
             setOptions([]);
             setSelection([]);
             }}></Input>
