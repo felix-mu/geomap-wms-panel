@@ -13,6 +13,7 @@ import { Vector } from 'ol/source';
 import LayerSwitcher from 'ol-layerswitcher';
 import { isArray, isEqual } from 'lodash';
 import './GeomapPanel.css';
+
 // import WKT from 'ol/format/WKT.js';
 // import Polygon from 'ol/geom/Polygon.js';
 // import { /*locationService,*/ getTemplateSrv } from '@grafana/runtime';
@@ -21,14 +22,16 @@ import {
   PanelData,
   MapLayerHandler,
   PanelProps,
-  GrafanaTheme,
+  // GrafanaTheme,
   DataHoverClearEvent,
   DataHoverEvent,
   DataFrame,
   DataSelectEvent,
   // getFieldDisplayName,
   getFieldDisplayValuesProxy,
-  ScopedVars
+  ScopedVars,
+  BusEventWithPayload,
+  // GrafanaTheme2
 } from '@grafana/data';
 import { /*getTemplateSrv,*/ config,/*, RefreshEvent, TimeRangeUpdatedEvent*/ 
 /*RefreshEvent,*/ locationService} from '@grafana/runtime';
@@ -38,7 +41,7 @@ import { centerPointRegistry, MapCenterID } from './view';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Coordinate } from 'ol/coordinate';
 import { css } from '@emotion/css';
-import { Portal, stylesFactory, VizTooltipContainer } from '@grafana/ui';
+import { Portal ,/* stylesFactory, useStyles2, */ VizTooltipContainer } from '@grafana/ui';
 import { GeomapOverlay, OverlayProps } from './GeomapOverlay';
 import { DebugOverlay } from './components/DebugOverlay';
 import { getGlobalStyles } from './globalStyles';
@@ -48,6 +51,7 @@ import { ExtendMapLayerOptions } from './extension';
 import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
 import { Global } from '@emotion/react';
+// import { Subscription } from 'rxjs';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
 
@@ -83,6 +87,11 @@ interface State extends OverlayProps {
 //             }
 //             };
 
+// As stated here: https://grafana.com/developers/plugin-tools/create-a-plugin/develop-a-plugin/subscribe-events#what-events-are-supported
+class MyPanelEditExitedEvent extends BusEventWithPayload<number> {
+  static type = 'panel-edit-finished';
+}
+
 export class GeomapPanel extends Component<Props, State> {
   globalCSS = getGlobalStyles(config.theme2);
 
@@ -91,14 +100,22 @@ export class GeomapPanel extends Component<Props, State> {
   basemap?: BaseLayer;
   layers: MapLayerState[] = [];
   mouseWheelZoom?: MouseWheelZoom;
-  style = getStyles(config.theme);
+  // style = getStyles(config.theme2);
   hoverPayload: GeomapHoverPayload = { point: {}, pageX: -1, pageY: -1 };
   readonly hoverEvent = new DataHoverEvent(this.hoverPayload);
+  // private subs = new Subscription();
+  mapDiv?: HTMLDivElement;
 
   constructor(props: Props/*, state: State*/) {
     super(props);
     // this.state = {};
     this.state = { ttipOpen: false };
+
+    this.props.eventBus.getStream(MyPanelEditExitedEvent).subscribe((evt) => {
+      if (this.mapDiv && this.props.id === evt.payload) {
+          this.initMapRef(this.mapDiv);
+        }
+      })
 
     // this.props.eventBus.getStream(DataSelectEvent).subscribe((event) => {
 
@@ -145,7 +162,8 @@ export class GeomapPanel extends Component<Props, State> {
         // console.log(urlString);
       } catch (error) {
         // console.log("Might have no links defined.");
-        console.error(error);
+        // console.error(error);
+        return;
       }
 
       try {
@@ -160,13 +178,35 @@ export class GeomapPanel extends Component<Props, State> {
         // Update url
         locationService.partial({ ...updateVars }, true);
       } catch (error) {
-        console.error(error);
+        // console.error(error);
+        return;
       }
     });
   }
 
   componentDidMount() {
     lastGeomapPanelInstance = this;
+    this.initMapRef(this.mapDiv!);
+  }
+
+  // https://github.com/grafana/grafana/blob/aac6e6dfd94c78b250e796dbff9422d202cb54e8/public/app/plugins/panel/geomap/GeomapPanel.tsx#L112C3-L120
+  componentDidUpdate(prevProps: Props) {
+    if (this.map && (this.props.height !== prevProps.height || this.props.width !== prevProps.width)) {
+      this.map.updateSize();
+    }
+    // Check for a difference between previous data and component data
+    if (this.map && this.props.data !== prevProps.data) {
+      this.dataChanged(this.props.data);
+    }
+  }
+
+  componentWillUnmount() {
+    // this.subs.unsubscribe();
+    for (const lyr of this.layers) {
+      lyr.handler.dispose?.();
+    }
+    // Ensure map is disposed
+    this.map?.dispose();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -259,21 +299,24 @@ export class GeomapPanel extends Component<Props, State> {
   }
 
   initMapRef = async (div: HTMLDivElement) => {
-    if (this.map) {
-      this.map.dispose();
-    }
-
     if (!div) {
       this.map = undefined as unknown as Map;
       return;
     }
+
+    this.mapDiv = div;
+    if (this.map) {
+      this.map.dispose();
+    }
+
+
     const { options } = this.props;
     this.map = new Map({
       view: this.initMapView(options.view),
       pixelRatio: 1, // or zoom?
       layers: [], // loaded explicitly below
       controls: [],
-      target: div,
+      target: this.mapDiv,
       interactions: interactionDefaults({
         mouseWheelZoom: false, // managed by initControls
       }),
@@ -602,39 +645,57 @@ export class GeomapPanel extends Component<Props, State> {
         {
           <Global styles={this.globalCSS} />
         }
-        <div className={this.style.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
-          <div className={this.style.map} ref={this.initMapRef}></div>
+        <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
+          <div className={styles.map} ref={this.initMapRef}></div>
           <GeomapOverlay bottomLeft={bottomLeft} topRight={topRight} />
         </div>
-        <Portal>
           {ttip && ttip.data && (
-            <VizTooltipContainer
-              className={this.style.viz}
-              position={{ x: ttip.pageX, y: ttip.pageY }}
-              offset={{ x: 10, y: 10 }}
-            >
-              <DataHoverView {...ttip} />
-            </VizTooltipContainer>
+            <Portal>
+              <VizTooltipContainer
+                className={styles.viz}
+                position={{ x: ttip.pageX, y: ttip.pageY }}
+                offset={{ x: 10, y: 10 }}
+              >
+                <DataHoverView {...ttip} />
+              </VizTooltipContainer>
+            </Portal>
           )}
-        </Portal>
+        
       </>
     );
   }
 }
 
-const getStyles = stylesFactory((theme: GrafanaTheme) => ({
-  wrap: css`
-    position: relative;
-    width: 100%;
-    height: 100%;
-  `,
-  map: css`
-    position: absolute;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-  `,
-  viz: css`
-    border-radius: 10px;
-  `,
-}));
+// const getStyles = stylesFactory((theme: GrafanaTheme2) => ({
+//   wrap: css`
+//     position: relative;
+//     width: 100%;
+//     height: 100%;
+//   `,
+//   map: css`
+//     position: absolute;
+//     z-index: 0;
+//     width: 100%;
+//     height: 100%;
+//   `,
+//   viz: css`
+//     border-radius: 10px;
+//   `,
+// }));
+
+const styles = {
+  wrap: css({
+    position: "relative",
+    width: "100%",
+    height: "100%",
+  }),
+  map: css({
+    position: "absolute",
+    zIndex: "0",
+    width: "100%",
+    height: "100%",
+  }),
+  viz: css({
+    borderRadius: "10px",
+  }),
+};
