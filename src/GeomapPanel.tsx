@@ -31,6 +31,7 @@ import {
   getFieldDisplayValuesProxy,
   ScopedVars,
   BusEventWithPayload,
+  // getFieldDisplayValues,
   // GrafanaTheme2
 } from '@grafana/data';
 import { /*getTemplateSrv,*/ config,/*, RefreshEvent, TimeRangeUpdatedEvent*/ 
@@ -41,7 +42,7 @@ import { centerPointRegistry, MapCenterID } from './view';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Coordinate } from 'ol/coordinate';
 import { css } from '@emotion/css';
-import { Portal ,/* stylesFactory, useStyles2, */ VizTooltipContainer } from '@grafana/ui';
+import { PanelContext, PanelContextRoot, Portal ,/* stylesFactory, useStyles2, */ VizTooltipContainer } from '@grafana/ui';
 import { GeomapOverlay, OverlayProps } from './GeomapOverlay';
 import { DebugOverlay } from './components/DebugOverlay';
 import { getGlobalStyles } from './globalStyles';
@@ -51,7 +52,7 @@ import { ExtendMapLayerOptions } from './extension';
 import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
 import { Global } from '@emotion/react';
-// import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
 
@@ -95,6 +96,10 @@ class MyPanelEditExitedEvent extends BusEventWithPayload<number> {
 export class GeomapPanel extends Component<Props, State> {
   globalCSS = getGlobalStyles(config.theme2);
 
+  declare context: React.ContextType<typeof PanelContextRoot>;
+  static contextType = PanelContextRoot;
+  panelContext: PanelContext | undefined = undefined;
+
   counter = 0;
   map?: Map;
   basemap?: BaseLayer;
@@ -103,7 +108,7 @@ export class GeomapPanel extends Component<Props, State> {
   // style = getStyles(config.theme2);
   hoverPayload: GeomapHoverPayload = { point: {}, pageX: -1, pageY: -1 };
   readonly hoverEvent = new DataHoverEvent(this.hoverPayload);
-  // private subs = new Subscription();
+  private subs = new Subscription();
   mapDiv?: HTMLDivElement;
 
   constructor(props: Props/*, state: State*/) {
@@ -111,11 +116,13 @@ export class GeomapPanel extends Component<Props, State> {
     // this.state = {};
     this.state = { ttipOpen: false };
 
-    this.props.eventBus.getStream(MyPanelEditExitedEvent).subscribe((evt) => {
-      if (this.mapDiv && this.props.id === evt.payload) {
-          this.initMapRef(this.mapDiv);
-        }
-      })
+    this.subs.add(
+      this.props.eventBus.getStream(MyPanelEditExitedEvent).subscribe((evt) => {
+        if (this.mapDiv && this.props.id === evt.payload) {
+            this.initMapRef(this.mapDiv);
+          }
+        })
+    );
 
     // this.props.eventBus.getStream(DataSelectEvent).subscribe((event) => {
 
@@ -125,68 +132,89 @@ export class GeomapPanel extends Component<Props, State> {
     // E.g.: http://localhost:8002/d/dfe46662-eff7-43b7-8cce-dcea307d3b7d/20240227-qet-poc-copy?orgId=1&var-qet_name=${__data.fields["NAME"]}
     // http://localhost:8002/d/c45df172-d369-455e-ae1c-994e196d4fd0/dz-m-demonstrator-treesense-copy?var-tree_sensor=${__data.fields.Sensor}
     // Reference: https://grafana.com/docs/grafana/latest/panels-visualizations/configure-data-links/#data-variables
-    this.props.eventBus.getStream(DataSelectEvent).subscribe((event) => {
-      if (event.payload.data === undefined) {
-        return;
-      }
+    this.subs.add(
+      this.props.eventBus.getStream(DataSelectEvent).subscribe((event) => {
+        if (event.payload.data === undefined) {
+          return;
+        }
 
-      let dataFrame: DataFrame = event.payload.data!;
-      let rowIndex: number = event.payload.rowIndex!;
-      // let proxyObject = getFieldDisplayValuesProxy({
-      //   frame: this.state.ttip!.data!,
-      //   rowIndex: this.state.ttip!.rowIndex!
-      // });
-      let proxyObject = getFieldDisplayValuesProxy({ // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts
-        frame: dataFrame,
-        rowIndex: rowIndex
-      });
-      // console.log(proxyObject);
+        let dataFrame: DataFrame = event.payload.data!;
+        let rowIndex: number = event.payload.rowIndex!;
+        // let proxyObject = getFieldDisplayValuesProxy({
+        //   frame: this.state.ttip!.data!,
+        //   rowIndex: this.state.ttip!.rowIndex!
+        // });
+        let proxyObject = getFieldDisplayValuesProxy({ // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts
+          frame: dataFrame,
+          rowIndex: rowIndex
+        });
+        // console.log(proxyObject);
 
-      const scopedVars: ScopedVars = { ...{} }; // https://github.com/grafana/grafana/blob/61934588c579005de80c54b15f42f0d9449efd93/public/app/features/explore/utils/links.ts#L131
-      scopedVars['__data'] = {
-        value: {
-          name: dataFrame.name,
-          refId: dataFrame.refId,
-          fields: proxyObject,
-        },
-        text: 'Data',
-      };
+        const scopedVars: ScopedVars = { ...{} }; // https://github.com/grafana/grafana/blob/61934588c579005de80c54b15f42f0d9449efd93/public/app/features/explore/utils/links.ts#L131
+        scopedVars['__data'] = {
+          value: {
+            name: dataFrame.name,
+            refId: dataFrame.refId,
+            fields: proxyObject,
+          },
+          text: 'Data',
+        };
 
-      let urlString: string | undefined = undefined;
-      try {
-        // console.warn("Currently only one link (the 1st one) is processed.");
+        let urlString: string | undefined = undefined;
+        try {
+          // console.warn("Currently only one link (the 1st one) is processed.");
 
-        // Interpolate url
-        urlString = this.props.replaceVariables(this.props.fieldConfig.defaults.links![0].url, // dataFrame.fields[0].config.links![0].url
-          scopedVars);
-        // console.log(urlString);
-      } catch (error) {
-        // console.log("Might have no links defined.");
-        // console.error(error);
-        return;
-      }
+          // Interpolate url
+          urlString = this.props.replaceVariables(this.props.fieldConfig.defaults.links![0].url, // dataFrame.fields[0].config.links![0].url
+            scopedVars);
+          // console.log(urlString);
+        } catch (error) {
+          // console.log("Might have no links defined.");
+          // console.error(error);
+          return;
+        }
 
-      try {
-        let url = new URL(urlString!);
+        try {
+          let url: any = {};
 
-        let updateVars: Record<string, string>  = {};
+          try {
+            url = new URL(urlString);
+          } catch (error) {
+            url = new URL(urlString, location.origin )
+          }
 
-        for (const [key, value] of url.searchParams) {
-          updateVars[key] = value;
-        } 
+          let updateVars: Record<string, string>  = {};
 
-        // Update url
-        locationService.partial({ ...updateVars }, true);
-      } catch (error) {
-        // console.error(error);
-        return;
-      }
-    });
+          for (const [key, value] of url.searchParams) {
+            updateVars[key] = value;
+          } 
+
+          if (location.origin === url.origin && this.props.fieldConfig.defaults.links![0].targetBlank === false) {
+            // Update url with query parameters
+            locationService.partial({ ...updateVars }, false);
+          } else {
+            if (this.props.fieldConfig.defaults.links![0].targetBlank === false) {
+              location.replace(url);
+            } else {
+              window.open(url, "_blank")?.focus();
+            }
+            
+          }
+          
+        } catch (error) {
+          // console.error(error);
+          return;
+        }
+      })
+    );
   }
 
   componentDidMount() {
-    lastGeomapPanelInstance = this;
-    this.initMapRef(this.mapDiv!);
+    // lastGeomapPanelInstance = this;
+    // this.initMapRef(this.mapDiv!);
+
+    // https://github.com/grafana/grafana/blob/633486e4f13c91940d9681d4768807776ecdcd7f/public/app/plugins/panel/geomap/GeomapPanel.tsx#L77C5-L77C38
+    this.panelContext = this.context;
   }
 
   // https://github.com/grafana/grafana/blob/aac6e6dfd94c78b250e796dbff9422d202cb54e8/public/app/plugins/panel/geomap/GeomapPanel.tsx#L112C3-L120
@@ -200,8 +228,9 @@ export class GeomapPanel extends Component<Props, State> {
     }
   }
 
+  // https://github.com/grafana/grafana/blob/dfae694cff68b022a4614e1c967aebe7d059d4b7/public/app/plugins/panel/geomap/GeomapPanel.tsx#L80-L87
   componentWillUnmount() {
-    // this.subs.unsubscribe();
+    this.subs.unsubscribe();
     for (const lyr of this.layers) {
       lyr.handler.dispose?.();
     }
@@ -341,6 +370,8 @@ export class GeomapPanel extends Component<Props, State> {
 
   singleClickListener = (evt: MapBrowserEvent<UIEvent>) => {
     // console.log("Fired single click event");
+    evt.preventDefault();
+    evt.stopPropagation();
     
     if (!this.map) {
       return;
