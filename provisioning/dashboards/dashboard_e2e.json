@@ -35,7 +35,7 @@
           "links": [
             {
               "title": "",
-              "url": "http://localhost:3000/d/bdjtpgo45296ob/dashboard-e2e-copy?var-datalink_test=${__data.fields.name}"
+              "url": "http://localhost:3000/d/bdjtpgo45296ob/dashboard-e2e?var-datalink_test=${__data.fields.name}"
             }
           ],
           "mappings": [],

@@ -187,16 +187,24 @@ export class GeomapPanel extends Component<Props, State> {
 
           for (const [key, value] of url.searchParams) {
             updateVars[key] = value;
-          } 
+          }
 
-          if (location.origin === url.origin && this.props.fieldConfig.defaults.links![0].targetBlank === false) {
+          const localhostAliases = [
+            "localhost",
+            "127.0.0.1"
+          ]
+
+          if ((location.origin === url.origin || (localhostAliases.includes(url.hostname) && localhostAliases.includes(location.hostname) && url.port === location.port)) &&
+            (this.props.fieldConfig.defaults.links![0].targetBlank === undefined || 
+              this.props.fieldConfig.defaults.links![0].targetBlank === false)) {
             // Update url with query parameters
-            locationService.partial({ ...updateVars }, false);
+            locationService.partial({ ...updateVars }, true);
           } else {
-            if (this.props.fieldConfig.defaults.links![0].targetBlank === false) {
+            if (this.props.fieldConfig.defaults.links![0].targetBlank === undefined || 
+              this.props.fieldConfig.defaults.links![0].targetBlank === false) {
               location.replace(url);
             } else {
-              window.open(url, "_blank")?.focus();
+              open(url, "_blank");
             }
             
           }
