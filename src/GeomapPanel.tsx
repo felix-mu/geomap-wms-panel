@@ -180,7 +180,7 @@ export class GeomapPanel extends Component<Props, State> {
           try {
             url = new URL(urlString);
           } catch (error) {
-            url = new URL(urlString, location.origin )
+            url = new URL(urlString, location.origin);
           }
 
           let updateVars: Record<string, string>  = {};
@@ -194,15 +194,21 @@ export class GeomapPanel extends Component<Props, State> {
             "127.0.0.1"
           ]
 
-          if ((location.origin === url.origin || (localhostAliases.includes(url.hostname) && localhostAliases.includes(location.hostname) && url.port === location.port)) &&
+          if ((location.origin === url.origin || 
+            (localhostAliases.includes(url.hostname) && localhostAliases.includes(location.hostname) && url.port === location.port)) &&
             (this.props.fieldConfig.defaults.links![0].targetBlank === undefined || 
               this.props.fieldConfig.defaults.links![0].targetBlank === false)) {
-            // Update url with query parameters
-            locationService.partial({ ...updateVars }, true);
+            if(location.pathname === url.pathname) {
+              // Update url with query parameters
+              locationService.partial({ ...updateVars }, true);
+            } else {
+              locationService.push(url.pathname + url.search);
+            }
           } else {
             if (this.props.fieldConfig.defaults.links![0].targetBlank === undefined || 
               this.props.fieldConfig.defaults.links![0].targetBlank === false) {
-              location.replace(url);
+              // location.assign(url);
+              location.assign(url);
             } else {
               open(url, "_blank");
             }
