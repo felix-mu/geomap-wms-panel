@@ -23,7 +23,7 @@ Due to Grafana Labs' [plugin guidelines](https://grafana.com/legal/plugins/#plug
 ## Using the Geomap WMS Panel Plugin
 > ⚠️ Currently only WMS of version 1.3.0 is supported ⚠️
 1. In the selection _Base layer_ choose the type _OGC Web Map Sevice_
-2. In the text field _URL_ type in the base url of the WMS endpoint (NOTE: Only the URL of the service endpoint **WITHOUT** request parameters, z.B. https://geoportal.muenchen.de/geoserver/gsm/wms)
+2. In the text field _URL_ type in the base url of the WMS endpoint (NOTE: Only the URL of the service endpoint **WITHOUT** request parameters, e.g. https://geoportal.muenchen.de/geoserver/gsm/wms)
 3. Successively choose layers from the drop down list
 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/grafana_multiple_layers.PNG)
