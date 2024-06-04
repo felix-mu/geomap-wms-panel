@@ -21,6 +21,12 @@ jobs:
       run: npm install
     - run: npm run build
       name: Build the plugin
+    - name: Sign plugin
+      run: npm run sign
+      shell: bash
+      env:
+        GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
+      if: ${{ env.GRAFANA_ACCESS_POLICY_TOKEN != '' }} # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#using-secrets-in-a-workflow https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-secrets
     - name: Zip the plugin
       uses: montudor/action-zip@v1
       with:
