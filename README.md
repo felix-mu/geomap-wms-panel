@@ -44,7 +44,7 @@ Layer names:
 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/mutli-layer-whitespaces.PNG)
 
-## ⚠️ Troubleshooting data layers when merging to multiple datasource queries into one map layer
+## ⚠️ Troubleshooting data layers when merging multiple datasource queries into one map layer
 In some occasions it might be necessary to join mutliple datasource queries into one output dataset to summarize information coming from different sources in a single map layer. This can be achieved by applying [transformations](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/) on the returned data frames.
 
 ![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/multiple_queries.png)
@@ -55,7 +55,7 @@ This often results in data structure like the following which might be inspected
 
 ![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe_after_transformation.png)
 
-The above data structure is not compatible with Geomap Panel Plugin's query input which expects either a data frame with metadata fields like "refId" or "meta".
+The above data structure is not compatible with Geomap Panel Plugin's query input which expects a data frame with metadata fields like "refId" or "meta".
 
 ![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe.png)
 
@@ -63,7 +63,7 @@ A workaround to solve this problem is to use the [prepare time series transforma
 
 ![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/preparetimeseries.png)
 
-This adds a "meta" field to the data object and therefore can now be processed by the Geomap Panel Plugin.
+The latter trasnformation a "meta" field to the data object and therefore can now be processed by the Geomap Panel Plugin.
 
 ![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe_final.png)
 

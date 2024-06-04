@@ -32,7 +32,7 @@ jobs:
       with:
         args: zip -qr felixrelleum-geomapwms-panel.zip felixrelleum-geomapwms-panel
     - name: Run validator
-      run: npx --yes @grafana/plugin-validator@latest -config ./plugin-validator-config.yaml -sourceCodeUri file://. felixrelleum-geomapwms-panel.zip # https://github.com/grafana/plugin-validator
+      run: npx --yes @grafana/plugin-validator@latest -config ./plugin-validator-config.yml -sourceCodeUri file://. felixrelleum-geomapwms-panel.zip # https://github.com/grafana/plugin-validator
     - name: Clean up
       run: rm -r felixrelleum-geomapwms-panel.zip
 
