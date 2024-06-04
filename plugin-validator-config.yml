@@ -1,0 +1,13 @@
+# global object from default.yaml https://github.com/grafana/plugin-validator/blob/main/config/default.yaml
+global:
+  enabled: true
+  severity: warning
+  jsonOutput: false
+  reportAll: false
+
+analyzers:
+  version:
+    rules:
+      wrong-plugin-version: # https://github.com/grafana/plugin-validator/blob/3419c5ee9c414b4a44284f8f88650d9ea9a6e4ad/pkg/analysis/passes/version/version.go#L14
+        enabled: true
+        severity: warning

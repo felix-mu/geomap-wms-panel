@@ -13,7 +13,7 @@
     "lint:fix": "npm run lint -- --fix",
     "server": "docker compose up --build",
     "sign": "npx --yes @grafana/sign-plugin@latest --distDir ./felixrelleum-geomapwms-panel",
-    "validate": "zip -qr felixrelleum-geomapwms-panel.zip felixrelleum-geomapwms-panel && npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. felixrelleum-geomapwms-panel.zip; rm -r felixrelleum-geomapwms-panel.zip",
+    "validate": "npm run build && zip -qr felixrelleum-geomapwms-panel.zip felixrelleum-geomapwms-panel && npx --yes @grafana/plugin-validator@latest -config ./plugin-validator-config.yml -sourceCodeUri file://. felixrelleum-geomapwms-panel.zip; rm -r felixrelleum-geomapwms-panel.zip",
     "start": "yarn watch",
     "test:all": "jest --coverage",
     "test": "jest --watch --onlyChanged",
