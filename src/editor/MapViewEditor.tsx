@@ -31,6 +31,7 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
 
   const onSetCurrentView = useCallback(() => {
     const map = lastGeomapPanelInstance?.map;
+    // const map = context.instanceState?.map;
     if (map) {
       const view = map.getView();
       const coords = view.getCenter();

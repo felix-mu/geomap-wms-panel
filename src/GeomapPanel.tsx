@@ -224,7 +224,7 @@ export class GeomapPanel extends Component<Props, State> {
   }
 
   componentDidMount() {
-    // lastGeomapPanelInstance = this;
+    lastGeomapPanelInstance = this;
     // this.initMapRef(this.mapDiv!);
 
     // https://github.com/grafana/grafana/blob/633486e4f13c91940d9681d4768807776ecdcd7f/public/app/plugins/panel/geomap/GeomapPanel.tsx#L77C5-L77C38
