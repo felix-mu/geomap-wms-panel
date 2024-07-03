@@ -1,7 +1,8 @@
 // import { css } from "@emotion/css";
-import { SelectableValue, StandardEditorProps } from "@grafana/data";
+import { SelectableValue } from "@grafana/data";
 import { Input, Label, MultiSelect, /*useStyles2*/ } from "@grafana/ui";
-import { getWMSCapabilitiesFromService, getWMSLayers } from "layers/basemaps/wms";
+import { WMSConfig } from "layers/basemaps/wms";
+import { getWMSCapabilitiesFromService, getWMSLayers } from "mapServiceHandlers/wms";
 import React, { useEffect, useState } from "react";
 
 // References
@@ -14,30 +15,27 @@ import React, { useEffect, useState } from "react";
 //   to: number;
 // }
 
-type ConfigUrlLayer = {
-  url: string | undefined,
-  layers: string[]
-}
+// type ConfigUrlLayer = {
+//   url: string | undefined,
+//   layers: string[]
+// }
 
-type Props = StandardEditorProps<ConfigUrlLayer>;
+type Props = {
+  onChange: any;
+  wms: WMSConfig;
+};
 
 // export const CustomWMSBasemapLayersEditor = ({ item, value, onChange }: Props/*StandardEditorProps<string>*/) => {
 
   // const options: Array<SelectableValue<string>> = [];
 
-export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props) => {
+export const CustomWMSBasemapEditor = ({ onChange, wms }: Props) => {
   // const styles = useStyles2(getStyles);
   
-  const [url, setURL] = useState<string | undefined>(context.options.config.wms === undefined || 
-    context.options.config.wms.url === undefined ? "" : context.options.config.wms.url); // ''
+  const [url, setURL] = useState<string | undefined>(wms === undefined || 
+    wms.url === undefined ? "" : wms.url); // ''
   const [options, setOptions] = useState<Array<SelectableValue<string>>>([]);  // SelectableValue
   const [selection, setSelection] = useState<Array<SelectableValue<string>>>([]);
-
-  // If the panel is accessed after refresh set the URL which triggers the useEffect hook
-  // if ((context.options.config && context.options.config.wms && context.options.config.wms.url) 
-  //     && url!.length === 0) {
-  //       setURL(context.options.config.wms.url);
-  // }
 
   // Update the select options when the url changes
   useEffect(() => {
@@ -47,11 +45,11 @@ export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props
 
       // If layers are provided because of a repeating entry in edit mode while editing or after refresh
       // set the selection to show the user the current layer selection
-      if (context.options.config && context.options.config.wms.layers) {
+      if (wms && wms.layers) {
         let selection_tmp: Array<SelectableValue<string>> = [];
         
         // Generate selection from the available options by comparing the value keys with the layer names of the config
-        (context.options.config.wms.layers as string[]).forEach(
+        (wms.layers as string[]).forEach(
           (el) => {
             selection_tmp = selection_tmp.concat(
               // User layers since options are update in next render and therefore might be empty
@@ -71,14 +69,14 @@ export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props
   // https://github.com/grafana/grafana/blob/ef5d71711a523efc65da089d45083e28201b58ab/packages/grafana-ui/src/components/Forms/Label.tsx
   return (
     <>
-      {/* <Label description={'URL to WMS endpoint (required)'}>
+      <Label description={'URL to WMS endpoint (required)'}>
         URL
-      </Label> */}
+      </Label>
       <Input value={url} aria-label="URL input"
           onChange={e => {
             setURL(e.currentTarget.value);
-            if (context.options.config.wms) {
-              (context.options.config.wms.layers as string[]).splice(-1);
+            if (wms) {
+              (wms.layers as string[]).splice(-1);
             }
             setOptions([]);
             setSelection([]);
@@ -88,22 +86,9 @@ export const CustomWMSBasemapEditor = ({ item, value, onChange, context }: Props
       </Label>
       <MultiSelect aria-label="wms layer multiselect" options={options} value={selection} onChange={(selectableValue) => {
         setSelection(selectableValue);
-        onChange({url: url, layers: selectableValue.map((e) => e.value!)}); // onChange sets the config.wms property; Only change it when layers are selected
+        onChange({url: url!, layers: selectableValue.map((e) => e.value!)}); // onChange sets the config.wms property; Only change it when layers are selected
         }}></MultiSelect>
     </>
         )
 };
 
-// const getStyles = () => {
-//   return {
-//     wrapper: css`
-//       font-family: Open Sans;
-//       position: relative;
-//     `,
-//     svg: css`
-//       position: absolute;
-//       top: 0;
-//       left: 0;
-//     `,
-//   };
-// };

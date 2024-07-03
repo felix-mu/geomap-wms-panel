@@ -7,7 +7,7 @@ import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 //   PanelOptionsEditorBuilder, //FieldOverrideContext,
 // // PanelOptionsEditorBuilder,
 // } from '@grafana/data';
-import { CustomWMSBasemapEditor } from 'editor/CustomWMSBasemapEditor';
+import { MultipleWMSEditor } from 'editor/MultipleWMSEditor';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { getWMSCapabilitiesFromService, getProjection } from 'mapServiceHandlers/wms';
@@ -23,15 +23,14 @@ import { getWMSCapabilitiesFromService, getProjection } from 'mapServiceHandlers
 // let optionsBuilder: PanelOptionsEditorBuilder<ExtendMapLayerOptions>;
 
 export interface WMSConfig {
-  wms: {
-    url: string;
-    layers: string[];
-  }
+    url: string,
+    layers: string[],
+    // attribution: string;
 }
 
 export interface WMSBaselayerConfig {
-  wmsBaselayer: Array<WMSConfig>;
-  attribution: string;
+  wmsBaselayer: WMSConfig[],
+  attribution: string,
 }
 
 export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
@@ -55,12 +54,12 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
         let selectedWmsLayers: string[] = [];
     
         // Set selectedWmsLayer to empty array if accessed in edit mode for the first time
-        selectedWmsLayers = !wmsItem || wmsItem.wms === undefined || ((wmsItem.wms.layers as unknown) as string) === "" ? [] : wmsItem.wms.layers;
+        selectedWmsLayers = !wmsItem || /*wmsItem.wms === undefined ||*/ ((wmsItem.layers as unknown) as string) === "" ? [] : wmsItem.layers;
     
         // This happens in edit mode when the WMS url changes
         // This will fail if the panel is opened in edit mode for the first time
         try {
-          xmlNodeWMS = await getWMSCapabilitiesFromService(wmsItem.wms.url as string);
+          xmlNodeWMS = await getWMSCapabilitiesFromService(wmsItem.url as string);
           epsgCode = await getProjection(xmlNodeWMS!) as string;
         } catch (error) {
           epsgCode = "EPSG:3857";
@@ -71,11 +70,11 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
           layers.push(
             new ImageLayer({
               source: new ImageWMS({
-                url: wmsItem.wms.url as string,
+                url: wmsItem.url as string,
                 params: {"Layers": Array(selectedWmsLayers).join(',')},
                 ratio: 1,
                 crossOrigin: 'anonymous', // https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
-                attributions: cfg.attribution,
+                attributions: cfg.attribution + wmsItem.url as string, // Testing purposes
                 projection: epsgCode
               })
             })
@@ -106,22 +105,15 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
     // }
 
     builder
-    // .addCustomEditor(
-    //   {
-    //     id: 'wsm-url',
-    //     path: 'config.url', // Path to 'config' object to property 'url'
-    //     name: 'URL *',
-    //     description: 'URL to WMS endpoint (required)',
-    //     editor: CustomWMSBasemapURLEditor,
-    //   }
-    // )
     .addCustomEditor(
       {
         id: 'wsm-layers',
-        name: 'URL',
+        // name: 'URL',
+        name: 'WMS',
         path: 'config.wmsBaselayer',
-        description: 'URL to WMS endpoint (required)',
-        editor: CustomWMSBasemapEditor,
+        // description: 'URL to WMS endpoint (required)',
+        // description: 'WMS',
+        editor: MultipleWMSEditor,
       }
     )
     .addTextInput({
