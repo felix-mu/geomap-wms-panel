@@ -21,49 +21,79 @@ import React, { useEffect, useState } from "react";
 // }
 
 type Props = {
-  onChange: any;
-  wms: WMSConfig;
+  onChange: any,
+  wms: WMSConfig,
+  cache: {
+    current: { [url: string]: Array<SelectableValue<string>> }
+  }
 };
 
 // export const CustomWMSBasemapLayersEditor = ({ item, value, onChange }: Props/*StandardEditorProps<string>*/) => {
 
   // const options: Array<SelectableValue<string>> = [];
 
-export const CustomWMSBasemapEditor = ({ onChange, wms }: Props) => {
-  // const styles = useStyles2(getStyles);
-  
-  const [url, setURL] = useState<string | undefined>(wms === undefined || 
+export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {  
+  const [url, setURL] = useState<string>(wms === undefined || 
     wms.url === undefined ? "" : wms.url); // ''
   const [options, setOptions] = useState<Array<SelectableValue<string>>>([]);  // SelectableValue
   const [selection, setSelection] = useState<Array<SelectableValue<string>>>([]);
 
+  function handleLayers(layers: Array<SelectableValue<string>>) {
+    setOptions(layers);
+
+    // If layers are provided because of a repeating entry in edit mode while editing or after refresh
+    // set the selection to show the user the current layer selection
+    if (wms && wms.layers) {
+      let selection_tmp: Array<SelectableValue<string>> = [];
+      
+      // Generate selection from the available options by comparing the value keys with the layer names of the config
+      (wms.layers as string[]).forEach(
+        (el) => {
+          selection_tmp = selection_tmp.concat(
+            // User layers since options are update in next render and therefore might be empty
+            layers.filter((currentValue) => {
+              return currentValue.value === el;
+            })
+          );
+        }
+      );
+      setSelection(selection_tmp);
+    } 
+  }
+
   // Update the select options when the url changes
   useEffect(() => {
-    getWMSCapabilitiesFromService(url!).then(async (node) => {
-      let layers = getWMSLayers(node);
-      setOptions(layers);
-
-      // If layers are provided because of a repeating entry in edit mode while editing or after refresh
-      // set the selection to show the user the current layer selection
-      if (wms && wms.layers) {
-        let selection_tmp: Array<SelectableValue<string>> = [];
-        
-        // Generate selection from the available options by comparing the value keys with the layer names of the config
-        (wms.layers as string[]).forEach(
-          (el) => {
-            selection_tmp = selection_tmp.concat(
-              // User layers since options are update in next render and therefore might be empty
-              layers.filter((currentValue) => {
-                return currentValue.value === el;
-              })
-            );
-          }
-        );
-        setSelection(selection_tmp);
-      }
-    }).catch(err => {});
-  // eslint-disable-next-line
-  }, [url]);
+    if (cache.current[url]) {
+      handleLayers(cache.current[url]);
+    } else {
+      getWMSCapabilitiesFromService(url).then(async (node) => {
+        let layers = getWMSLayers(node);
+        // setOptions(layers);
+  
+        // // If layers are provided because of a repeating entry in edit mode while editing or after refresh
+        // // set the selection to show the user the current layer selection
+        // if (wms && wms.layers) {
+        //   let selection_tmp: Array<SelectableValue<string>> = [];
+          
+        //   // Generate selection from the available options by comparing the value keys with the layer names of the config
+        //   (wms.layers as string[]).forEach(
+        //     (el) => {
+        //       selection_tmp = selection_tmp.concat(
+        //         // User layers since options are update in next render and therefore might be empty
+        //         layers.filter((currentValue) => {
+        //           return currentValue.value === el;
+        //         })
+        //       );
+        //     }
+        //   );
+        //   setSelection(selection_tmp);
+        // }
+        cache.current[url] = layers;
+        handleLayers(layers);
+      }).catch(err => {});
+    }
+    // eslint-disable-next-line
+  }, [url, wms]);
 
   // <label className={styles.svg}>My select</label>
   // https://github.com/grafana/grafana/blob/ef5d71711a523efc65da089d45083e28201b58ab/packages/grafana-ui/src/components/Forms/Label.tsx

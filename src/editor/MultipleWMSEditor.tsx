@@ -1,8 +1,8 @@
-import { StandardEditorProps } from "@grafana/data";
+import { SelectableValue, StandardEditorProps } from "@grafana/data";
 import { WMSConfig } from "layers/basemaps/wms";
 import { CustomWMSBasemapEditor } from "./CustomWMSBasemapEditor";
 import { Button } from "@grafana/ui";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { css } from "@emotion/css";
 
 
@@ -11,6 +11,8 @@ type Props = StandardEditorProps<WMSConfig[]>;
 export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => {
     const [wmsEntities, setWMSEntities] = useState<Array<WMSConfig>>(value !== undefined && value.length !== 0 ?
         value : []);
+    
+    const cacheRef = useRef<{ [url: string]: Array<SelectableValue<string>> }>({});
 
     function updateWMSEditor(wmsEntity: WMSConfig, index: number) {
         wmsEntities.splice(index, 1, wmsEntity);
@@ -27,7 +29,7 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
     let wmsEditors = (value || []).map((el, index) => {
         return (
             <div key={crypto.randomUUID()}>
-                <CustomWMSBasemapEditor onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
+                <CustomWMSBasemapEditor cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
                 {/* <Input value={url} aria-label="attribution input"
                     onChange={e => {
                         setURL(e.currentTarget.value);
