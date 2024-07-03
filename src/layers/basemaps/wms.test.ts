@@ -1,5 +1,5 @@
 import '../../__mocks__/fetch_mock';
-import { getWMSCapabilitiesFromService, addWMSLayerSelect, getAllDirectChildNodesByLocalName, 
+import { getWMSCapabilitiesFromService, getAllDirectChildNodesByLocalName, 
   getFirstDirectChildNodeByLocalName, getProjection, getWMSLayers, wms } from "./wms";
 import Map from 'ol/Map';
 import { config, } from '@grafana/runtime';
@@ -624,24 +624,6 @@ describe("Test getWMSLayers", () => {
     test("no wms layer in node", () => {
         let layers = getWMSLayers(doc.documentElement);
         expect(layers.length).toBe(0);
-    });
-});
-
-describe("Test addWMSLayerSelect", () => {
-    let optionsBuilderMock = {
-        settings: {
-            options: []
-        }
-    };
-
-    test("normal function call", () => {
-        addWMSLayerSelect(optionsBuilderMock, capabilityNode);
-        expect(optionsBuilderMock.settings.options.length).toBe(6);
-    });
-
-    test("no wms layer in node", () => {
-        addWMSLayerSelect(optionsBuilderMock, doc);
-        expect(optionsBuilderMock.settings.options.length).toBe(0);
     });
 });
 
