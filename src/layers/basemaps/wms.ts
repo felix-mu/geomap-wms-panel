@@ -11,6 +11,7 @@ import { MultipleWMSEditor } from 'editor/MultipleWMSEditor';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { getWMSCapabilitiesFromService, getProjection } from 'mapServiceHandlers/wms';
+import { WMSLegend } from 'mapcontrols/WMSLegend';
 // import {
   // RefreshEvent,
   // RefreshEvent,
@@ -26,7 +27,8 @@ export interface WMSConfig {
     url: string,
     layers: string[],
     opacity: number,
-    attribution: string
+    attribution: string,
+    showLegend: boolean
 }
 
 export interface WMSBaselayerConfig {
@@ -45,7 +47,20 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
    * @param options
    */
   create: async (map: Map, options: ExtendMapLayerOptions<WMSBaselayerConfig>) => {
+    // Remove previous legend control if it exists
+    for(let i = 0; i < map.getControls().getLength(); ++i) {
+      try {
+        if ((map.getControls().getArray()[i] as WMSLegend).getControlName() === "WMSLegend") {
+          map.getControls().removeAt(i);
+          break;
+        }
+      } catch (error) {
+        continue;
+      }
+    }
+
     let layers: BaseLayer[] = [];
+    let legendURLs: string[] = [];
     const cfg = { ...options.config };
 
     if (cfg.wmsBaselayer) {
@@ -68,21 +83,31 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
         }
 
         if (selectedWmsLayers.length !== 0) {
+          const wmsSource = new ImageWMS({
+            url: wmsItem.url as string,
+            params: {"LAYERS": Array(selectedWmsLayers).join(',')},
+            ratio: 1,
+            crossOrigin: 'anonymous', // https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
+            attributions: wmsItem.attribution ? wmsItem.attribution : "", // Testing purposes
+            projection: epsgCode
+          });
           layers.push(
             new ImageLayer({
-              source: new ImageWMS({
-                url: wmsItem.url as string,
-                params: {"Layers": Array(selectedWmsLayers).join(',')},
-                ratio: 1,
-                crossOrigin: 'anonymous', // https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
-                attributions: wmsItem.attribution ? wmsItem.attribution : "", // Testing purposes
-                projection: epsgCode
-              }),
+              source: wmsSource,
               opacity: wmsItem.opacity ? wmsItem.opacity : 1.0
             })
           );
+
+          if (wmsItem.showLegend){
+            const wmsURL = wmsSource.getUrl();
+            selectedWmsLayers.forEach((value) => legendURLs.push(wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value}`));
+          }
         }
       }
+    }
+
+    if (legendURLs.length > 0) {
+      map.addControl(new WMSLegend(legendURLs));
     }
 
     // Dummy promise returns epsgCode from the constants which is then used to initialize the image layer

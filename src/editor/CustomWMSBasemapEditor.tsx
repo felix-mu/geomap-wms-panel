@@ -1,6 +1,6 @@
 // import { css } from "@emotion/css";
 import { SelectableValue } from "@grafana/data";
-import { Field, Input, Label, MultiSelect, Slider, /*useStyles2*/ } from "@grafana/ui";
+import { Field, Input, Label, MultiSelect, Slider, Switch, /*useStyles2*/ } from "@grafana/ui";
 import { WMSConfig } from "layers/basemaps/wms";
 import { getWMSCapabilitiesFromService, getWMSLayers } from "mapServiceHandlers/wms";
 import React, { useEffect, useRef, useState } from "react";
@@ -39,6 +39,8 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
     wms.attribution === undefined ? "" : wms.attribution);
   // const [opacity, setOpacity] = useState<number>(wms === undefined || 
   //   wms.opacity === undefined ? 1.0 : wms.opacity);
+  // const [showLegend, setShowLegend] = useState<boolean>(wms === undefined || 
+  //   wms.opacity === undefined ? true : wms.showLegend);
   const opacityRef = useRef<number>(wms === undefined || 
     wms.opacity === undefined ? 1.0 : wms.opacity);
   const [options, setOptions] = useState<Array<SelectableValue<string>>>([]);  // SelectableValue
@@ -106,13 +108,19 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
         }}></MultiSelect>
       <Field label="Opacity">
         <Slider value={wms.opacity} step={0.1} min={0} max={1} onAfterChange={(val) => {
-          onChange({url: url!, layers: selection.map((e) => e.value!), attribution: attribution, opacity: val})
+          onChange({url: url!, layers: selection.map((e) => e.value!), attribution: attribution, opacity: val, showLegend: wms.showLegend})
         }} onChange={(val) => {opacityRef.current = val}}></Slider>
       </Field>
+      <Field label="Show legend" description="Toggle to show layers in legend">
+          <Switch value={(wms.showLegend || false)} onChange={(e) => {
+            onChange({url: url!, layers: selection.map((e) => e.value!), attribution: attribution, opacity: wms.opacity, showLegend: !wms.showLegend})
+          }
+          }/>
+        </Field>
       <Field label="Attribution (optional)" /*description="This information is very important, so you really need to fill it in"*/>
         <Input value={attribution} aria-label="attribution input" onChange={e => {
           setAttribution(e.currentTarget.value);
-        }} onBlur={() => onChange({url: url!, layers: selection.map((e) => e.value!), attribution: attribution, opacity: opacityRef.current})}></Input>
+        }} onBlur={() => onChange({url: url!, layers: selection.map((e) => e.value!), attribution: attribution, opacity: opacityRef.current, showLegend: wms.showLegend})}></Input>
       </Field>
     </>
         )
