@@ -22,10 +22,19 @@ import { WMSLegend } from 'mapcontrols/WMSLegend';
 // Constants
 // Since the constants are global they should be set each time the panel is accessed
 // let optionsBuilder: PanelOptionsEditorBuilder<ExtendMapLayerOptions>;
+type WMSTuple = {
+  title: string,
+  name: string
+}
+
+export type LegendItem = {
+  label: string,
+  url: string
+}
 
 export interface WMSConfig {
     url: string,
-    layers: string[],
+    layers: WMSTuple[],
     opacity: number,
     attribution: string,
     showLegend: boolean
@@ -60,14 +69,14 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
     }
 
     let layers: BaseLayer[] = [];
-    let legendURLs: string[] = [];
+    let legendItems: LegendItem[] = [];
     const cfg = { ...options.config };
 
     if (cfg.wmsBaselayer) {
       for (let wmsItem of cfg.wmsBaselayer) {
         let xmlNodeWMS: Node | undefined;
         let epsgCode: string;
-        let selectedWmsLayers: string[] = [];
+        let selectedWmsLayers: WMSTuple[] = [];
     
         // Set selectedWmsLayer to empty array if accessed in edit mode for the first time
         selectedWmsLayers = !wmsItem || /*wmsItem.wms === undefined ||*/ ((wmsItem.layers as unknown) as string) === "" ? [] : wmsItem.layers;
@@ -85,7 +94,7 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
         if (selectedWmsLayers.length !== 0) {
           const wmsSource = new ImageWMS({
             url: wmsItem.url as string,
-            params: {"LAYERS": Array(selectedWmsLayers).join(',')},
+            params: {"LAYERS": selectedWmsLayers.map(el => el.name).join(',')},
             ratio: 1,
             crossOrigin: 'anonymous', // https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
             attributions: wmsItem.attribution ? wmsItem.attribution : "", // Testing purposes
@@ -100,14 +109,18 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
 
           if (wmsItem.showLegend){
             const wmsURL = wmsSource.getUrl();
-            selectedWmsLayers.forEach((value) => legendURLs.push(wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value}`));
+            selectedWmsLayers.forEach((value) => legendItems.push(
+              {label: value.title,
+                url: wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value.name}`
+              })
+            );
           }
         }
       }
     }
 
-    if (legendURLs.length > 0) {
-      map.addControl(new WMSLegend(legendURLs));
+    if (legendItems.length > 0) {
+      map.addControl(new WMSLegend(legendItems));
     }
 
     // Dummy promise returns epsgCode from the constants which is then used to initialize the image layer

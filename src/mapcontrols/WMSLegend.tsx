@@ -1,4 +1,5 @@
 import { css } from "@emotion/css";
+import { LegendItem } from "layers/basemaps/wms";
 // import { BusEventBase } from "@grafana/data";
 import Control from "ol/control/Control";
 // import BaseLayer from "ol/layer/Base";
@@ -18,9 +19,9 @@ export class WMSLegend extends Control {
     private legendContainer: HTMLDivElement;
     // private propsHaveChanged: boolean = true;
     // private legendContainerCache: HTMLDivElement;
-    private legendURLs: string[];
+    private legendURLs: LegendItem[];
 
-    constructor(legendURLs: string[], /*baseLayer: BaseLayer, props: any,*/ opt_options?: any) {
+    constructor(legendURLs: LegendItem[], /*baseLayer: BaseLayer, props: any,*/ opt_options?: any) {
         const options = opt_options || {};
 
         const button = document.createElement('button');
@@ -111,12 +112,12 @@ export class WMSLegend extends Control {
     //     }
     //     return legendItems;
     // }
-    buildLegend(legendURLs: string[]): HTMLDivElement[] {
+    buildLegend(legendURLs: LegendItem[]): HTMLDivElement[] {
         let legendItems: HTMLDivElement[] = [];
         for (let l of legendURLs) {
             // let imageContainer = document.createElement("div");
             let image = document.createElement("img");
-            image.src = l;
+            image.src = l.url;
             image.className = styles.legendImage;
 
             // imageContainer.appendChild(image);
