@@ -30,15 +30,6 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         return (
             <div key={crypto.randomUUID()}>
                 <CustomWMSBasemapEditor cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
-                {/* <Input value={url} aria-label="attribution input"
-                    onChange={e => {
-                        setURL(e.currentTarget.value);
-                        if (wms) {
-                        (wms.layers as string[]).splice(-1);
-                        }
-                        setOptions([]);
-                        setSelection([]);
-                }}></Input> */}
                 <Button style={{marginTop: "6px"}} size="sm" variant="destructive" icon="minus" type="button" onClick={() => {
                     if (wmsEntities.length === 1) {
                         setWMSEntities([]);
@@ -61,8 +52,8 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         <>
             {wmsEditors}
             <Button size="sm" variant="primary" icon="plus" type="button" onClick={() => {
-                setWMSEntities([...wmsEntities, {url: "", layers: []}]);
-                onChange([...wmsEntities, {url: "", layers: []}]);
+                setWMSEntities([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0}]);
+                onChange([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0}]);
             }}>Add WMS</Button>
         </>
         );

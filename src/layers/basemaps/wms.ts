@@ -25,12 +25,13 @@ import { getWMSCapabilitiesFromService, getProjection } from 'mapServiceHandlers
 export interface WMSConfig {
     url: string,
     layers: string[],
-    // attribution: string;
+    opacity: number,
+    attribution: string
 }
 
 export interface WMSBaselayerConfig {
   wmsBaselayer: WMSConfig[],
-  attribution: string,
+  // attribution: string,
 }
 
 export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
@@ -74,9 +75,10 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
                 params: {"Layers": Array(selectedWmsLayers).join(',')},
                 ratio: 1,
                 crossOrigin: 'anonymous', // https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
-                attributions: cfg.attribution + wmsItem.url as string, // Testing purposes
+                attributions: wmsItem.attribution ? wmsItem.attribution : "", // Testing purposes
                 projection: epsgCode
-              })
+              }),
+              opacity: wmsItem.opacity ? wmsItem.opacity : 1.0
             })
           );
         }
@@ -115,11 +117,11 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
         // description: 'WMS',
         editor: MultipleWMSEditor,
       }
-    )
-    .addTextInput({
-      path: 'config.attribution',
-      name: 'Attribution (optional)'
-    });
+    );
+    // .addTextInput({
+    //   path: 'config.attribution',
+    //   name: 'Attribution (optional)'
+    // });
 
       // optionsBuilder = builder;
     },

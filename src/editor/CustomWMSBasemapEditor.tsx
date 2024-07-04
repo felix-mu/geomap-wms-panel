@@ -1,9 +1,9 @@
 // import { css } from "@emotion/css";
 import { SelectableValue } from "@grafana/data";
-import { Input, Label, MultiSelect, /*useStyles2*/ } from "@grafana/ui";
+import { Field, Input, Label, MultiSelect, Slider, /*useStyles2*/ } from "@grafana/ui";
 import { WMSConfig } from "layers/basemaps/wms";
 import { getWMSCapabilitiesFromService, getWMSLayers } from "mapServiceHandlers/wms";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // References
 // https://github.com/grafana/grafana/blob/9772ed65269f31f846d6daec42f3673903a5171e/packages/grafana-ui/src/components/Select/Select.mdx#L6
@@ -34,7 +34,13 @@ type Props = {
 
 export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {  
   const [url, setURL] = useState<string>(wms === undefined || 
-    wms.url === undefined ? "" : wms.url); // ''
+    wms.url === undefined ? "" : wms.url);
+  const [attribution, setAttribution] = useState<string>(wms === undefined || 
+    wms.attribution === undefined ? "" : wms.attribution);
+  // const [opacity, setOpacity] = useState<number>(wms === undefined || 
+  //   wms.opacity === undefined ? 1.0 : wms.opacity);
+  const opacityRef = useRef<number>(wms === undefined || 
+    wms.opacity === undefined ? 1.0 : wms.opacity);
   const [options, setOptions] = useState<Array<SelectableValue<string>>>([]);  // SelectableValue
   const [selection, setSelection] = useState<Array<SelectableValue<string>>>([]);
 
@@ -68,26 +74,6 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
     } else {
       getWMSCapabilitiesFromService(url).then(async (node) => {
         let layers = getWMSLayers(node);
-        // setOptions(layers);
-  
-        // // If layers are provided because of a repeating entry in edit mode while editing or after refresh
-        // // set the selection to show the user the current layer selection
-        // if (wms && wms.layers) {
-        //   let selection_tmp: Array<SelectableValue<string>> = [];
-          
-        //   // Generate selection from the available options by comparing the value keys with the layer names of the config
-        //   (wms.layers as string[]).forEach(
-        //     (el) => {
-        //       selection_tmp = selection_tmp.concat(
-        //         // User layers since options are update in next render and therefore might be empty
-        //         layers.filter((currentValue) => {
-        //           return currentValue.value === el;
-        //         })
-        //       );
-        //     }
-        //   );
-        //   setSelection(selection_tmp);
-        // }
         cache.current[url] = layers;
         handleLayers(layers);
       }).catch(err => {});
@@ -116,8 +102,18 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
       </Label>
       <MultiSelect aria-label="wms layer multiselect" options={options} value={selection} onChange={(selectableValue) => {
         setSelection(selectableValue);
-        onChange({url: url!, layers: selectableValue.map((e) => e.value!)}); // onChange sets the config.wms property; Only change it when layers are selected
+        onChange({url: url!, layers: selectableValue.map((e) => e.value!), attribution: attribution}); // onChange sets the config.wms property; Only change it when layers are selected
         }}></MultiSelect>
+      <Field label="Opacity">
+        <Slider value={wms.opacity} step={0.1} min={0} max={1} onAfterChange={(val) => {
+          onChange({url: url!, layers: selection.map((e) => e.value!), attribution: attribution, opacity: val})
+        }} onChange={(val) => {opacityRef.current = val}}></Slider>
+      </Field>
+      <Field label="Attribution (optional)" /*description="This information is very important, so you really need to fill it in"*/>
+        <Input value={attribution} aria-label="attribution input" onChange={e => {
+          setAttribution(e.currentTarget.value);
+        }} onBlur={() => onChange({url: url!, layers: selection.map((e) => e.value!), attribution: attribution, opacity: opacityRef.current})}></Input>
+      </Field>
     </>
         )
 };
