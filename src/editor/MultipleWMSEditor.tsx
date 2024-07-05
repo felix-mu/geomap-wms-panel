@@ -52,8 +52,8 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         <>
             {wmsEditors}
             <Button size="sm" variant="primary" icon="plus" type="button" onClick={() => {
-                setWMSEntities([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0}]);
-                onChange([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0}]);
+                setWMSEntities([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0, showLegend: false}]);
+                onChange([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0, showLegend: false}]);
             }}>Add WMS</Button>
         </>
         );

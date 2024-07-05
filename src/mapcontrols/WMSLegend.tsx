@@ -25,20 +25,23 @@ export class WMSLegend extends Control {
         const options = opt_options || {};
 
         const button = document.createElement('button');
-        button.innerHTML = '>>';
+        button.innerHTML = '>';
         
         const legendContainer = document.createElement("div");
-        legendContainer.className = styles.basemapLegend_hidden;
+        legendContainer.style.display = "block";
+        // legendContainer.className = styles.basemapLegend_hidden;
 
         const element = document.createElement('div');
         // element.className = 'rotate-north ol-unselectable ol-control';
         element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE} ${olCss.CLASS_CONTROL}`;
         element.style.top = "60%";
-        element.style.width = "30%";
-        element.style.height = "30%";
-        element.style.overflow = "scroll";
+        // element.style.width = "30%";
+        // element.style.height = "30%";
+        // element.style.overflow = "scroll";
+        // element.style.resize = "both";
+        element.style.backgroundColor = "rgba(255,255,255, 0.4)";
         element.appendChild(button);
-        element.appendChild(legendContainer);
+        // element.appendChild(legendContainer);
 
         super({
         element: element,
@@ -51,15 +54,30 @@ export class WMSLegend extends Control {
 
         let eventHandler = () => {
             if (this.legendOpened) {
-                button.innerHTML = ">>";
-                this.legendContainer.className = styles.basemapLegend_hidden;
+                button.innerHTML = ">";
+                // this.legendContainer.className = styles.basemapLegend_hidden;
+                this.element.style.width = "";
+                this.element.style.height = "";
+                this.element.style.overflow = "";
+                this.element.style.resize = "";
+                this.element.style.backgroundColor = "rgba(255,255,255, 0.4)";
+
+                this.element.removeChild(this.legendContainer);
             } else {
-                button.innerHTML = "<<";
-                this.legendContainer.className = styles.basemapLegend_visible;
+                button.innerHTML = "<";
+                // this.legendContainer.className = styles.basemapLegend_visible;
+
+                this.element.style.overflow = "scroll";
+                this.element.style.resize = "both";
+                this.element.style.backgroundColor = "rgba(255,255,255, 1)";
                 
                 if(this.legendContainer.getElementsByTagName("div").length == 0) {
                     this.legendContainer.append(...this.buildLegend(this.legendURLs));
                 }
+
+                this.element.appendChild(this.legendContainer);
+                this.element.style.width = "30%";
+                this.element.style.height = "30%";
             }
 
             // Update legend state
@@ -115,21 +133,36 @@ export class WMSLegend extends Control {
     buildLegend(legendURLs: LegendItem[]): HTMLDivElement[] {
         let legendItems: HTMLDivElement[] = [];
         for (let l of legendURLs) {
-            // let imageContainer = document.createElement("div");
-            let image = document.createElement("img");
-            image.src = l.url;
-            image.className = styles.legendImage;
+            let imageContainer = document.createElement("div");
+            imageContainer.style.display = "block";
 
-            // imageContainer.appendChild(image);
+
+            let image = document.createElement("img");
+            image.id = l.url;
+            image.src = l.url;
+            // image.className = styles.legendImage;
+
+            let label = document.createElement("label");
+            label.innerText = "Layer: " + l.label;
+            label.htmlFor = l.url;
+            label.style.display = "block";
+
+            let divider = document.createElement("hr");
+            divider.className = styles.divider;
+
+            imageContainer.appendChild(label);
+            imageContainer.appendChild(image);
+            imageContainer.appendChild(divider);
 
             legendItems.push(
-                // imageContainer
-                image
+                imageContainer
+                // image
             );
 
             }
         return legendItems;
     }
+
 }
 
 const styles = {
@@ -138,12 +171,14 @@ const styles = {
     `,
     basemapLegend_visible: css`
         display: block;
-        width: 100%;
+        width: 50%;
         height: 100%;
     `,
-    legendImage: css`
-        width: 100%;
-        height: auto;
-        display: block;
-    `,
+    // legendImage: css`
+    //     width: 100%;
+    //     height: auto;
+    // `,
+    divider: css`
+    border-top: 1px solid rgba(204, 204, 220, 0.12);
+    `
 }
