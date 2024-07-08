@@ -1,4 +1,6 @@
 import { css } from "@emotion/css";
+import { GrafanaTheme2 } from "@grafana/data";
+import { config } from "@grafana/runtime";
 import { LegendItem } from "layers/basemaps/wms";
 // import { BusEventBase } from "@grafana/data";
 import Control from "ol/control/Control";
@@ -20,6 +22,7 @@ export class WMSLegend extends Control {
     // private propsHaveChanged: boolean = true;
     // private legendContainerCache: HTMLDivElement;
     private legendURLs: LegendItem[];
+    private theme: GrafanaTheme2;
 
     constructor(legendURLs: LegendItem[], /*baseLayer: BaseLayer, props: any,*/ opt_options?: any) {
         const options = opt_options || {};
@@ -32,14 +35,14 @@ export class WMSLegend extends Control {
         // legendContainer.className = styles.basemapLegend_hidden;
 
         const element = document.createElement('div');
-        // element.className = 'rotate-north ol-unselectable ol-control';
-        element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE} ${olCss.CLASS_CONTROL}`;
+        // element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
+        element.className = `${olCss.CLASS_CONTROL} ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
         element.style.top = "60%";
         // element.style.width = "30%";
         // element.style.height = "30%";
         // element.style.overflow = "scroll";
         // element.style.resize = "both";
-        element.style.backgroundColor = "rgba(255,255,255, 0.4)";
+
         element.appendChild(button);
         // element.appendChild(legendContainer);
 
@@ -47,6 +50,10 @@ export class WMSLegend extends Control {
         element: element,
         target: options.target,
         });
+
+        this.theme = config.theme2;
+        // element.style.backgroundColor = this.theme.colors.background.primary; // "rgba(255,255,255, 0.4)";
+        legendContainer.style.backgroundColor = this.theme.colors.background.primary;
 
         this.legendContainer = legendContainer;
 
@@ -60,7 +67,7 @@ export class WMSLegend extends Control {
                 this.element.style.height = "";
                 this.element.style.overflow = "";
                 this.element.style.resize = "";
-                this.element.style.backgroundColor = "rgba(255,255,255, 0.4)";
+                // this.element.style.background = config.theme2.colors.background.primary; // "rgba(255,255,255, 0.4)";
 
                 this.element.removeChild(this.legendContainer);
             } else {
@@ -69,7 +76,7 @@ export class WMSLegend extends Control {
 
                 this.element.style.overflow = "scroll";
                 this.element.style.resize = "both";
-                this.element.style.backgroundColor = "rgba(255,255,255, 1)";
+                // this.element.style.background = config.theme2.colors.background.primary; //"rgba(255,255,255, 1)";
                 
                 if(this.legendContainer.getElementsByTagName("div").length == 0) {
                     this.legendContainer.append(...this.buildLegend(this.legendURLs));
@@ -143,12 +150,13 @@ export class WMSLegend extends Control {
             // image.className = styles.legendImage;
 
             let label = document.createElement("label");
-            label.innerText = "Layer: " + l.label;
+            label.innerText = /*"Layer: " + */l.label;
             label.htmlFor = l.url;
             label.style.display = "block";
+            label.style.color = this.theme.colors.text.maxContrast;
 
             let divider = document.createElement("hr");
-            divider.className = styles.divider;
+            divider.className = getStyles(this.theme).grafanaDivider; // divider
 
             imageContainer.appendChild(label);
             imageContainer.appendChild(image);
@@ -165,7 +173,8 @@ export class WMSLegend extends Control {
 
 }
 
-const styles = {
+const getStyles = (theme: GrafanaTheme2) => {
+    return {
     basemapLegend_hidden: css`
         display: hidden;
     `,
@@ -180,5 +189,14 @@ const styles = {
     // `,
     divider: css`
     border-top: 1px solid rgba(204, 204, 220, 0.12);
-    `
-}
+    `,
+    legendBackground: css({
+        background: theme.colors.background.primary,
+      }),
+    grafanaDivider: css({
+        borderTop: `${theme.colors.border.strong} 1px solid`,
+        marginTop: "4px",
+        marginBottom: "0px",
+      }),
+    }
+};
