@@ -30,7 +30,7 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         return (
             <div key={crypto.randomUUID()}>
                 <CustomWMSBasemapEditor cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
-                <Button style={{marginTop: "6px"}} size="sm" variant="destructive" icon="minus" type="button" onClick={() => {
+                <Button aria-label="wms remove button" style={{marginTop: "6px"}} size="sm" variant="destructive" icon="minus" type="button" onClick={() => {
                     if (wmsEntities.length === 1) {
                         setWMSEntities([]);
                         onChange([]);
@@ -51,7 +51,7 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
     return (
         <>
             {wmsEditors}
-            <Button size="sm" variant="primary" icon="plus" type="button" onClick={() => {
+            <Button aria-label="wms add button" size="sm" variant="primary" icon="plus" type="button" onClick={() => {
                 setWMSEntities([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0, showLegend: false}]);
                 onChange([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0, showLegend: false}]);
             }}>Add WMS</Button>
