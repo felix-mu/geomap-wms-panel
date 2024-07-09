@@ -16,7 +16,7 @@ import * as olCss from "ol/css";
 
 export class WMSLegend extends Control {
     // private baseLayer: BaseLayer;
-    private legendOpened: boolean = false;
+    private legendOpened = false;
     // private props: any;
     private legendContainer: HTMLDivElement;
     // private propsHaveChanged: boolean = true;
@@ -78,7 +78,7 @@ export class WMSLegend extends Control {
                 this.element.style.resize = "both";
                 // this.element.style.background = config.theme2.colors.background.primary; //"rgba(255,255,255, 1)";
                 
-                if(this.legendContainer.getElementsByTagName("div").length == 0) {
+                if(this.legendContainer.getElementsByTagName("div").length === 0) {
                     this.legendContainer.append(...this.buildLegend(this.legendURLs));
                 }
 

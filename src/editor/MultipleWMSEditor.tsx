@@ -9,7 +9,7 @@ import { css } from "@emotion/css";
 type Props = StandardEditorProps<WMSConfig[]>;
 
 export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => {
-    const [wmsEntities, setWMSEntities] = useState<Array<WMSConfig>>(value !== undefined && value.length !== 0 ?
+    const [wmsEntities, setWMSEntities] = useState<WMSConfig[]>(value !== undefined && value.length !== 0 ?
         value : []);
     
     const cacheRef = useRef<{ [url: string]: Array<SelectableValue<string>> }>({});
