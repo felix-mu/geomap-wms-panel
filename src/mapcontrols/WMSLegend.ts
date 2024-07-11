@@ -15,6 +15,8 @@ import * as olCss from "ol/css";
 //   }
 
 export class WMSLegend extends Control {
+    static CONTROL_NAME: string =  "WMSLegend";
+
     // private baseLayer: BaseLayer;
     private legendOpened = false;
     // private props: any;
@@ -105,7 +107,15 @@ export class WMSLegend extends Control {
     }
 
     getControlName(): string {
-        return "WMSLegend";
+        return WMSLegend.CONTROL_NAME;
+    }
+
+    isLegendOpened(): boolean {
+        return this.legendOpened;
+    }
+
+    getElement(): HTMLElement {
+        return this.element;
     }
 
     // buildLegend(layer: BaseLayer): HTMLDivElement[] {
