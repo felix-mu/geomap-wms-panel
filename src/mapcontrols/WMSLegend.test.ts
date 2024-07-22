@@ -1,4 +1,4 @@
-import { LegendItem, wms } from "layers/basemaps/wms";
+import { LegendItem } from "layers/basemaps/wms";
 import { WMSLegend } from "./WMSLegend";
 
 describe("Build legend method", () => {
