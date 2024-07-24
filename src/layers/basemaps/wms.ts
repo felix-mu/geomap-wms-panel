@@ -12,6 +12,7 @@ import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { getWMSCapabilitiesFromService, getProjection } from 'mapServiceHandlers/wms';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
+
 // import {
   // RefreshEvent,
   // RefreshEvent,

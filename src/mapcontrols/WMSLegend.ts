@@ -15,7 +15,7 @@ import * as olCss from "ol/css";
 //   }
 
 export class WMSLegend extends Control {
-    static CONTROL_NAME: string =  "WMSLegend";
+    static CONTROL_NAME =  "WMSLegend";
 
     // private baseLayer: BaseLayer;
     private legendOpened = false;
@@ -34,6 +34,7 @@ export class WMSLegend extends Control {
         
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";
+        legendContainer.ariaLabel = "legend container";
         // legendContainer.className = styles.basemapLegend_hidden;
 
         const element = document.createElement('div');
@@ -149,9 +150,11 @@ export class WMSLegend extends Control {
     // }
     buildLegend(legendURLs: LegendItem[]): HTMLDivElement[] {
         let legendItems: HTMLDivElement[] = [];
+        let index = 0;
         for (let l of legendURLs) {
             let imageContainer = document.createElement("div");
             imageContainer.style.display = "block";
+            imageContainer.ariaLabel = `legend image-container ${index}`;
 
 
             let image = document.createElement("img");
@@ -176,6 +179,8 @@ export class WMSLegend extends Control {
                 imageContainer
                 // image
             );
+
+            ++index;
 
             }
         return legendItems;
