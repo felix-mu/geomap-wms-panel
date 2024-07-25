@@ -86,7 +86,7 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
   // <label className={styles.svg}>My select</label>
   // https://github.com/grafana/grafana/blob/ef5d71711a523efc65da089d45083e28201b58ab/packages/grafana-ui/src/components/Forms/Label.tsx
   return (
-    <>
+    <div aria-label="wms container">
       <Label description={'URL to WMS endpoint (required)'}>
         URL
       </Label>
@@ -108,12 +108,12 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
         setSelection(selectableValue);
         onChange({url: url!, layers: selectableValue.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: wms.opacity, showLegend: wms.showLegend}); // onChange sets the config.wms property; Only change it when layers are selected
         }}></MultiSelect>
-      <Field label="Opacity">
+      <Field label="Opacity" aria-label="wms opacity slider">
         <Slider value={wms.opacity} step={0.1} min={0} max={1} onAfterChange={(val) => {
           onChange({url: url!, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: val, showLegend: wms.showLegend})
         }} onChange={(val) => {opacityRef.current = val}}></Slider>
       </Field>
-      <Field label="Show legend" description="Toggle to show layers in legend">
+      <Field label="Show legend" description="Toggle to show layers in legend" aria-label="wms layer legend toggle switch">
           <Switch value={(wms.showLegend || false)} onChange={(e) => {
             onChange({url: url!, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: wms.opacity, showLegend: !wms.showLegend})
           }
@@ -124,7 +124,7 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
           setAttribution(e.currentTarget.value);
         }} onBlur={() => onChange({url: url!, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: opacityRef.current, showLegend: wms.showLegend})}></Input>
       </Field>
-    </>
+    </div>
         )
 };
 
