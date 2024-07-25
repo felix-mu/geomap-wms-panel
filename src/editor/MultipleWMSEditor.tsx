@@ -8,7 +8,7 @@ import { css } from "@emotion/css";
 
 type Props = StandardEditorProps<WMSConfig[]>;
 
-export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => {
+export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => { // onChange: https://grafana.com/developers/plugin-tools/how-to-guides/panel-plugins/custom-panel-option-editors
     const [wmsEntities, setWMSEntities] = useState<WMSConfig[]>(value !== undefined && value.length !== 0 ?
         value : []);
     

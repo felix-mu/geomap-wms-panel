@@ -98,7 +98,8 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
             }
             setOptions([]);
             setSelection([]);
-            }} onBlur={() => {
+            }} 
+          onBlur={() => {
               onChange({url: url!, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: wms.opacity, showLegend: wms.showLegend});
             }}></Input>
       <Label description={'Select the layers to be displayed in base map'}>
