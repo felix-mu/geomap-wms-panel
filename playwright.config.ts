@@ -14,6 +14,9 @@ const pluginE2eAuth = `${dirname(require.resolve('@grafana/plugin-e2e'))}/auth`;
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  // Each test is given 30 seconds.
+  // timeout: 60000, // https://playwright.dev/docs/test-configuration
+
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,

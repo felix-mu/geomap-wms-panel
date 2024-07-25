@@ -41,7 +41,11 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
 
   await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
 
-  await panelEditPage.panel.getByGrafanaSelector("URL input").first().fill(WMS_ENDPOINT);
+  await Promise.all([
+    page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?service=WMS&request=GetCapabilities"),
+    panelEditPage.panel.getByGrafanaSelector("URL input").first().fill(WMS_ENDPOINT)
+  ]);
+  // await panelEditPage.panel.getByGrafanaSelector("URL input").first().fill(WMS_ENDPOINT);
 
   // Click outside of multi select
   if (UPDATE_HAR) {
@@ -59,21 +63,30 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
 
   if(UPDATE_HAR) {
     // CAUTION: Encoding of URL is important
-    const layer1Response =  page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307");
+    const layer1Response = page.waitForResponse(
+      "https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"
+    );
     await selectOptions.first().click();
     console.log(await layer1Response);
-
+    // await Promise.all([
+    //   page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"),
+    //   selectOptions.first().click()
+    // ]); // https://stackoverflow.com/questions/67702724/playwright-test-fails-when-using-waitforresponse
     // Add two more layers
     // for (let i = 0; i < 2; ++i) {
     await multiSelect.click();
     // CAUTION: Encoding of URL is important
-    const layer2Response = page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307");
+    const layer2Response = page.waitForResponse(
+      "https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"
+    );
     await selectOptions.first().click();
     console.log(await layer2Response);
 
     await multiSelect.click();
     // CAUTION: Encoding of URL is important
-    const layer3Response = page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte%2Cg_lagekarte_2016&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307");
+    const layer3Response = page.waitForResponse(
+      "https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte%2Cg_lagekarte_2016&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"
+    );
     await selectOptions.first().click();
     await layer3Response;
   } else {
