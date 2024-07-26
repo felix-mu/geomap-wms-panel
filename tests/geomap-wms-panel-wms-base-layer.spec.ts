@@ -47,19 +47,19 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
   //   page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?service=WMS&request=GetCapabilities"),
   //   panelEditPage.panel.getByGrafanaSelector("URL input").first().fill(WMS_ENDPOINT)
   // ]);
-  await panelEditPage.panel.getByGrafanaSelector("URL input").first().fill(WMS_ENDPOINT);
+  await panelEditPage.panel.getByGrafanaSelector("URL input").fill(WMS_ENDPOINT);
 
   // Click outside of url input
   if (UPDATE_HAR) {
     const capabilitiesResponsePromise = page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?service=WMS&request=GetCapabilities");
     // await panelEditPage.panel.locator.click();
-    await panelEditPage.panel.getByGrafanaSelector("URL input").first().blur();
+    await panelEditPage.panel.getByGrafanaSelector("URL input").blur();
     // console.log(await capabilitiesResponse);
     const capabilitiesResponse = await capabilitiesResponsePromise;
     console.log('Capabilities response:', capabilitiesResponse.status());
   } else {
     // await panelEditPage.panel.locator.click();
-    await panelEditPage.panel.getByGrafanaSelector("URL input").first().blur();
+    await panelEditPage.panel.getByGrafanaSelector("URL input").blur();
   }
   
   const multiSelect: Locator = panelEditPage.panel.getByGrafanaSelector("wms layer multiselect").first();
@@ -68,41 +68,46 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
   const selectOptions: Locator = panelEditPage.getByGrafanaSelector("Select options menu").getByLabel("Select option");
 
   if(UPDATE_HAR) {
-    await selectOptions.first().click({trial: true});
+    // await selectOptions.first().click({trial: true});
     // CAUTION: Encoding of URL is important
     const layer1ResponsePromise = page.waitForResponse(
-      "https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=g_fw_untersuchungsgebiet_swm&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"
+      // Might not work because URL might differ from hard coded one "https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=g_fw_untersuchungsgebiet_swm&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"
+      response => response.status() === 200
     );
     await selectOptions.first().click();
-    // console.log(await layer1Response);
     const layer1Response = await layer1ResponsePromise;
     console.log('layer1 response:', layer1Response.status());
     // await Promise.all([
     //   page.waitForResponse("https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"),
-    //   selectOptions.first().click()
+    //   selectOptions.first().click(),
     // ]); // https://stackoverflow.com/questions/67702724/playwright-test-fails-when-using-waitforresponse
+    // await multiSelect.blur();
+
     // Add two more layers
     // for (let i = 0; i < 2; ++i) {
     await multiSelect.click();
     // CAUTION: Encoding of URL is important
     const layer2ResponsePromise = page.waitForResponse(
-      "https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"
+      response =>
+        response.status() === 200
     );
-    await selectOptions.first().click();
+    await selectOptions.last().click();
+    await multiSelect.blur();
     const layer2Response = await layer2ResponsePromise;
     console.log('layer2 response:', layer2Response.status());
 
-    // await multiSelect.click();
+    await multiSelect.click();
     // CAUTION: Encoding of URL is important
-    // const layer3Response = page.waitForResponse(
-    //   "https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&Layers=g_fw_untersuchungsgebiet_swm%2Cg_giw_stadtkarte%2Cg_lagekarte_2016&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"
-    // );
-    // await selectOptions.first().click();
-    // await layer3Response;
+    const layer3Response = page.waitForResponse(
+      response => response.status() === 200
+    );
+    await selectOptions.first().click();
+    await layer3Response;
   } else {
     // Add two more layers
     for (let i = 0; i < 2; ++i) {
       await selectOptions.first().click();
+      await multiSelect.blur();
       await multiSelect.click();
     }
     await selectOptions.first().click();
@@ -126,3 +131,42 @@ test('Should be able to add two wms entries', async ({
   await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
   await expect(panelEditPage.panel.getByGrafanaSelector("wms container")).toHaveCount(2);
 });
+
+test('Should be able to remove one wms entries', async ({
+  gotoPanelEditPage,
+  readProvisionedDashboard,
+  selectors
+}) => {
+  const dashboard = await readProvisionedDashboard({ fileName: 'dashboard_e2e.json' });
+  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '1' });
+  await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
+  await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
+  
+  await panelEditPage.panel.getByGrafanaSelector("wms remove button").first().click();
+
+  await expect(panelEditPage.panel.getByGrafanaSelector("wms container")).toHaveCount(1);
+});
+
+[
+  { createNumber: 2, removeNumber: 1 , expected: 1},
+  { createNumber: 2, removeNumber: 2 , expected: 0},
+].forEach(({createNumber, removeNumber, expected}) => {
+  test(`Should be able to remove ${removeNumber} from ${createNumber} wms entries`, async ({
+    gotoPanelEditPage,
+    readProvisionedDashboard,
+    selectors
+  }) => {
+    const dashboard = await readProvisionedDashboard({ fileName: 'dashboard_e2e.json' });
+    const panelEditPage = await gotoPanelEditPage({ dashboard, id: '1' });
+
+    for (let i = 0; i < createNumber; ++i) {
+      await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
+    }
+    for (let i = 0; i < removeNumber; ++i) {
+      await panelEditPage.panel.getByGrafanaSelector("wms remove button").first().click();
+    }
+    
+    await expect(panelEditPage.panel.getByGrafanaSelector("wms container")).toHaveCount(expected);
+  });
+});
+
