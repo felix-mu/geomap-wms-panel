@@ -31,10 +31,13 @@ export class WMSLegend extends Control {
 
         const button = document.createElement('button');
         button.innerHTML = '>';
+        // button.ariaLabel = "wms legend collapse button";
+        button.setAttribute("aria-label", "wms legend collapse button");
         
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";
-        legendContainer.ariaLabel = "legend container";
+        // legendContainer.ariaLabel = "wms legend container";
+        legendContainer.setAttribute("aria-label", "wms legend container");
         legendContainer.style.overflow = "scroll";
         legendContainer.style.height = "100%";
         // legendContainer.className = styles.basemapLegend_hidden;
@@ -156,8 +159,8 @@ export class WMSLegend extends Control {
         for (let l of legendURLs) {
             let imageContainer = document.createElement("div");
             imageContainer.style.display = "block";
-            imageContainer.ariaLabel = `legend image-container ${index}`;
-
+            imageContainer.ariaLabel = `wms legend image container ${index}`;
+            // imageContainer.setAttribute("aria-label", `wms legend image container ${index}`);
 
             let image = document.createElement("img");
             image.id = l.url;
