@@ -35,6 +35,8 @@ export class WMSLegend extends Control {
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";
         legendContainer.ariaLabel = "legend container";
+        legendContainer.style.overflow = "scroll";
+        legendContainer.style.height = "100%";
         // legendContainer.className = styles.basemapLegend_hidden;
 
         const element = document.createElement('div');
@@ -50,8 +52,8 @@ export class WMSLegend extends Control {
         // element.appendChild(legendContainer);
 
         super({
-        element: element,
-        target: options.target,
+            element: element,
+            target: options.target,
         });
 
         this.theme = config.theme2;
@@ -77,7 +79,7 @@ export class WMSLegend extends Control {
                 button.innerHTML = "<";
                 // this.legendContainer.className = styles.basemapLegend_visible;
 
-                this.element.style.overflow = "scroll";
+                this.element.style.overflow = "hidden"; // "scroll";
                 this.element.style.resize = "both";
                 // this.element.style.background = config.theme2.colors.background.primary; //"rgba(255,255,255, 1)";
                 
