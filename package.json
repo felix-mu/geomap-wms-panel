@@ -46,7 +46,7 @@
     "@testing-library/react": "^12.1.4",
     "@types/jest": "^29.5.0",
     "@types/lodash": "^4.14.194",
-    "@types/node": "^18.15.11",
+    "@types/node": "^22.4.1",
     "@types/ol-ext": "npm:@siedlerchr/types-ol-ext@^2.3.0",
     "commit-and-tag-version": "^12.4.1",
     "commitizen": "^4.3.0",
