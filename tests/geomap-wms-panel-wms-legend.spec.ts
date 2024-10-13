@@ -43,8 +43,11 @@ test('Should be able to toggle the legend for WMS layers when a valid WMS endpoi
   const multiSelect: Locator = panelEditPage.panel.getByGrafanaSelector("wms layer multiselect").first();
   await multiSelect.click();
 
-  const selectOptions: Locator = panelEditPage.getByGrafanaSelector("Select options menu").getByLabel("Select option");
-
+   let selectOptions: Locator = panelEditPage.getByGrafanaSelector("Select options menu").getByLabel("Select option");
+   if (await selectOptions.count() == 0) {
+    // Instead of aria label try data-testid Select option
+    selectOptions = panelEditPage.getByGrafanaSelector("data-testid Select option");
+  }
   if(UPDATE_HAR) {
     // await selectOptions.first().click({trial: true});
     // CAUTION: Encoding of URL is important
