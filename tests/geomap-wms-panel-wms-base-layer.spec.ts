@@ -66,7 +66,7 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
   await multiSelect.click();
 
   let selectOptions: Locator = panelEditPage.getByGrafanaSelector("Select options menu").getByLabel("Select option");
-  if (await selectOptions.count() == 0) {
+  if (await selectOptions.count() === 0) {
     // Instead of aria label try data-testid Select option
     selectOptions = panelEditPage.getByGrafanaSelector("data-testid Select option");
   }
