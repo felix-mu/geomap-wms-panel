@@ -248,6 +248,26 @@ After each build the Docker-Container must be restarted to reload the new versio
 npm run validate
 ```
 
+## Use automatic generation of changelog
+At first bump the version of the npm package (package.json and package-lock.json):
+```bash
+npm version <version>
+```
+Run the changelog generation:
+```bash
+npm run release
+```
+Commit the changelog changes, tag the latest commit and push everything:
+```bash
+git add . && npm run commit
+```
+```bash
+git push origin main
+```
+```bash
+git tag v<version> && git push origin main
+```
+
 # Contributing
 See [Contributing guide](https://github.com/felix-mu/geomap-wms-panel/blob/main/CONTRIBUTING.md) for how to contribute to the project.
 
