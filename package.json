@@ -14,7 +14,6 @@
     "server": "docker compose up --build",
     "sign": "npx --yes @grafana/sign-plugin@latest --distDir ./felixrelleum-geomapwms-panel",
     "validate": "npm run build && zip -qr felixrelleum-geomapwms-panel.zip felixrelleum-geomapwms-panel && npx --yes @grafana/plugin-validator@latest -config ./plugin-validator-config.yml -sourceCodeUri file://. felixrelleum-geomapwms-panel.zip; rm -r felixrelleum-geomapwms-panel.zip",
-    "start": "yarn watch",
     "test:all": "jest --coverage",
     "test": "jest --watch --onlyChanged",
     "test:ci": "jest --passWithNoTests --maxWorkers 4",
@@ -95,10 +94,8 @@
     "react-highlight-words": "^0.17.0",
     "react-use": "^17.3.1",
     "tinycolor2": "^1.4.2",
-    "tslib": "2.5.3",
-    "yarn": "^1.22.17"
+    "tslib": "2.5.3"
   },
-  "packageManager": "yarn@1.22.19",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
