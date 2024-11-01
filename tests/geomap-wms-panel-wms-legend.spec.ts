@@ -1,24 +1,8 @@
 import { test, expect, DashboardPage } from '@grafana/plugin-e2e';
 import { WMS_ENDPOINT, HAR_FILEPATH, UPDATE_HAR } from './test_config';
 import { Locator } from '@playwright/test';
-import { update } from 'lodash';
-// import { selectors} from '@playwright/test';
 
-test('Should have the base map layer type "OGC Web Map Service" selected', async ({
-  gotoPanelEditPage,
-  readProvisionedDashboard,
-  selectors
-}) => {
-  const dashboard = await readProvisionedDashboard({ fileName: 'dashboard_e2e.json' });
-  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '1' });
-  // const showTableHeaderSwitch = panelEditPage
-  //   .getByGrafanaSelector(selectors.components.PanelEditor.OptionsPane.fieldLabel('Table Show table header'))
-  //   .getByLabel('Toggle switch');
-  // selectors.setTestIdAttribute("aria-label");
-  await expect(panelEditPage.panel.getByGrafanaSelector("Base layer Base layer field property editor").getByText("OGC Web Map Service")).toHaveCount(1);
-});
-
-test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in the URL form', async ({
+test('Should be able to toggle the legend for WMS layers when a valid WMS endpoint is typed in the URL form', async ({
   gotoPanelEditPage,
   readProvisionedDashboard,
   selectors,
@@ -29,12 +13,6 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
 
   const dashboard = await readProvisionedDashboard({ fileName: 'dashboard_e2e.json' });
   const panelEditPage = await gotoPanelEditPage({ dashboard, id: '1' });
-  // const showTableHeaderSwitch = panelEditPage
-  //   .getByGrafanaSelector(selectors.components.PanelEditor.OptionsPane.fieldLabel('Table Show table header'))
-  //   .getByLabel('Toggle switch');
-  // selectors.setTestIdAttribute("aria-label");
-
-  // test.setTimeout(120000);
 
   await context.routeFromHAR(HAR_FILEPATH, {
     update: UPDATE_HAR,
@@ -65,12 +43,11 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
   const multiSelect: Locator = panelEditPage.panel.getByGrafanaSelector("wms layer multiselect").first();
   await multiSelect.click();
 
-  let selectOptions: Locator = panelEditPage.getByGrafanaSelector("Select options menu").getByLabel("Select option");
-  if (await selectOptions.count() === 0) {
+   let selectOptions: Locator = panelEditPage.getByGrafanaSelector("Select options menu").getByLabel("Select option");
+   if (await selectOptions.count() === 0) {
     // Instead of aria label try data-testid Select option
     selectOptions = panelEditPage.getByGrafanaSelector("data-testid Select option");
   }
-
   if(UPDATE_HAR) {
     // await selectOptions.first().click({trial: true});
     // CAUTION: Encoding of URL is important
@@ -117,60 +94,27 @@ test('Should be able to select a WMS Layer when a valid WMS endpoint is typed in
     await selectOptions.first().click();
   }
 
-  // Click outside of multi select
-  // await panelEditPage.panel.locator.click();
+  // Toggle the wms legend for the first wms layer
+  const legendToggleSwitch = panelEditPage.getByGrafanaSelector("wms layer legend toggle switch").getByLabel("Toggle switch");
+  // if(UPDATE_HAR) {
+  //   // await selectOptions.first().click({trial: true});
+  //   // CAUTION: Encoding of URL is important
+  //   const legendEntries = page.waitForResponse(
+  //     // Might not work because URL might differ from hard coded one "https://geoportal.muenchen.de/geoserver/gsm/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=g_fw_untersuchungsgebiet_swm&CRS=EPSG%3A3857&STYLES=&WIDTH=846&HEIGHT=242&BBOX=1277760.4084280902%2C6124720.506528781%2C1299844.4046409936%2C6131037.678022307"
+  //     response => response.status() === 200
+  //   );
+  //   const legendEntriesResponse = await legendEntries;
+  //   console.log('legendEntriesResponse response:', legendEntriesResponse.status());
+  // } else {
+  //   await legendToggleSwitch.first().click();
+  // }
+  await legendToggleSwitch.first().click();
+  await panelEditPage.getByGrafanaSelector("wms legend collapse button").click();
 
-  // Expect assert will be possible when API call is mocked and the layer values are known
-  expect(true).toBeTruthy();
-});
+  const legendItemsContainers = panelEditPage.getByGrafanaSelector("wms legend container").getByLabel(new RegExp("wms legend image container.*", "i"));
 
-test('Should be able to add two wms entries', async ({
-  gotoPanelEditPage,
-  readProvisionedDashboard,
-  selectors
-}) => {
-  const dashboard = await readProvisionedDashboard({ fileName: 'dashboard_e2e.json' });
-  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '1' });
-  await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
-  await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
-  await expect(panelEditPage.panel.getByGrafanaSelector("wms container")).toHaveCount(2);
-});
+  console.log(`Number of wms legend image containers: ${await legendItemsContainers.count()}`);
 
-test('Should be able to remove one wms entry', async ({
-  gotoPanelEditPage,
-  readProvisionedDashboard,
-  selectors
-}) => {
-  const dashboard = await readProvisionedDashboard({ fileName: 'dashboard_e2e.json' });
-  const panelEditPage = await gotoPanelEditPage({ dashboard, id: '1' });
-  await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
-  await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
-  
-  await panelEditPage.panel.getByGrafanaSelector("wms remove button").first().click();
-
-  await expect(panelEditPage.panel.getByGrafanaSelector("wms container")).toHaveCount(1);
-});
-
-[
-  { createNumber: 2, removeNumber: 1 , expected: 1},
-  { createNumber: 2, removeNumber: 2 , expected: 0},
-].forEach(({createNumber, removeNumber, expected}) => {
-  test(`Should be able to remove ${removeNumber} from ${createNumber} wms entries`, async ({
-    gotoPanelEditPage,
-    readProvisionedDashboard,
-    selectors
-  }) => {
-    const dashboard = await readProvisionedDashboard({ fileName: 'dashboard_e2e.json' });
-    const panelEditPage = await gotoPanelEditPage({ dashboard, id: '1' });
-
-    for (let i = 0; i < createNumber; ++i) {
-      await panelEditPage.panel.getByGrafanaSelector("wms add button").click();
-    }
-    for (let i = 0; i < removeNumber; ++i) {
-      await panelEditPage.panel.getByGrafanaSelector("wms remove button").first().click();
-    }
-    
-    await expect(panelEditPage.panel.getByGrafanaSelector("wms container")).toHaveCount(expected);
-  });
+  await expect(legendItemsContainers).toHaveCount(3);
 });
 

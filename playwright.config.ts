@@ -14,6 +14,9 @@ const pluginE2eAuth = `${dirname(require.resolve('@grafana/plugin-e2e'))}/auth`;
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  // Each test is given 30 seconds.
+  // timeout: 120000, // https://playwright.dev/docs/test-configuration https://playwright.dev/docs/test-timeouts
+
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -32,6 +35,10 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    // launchOptions: {
+    //   args: ['--disable-web-security'],
+    // }
   },
 
   /* Configure projects for major browsers */

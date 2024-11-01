@@ -53,6 +53,7 @@ import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
 import { Global } from '@emotion/react';
 import { Subscription } from 'rxjs';
+// import { BasemapLegend } from 'mapcontrols/BasemapLegend';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
 
@@ -614,12 +615,18 @@ export class GeomapPanel extends Component<Props, State> {
       );
     }
 
-    // Add custom control
+    // Add custom controls
     if (options.showSpatialFilter === true) {
       this.map.addControl(
         new SpatialFilterControl(this.map, this.props)
         );
     }
+
+    // if (options.showBasemapLegend === true) {
+    //   this.map.addControl(
+    //     new BasemapLegend(this.basemap!, this.props)
+    //     );
+    // }
 
     const map = this.map;
 

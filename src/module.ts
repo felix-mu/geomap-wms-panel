@@ -89,14 +89,21 @@ export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
         category,
         path: 'controls.showDebug',
         name: 'Show debug',
-        description: 'show map info',
+        description: 'Show map info',
         defaultValue: false,
       })
       .addBooleanSwitch({
         category,
         path: 'controls.showSpatialFilter',
         name: 'Show spatial filter tool',
-        description: 'Shows tool for interactive spatial filtering',
+        description: 'Show tool for interactive spatial filtering',
         defaultValue: false,
       });
+      // .addBooleanSwitch({
+      //   category,
+      //   path: 'controls.showBasemapLegend',
+      //   name: 'Show basemap legend',
+      //   description: 'Show legend of basemap if available',
+      //   defaultValue: false,
+      // });
   });

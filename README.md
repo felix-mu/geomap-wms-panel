@@ -16,15 +16,69 @@ Also a minimal implementation of datalinks is provided to update dashboard varia
 Due to Grafana Labs' [plugin guidelines](https://grafana.com/legal/plugins/#plugin-publishing-and-signing-criteria) it was necessary to remove the Nextzen basemap layer, since it required to store the API key in the config, which should be avoided in panel plugins.
 
 ## Features
-* Integration of OGC WMS 1.3.0 as base map layer
+* Integration of mutliple OGC WMS 1.3.0 from different endpoints as base map layer
+* Opacity setting for each WMS endpoint
+* Collapsable legend of used WNS layers
 * Interactive spatial filter
 * Minimal data links implementation
 
+## Migration from Geomap WMS Panel Plugin v1.0.1
+Due to the capability of using multiple WMS endpoints as base map layer a change in the plugin configuration object was required, not being backwards compatible with the configuration object used for plugins of version 1.y.z.
+
+Dashboards using the Geomap WMS Panel Plugin of major version 1 and using a WMS as base map layer that want to use the latest version of the plugin need to migrate their panel's JSON definition.
+
+> ⚠️ The migration is **only** mandatory for plugins that use a WMS as a base map layer. Panels that use other base maps than the WMS base map do not require any action. ⚠️
+
+### Example of a migration
+JSON definition of WMS baselayer in plugin version 1.y.z:
+```json
+...
+"basemap": {
+      "type": "wms",
+      "config": {
+        "layer": [
+          "g_stadtkarte_gesamt"
+        ],
+        "url": "https://geoportal.muenchen.de/geoserver/gsm/wms?"
+      }
+    },
+...
+```
+
+Corresponding JSON definition of WMS baselayer in plugin version 2.y.z:
+```json
+...
+"basemap": {
+      "type": "wms",
+      "config": {
+        "wmsBaselayer": [
+          {
+            "url": "https://geoportal.muenchen.de/geoserver/gsm/wms?",
+            "layers": ["g_stadtkarte_gesamt"],
+            "attribution": "",
+            "opacity": 1,
+            "showLegend": false
+          }
+        ]
+      }
+    },
+...
+```
+
+The JSON definition of the panel might be edited directly in the Grafana GUI.
+
+> ⚠️ Make sure to backup your dashboard before editing it or make use of the versioning functionality of Grafana to rollback changes if editing is gone wrong ⚠️
+
 ## Using the Geomap WMS Panel Plugin
-> ⚠️ Currently only WMS of version 1.3.0 is supported ⚠️
+> ⚠️ Currently only WMS of version 1.3.0 are supported ⚠️
 1. In the selection _Base layer_ choose the type _OGC Web Map Sevice_
-2. In the text field _URL_ type in the base url of the WMS endpoint (NOTE: Only the URL of the service endpoint **WITHOUT** request parameters, e.g. https://geoportal.muenchen.de/geoserver/gsm/wms)
-3. Successively choose layers from the drop down list
+2. Click the button _+ Add WMS_ to open the WMS dialog
+3. In the text field _URL_ type in the base url of the WMS endpoint (NOTE: Only the URL of the service endpoint **WITHOUT** request parameters, e.g. https://geoportal.muenchen.de/geoserver/gsm/wms)
+4. Choose one or multiple layers from the drop down list
+5. Adjust the opacity of the WMS entry (affects all layers of the wms entry; to use the same WMS endpoint and apply different opacities to layers add multiple entries via the _+ Add WMS_)
+6. Optionally toggle the legend button to display a legend containing the icons of the selected WMS layers
+7. Optionally provide an attribution for the WMS endpoint
+8. To remove an entry click on the button _- Remove WMS_
 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/grafana_multiple_layers.PNG)
 
@@ -135,6 +189,18 @@ This repository refers to the following version of its original: https://github.
 <!-- - Minikube
 - Helm -->
 
+## Run the tests
+### Unit/integration tests
+```bash
+npm run test:all
+```
+
+### E2E tests
+> Requires a Docker container of grafana running at localhost:3000 with default credentials (user: admin, password: admin).
+```bash
+npm run e2e
+```
+
 ## Building the plugin
 1. Clone the repository
 ```bash
@@ -177,7 +243,32 @@ If the plugin was build with `npm run dev` the Webpack directories are loaded to
 ## ⚠️ Troubleshooting
 After each build the Docker-Container must be restarted to reload the new version of the plugin. If the changes of the plugin are **not** noticed it might help to clear the browser cache and refresh the page.
 
-## Contributing
+## Validate the plugin
+```bash
+npm run validate
+```
+
+## Use automatic generation of changelog
+At first bump the version of the npm package (package.json and package-lock.json):
+```bash
+npm version <version>
+```
+Run the changelog generation:
+```bash
+npm run release
+```
+Commit the changelog changes, tag the latest commit and push everything:
+```bash
+git add . && npm run commit
+```
+```bash
+git push origin main
+```
+```bash
+git tag v<version> && git push origin main
+```
+
+# Contributing
 See [Contributing guide](https://github.com/felix-mu/geomap-wms-panel/blob/main/CONTRIBUTING.md) for how to contribute to the project.
 
 # Further resources

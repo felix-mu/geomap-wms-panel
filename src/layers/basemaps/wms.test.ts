@@ -1,10 +1,11 @@
 import '../../__mocks__/fetch_mock';
-import { getWMSCapabilitiesFromService, addWMSLayerSelect, getAllDirectChildNodesByLocalName, 
-  getFirstDirectChildNodeByLocalName, getProjection, getWMSLayers, wms } from "./wms";
+import { wms } from "./wms";
 import Map from 'ol/Map';
 import { config, } from '@grafana/runtime';
 import ImageLayer from 'ol/layer/Image';
 import ImageWMS from 'ol/source/ImageWMS';
+import { getFirstDirectChildNodeByLocalName, getAllDirectChildNodesByLocalName, getWMSLayers, getProjection, getWMSCapabilitiesFromService } from 'mapServiceHandlers/wms';
+import LayerGroup from 'ol/layer/Group';
 
 const xmlCapabilities = `<?xml version="1.0" ?>
 <WMS_Capabilities xmlns="http://www.opengis.net/wms" xmlns:sld="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0" version="1.3.0" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd">
@@ -627,24 +628,6 @@ describe("Test getWMSLayers", () => {
     });
 });
 
-describe("Test addWMSLayerSelect", () => {
-    let optionsBuilderMock = {
-        settings: {
-            options: []
-        }
-    };
-
-    test("normal function call", () => {
-        addWMSLayerSelect(optionsBuilderMock, capabilityNode);
-        expect(optionsBuilderMock.settings.options.length).toBe(6);
-    });
-
-    test("no wms layer in node", () => {
-        addWMSLayerSelect(optionsBuilderMock, doc);
-        expect(optionsBuilderMock.settings.options.length).toBe(0);
-    });
-});
-
 // describe("Mocking api calls", () => {
 //     test("test getProjDefinition", async () => {
 //         let def = await getProjDefinition(new URL("http://test.de"));
@@ -698,31 +681,39 @@ describe("Integration test wms base layer", () => {
   test("test create function with empty config object (i.e. first access to panel in edit mode)", async () => {
     const wmsInstance = wms;
     const cfg = {
-      wms: {
-        url: "",
-        layers: [],
-      },
-      attribution: ""
-    }
-    let imageLayer = (await wmsInstance.create(new Map({}), {
+      wmsBaselayer: [
+          {
+          url: "",
+          layers: [],
+          opacity: 1.0,
+          showLegend: false,
+          attribution: ""
+        }
+      ]
+    };
+    let imageLayerGroup = (await wmsInstance.create(new Map({}), {
       config: cfg,
       type: "wms"
     }, config.theme2)).init();
 
     //  Since there are no layers selected an empty image layer instance is returned by the init()-function
-    expect((imageLayer as ImageLayer<ImageWMS>).getSource()).toBe(null);
+    expect((imageLayerGroup as LayerGroup).getLayers().getLength()).toBe(0);
 
   });
 
   test.skip("test create function with config object contains url but no layers (i.e. user just typed WMS endpoint url but did not select layer from dropdown)", async () => {
     const wmsInstance = wms;
     const cfg = {
-      wms: {
-        url: "https://sgx.geodatenzentrum.de/wms_topplus_open",
-        layers: [],
-      },
-      attribution: ""
-    }
+      wmsBaselayer: [
+          {
+          url: "https://sgx.geodatenzentrum.de/wms_topplus_open",
+          layers: [],
+          opacity: 1.0,
+          showLegend: false,
+          attribution: ""
+        }
+      ]
+    };
     let imageLayer = (await wmsInstance.create(new Map({}), {
       config: cfg,
       type: "wms"
@@ -736,19 +727,28 @@ describe("Integration test wms base layer", () => {
   test.skip("test create function with config object contains url and single layer (i.e. user typed WMS endpoint url and selected layer from dropdown)", async () => {
     const wmsInstance = wms;
     const cfg = {
-      wms: {
-        url: "https://sgx.geodatenzentrum.de/wms_topplus_open?service=wms&version=1.3.0",
-        layers: ['web_grau'],
-      },
-      attribution: ""
-    }
-    let imageLayer = (await wmsInstance.create(new Map({}), {
+      wmsBaselayer: [
+            {
+            url: "https://sgx.geodatenzentrum.de/wms_topplus_open?service=wms&version=1.3.0",
+            layers: [{name: 'web_grau', title: "Grau"}],
+            opacity: 1.0,
+            showLegend: false,
+            attribution: ""
+          }
+        ]
+      };
+    let imageLayerGroup = (await wmsInstance.create(new Map({}), {
       config: cfg,
       type: "wms"
     }, config.theme2)).init();
 
     //  Since there are no layers selected an empty image layer instance is returned by the init()-function
-    expect(((imageLayer as ImageLayer<ImageWMS>).getSource() as ImageWMS).getParams()['Layers']).toBe(cfg.wms.layers.join(','));
+    let layers: string[] = [];
+    cfg.wmsBaselayer.forEach((e) => {
+      e.layers.forEach((a) => layers.push(a.name));
+    });
+
+    expect(((imageLayerGroup.getLayersArray()[0] as ImageLayer<ImageWMS>).getSource() as ImageWMS).getParams()['LAYERS']).toBe(layers.join(','));
 
   });
 

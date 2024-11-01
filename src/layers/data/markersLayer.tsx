@@ -357,7 +357,8 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
         const cluster = options.config?.cluster ?? defaultOptions.cluster;
 
         for (const frame of data.series) {
-          if ((options.query && options.query.options === frame.refId) || (frame.meta)) {
+          if ((options.query && options.query.options === frame.refId) ||
+                (/*options.query === undefined &&*/ frame.refId === undefined && frame.meta)) {
             const info = dataFrameToPoints(frame, matchers);
             if (info.warning) {
               // console.log('Could not find locations', info.warning);
@@ -416,7 +417,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
                   });
                 }
               } catch (error) {
-                console.log(error);
+                // console.log(error);
               }
             }
             // Post updates to the legend component
@@ -426,7 +427,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
                 size: sizeDim,
               });
             }
-            break; // Only the first frame for now!
+            // break; // Only the first frame for now!
           }
         }
 
