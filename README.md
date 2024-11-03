@@ -10,7 +10,7 @@ Geomap WMS Panel Plugin
 > 💡 This project uses [semantic versioning](https://semver.org/).
 
 ## About
-This plugin evolved from the [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel). It extends the original version by the functionality of the intergration of an [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) as a base map layer. Additionally the plugin ships with an interactive filter tool to query data by spatial conditions.
+This plugin evolved from the [Orchestra Cities Map Panel-Plugins](https://github.com/orchestracities/map-panel). It extends the original version by the functionality of the intergration of an [OGC Web Map Service](https://www.ogc.org/standard/wms/) (**WMS version 1.3.0**) as a base map layer. Additionally the plugin ships with an interactive filter tool to query data by spatial relations.
 Also a minimal implementation of datalinks is provided to update dashboard variables by clicking on a map feature.
 
 Due to Grafana Labs' [plugin guidelines](https://grafana.com/legal/plugins/#plugin-publishing-and-signing-criteria) it was necessary to remove the Nextzen basemap layer, since it required to store the API key in the config, which should be avoided in panel plugins.
