@@ -1,5 +1,5 @@
 # https://github.com/grafana/grafana-plugin-examples#api-compatibility
-name: Compatibility check
+name: Compatibility Check
 on:
   push:
     branches: [ "main" ]
