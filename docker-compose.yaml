@@ -3,7 +3,6 @@ version: '3.0'
 services:
   grafana:
     image: docker.io/grafana/grafana-oss:latest # grafana/grafana-oss:10.0.2
-    container_name: 'geomap-wms-panel'
     environment:
       - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=felixrelleum-geomapwms-panel
       - GF_INSTALL_PLUGINS=marcusolsson-json-datasource,iosb-sensorthings-datasource
