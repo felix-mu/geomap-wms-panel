@@ -1,7 +1,7 @@
 import { SelectableValue, StandardEditorProps } from "@grafana/data";
 import { WMSConfig } from "layers/basemaps/wms";
 import { CustomWMSBasemapEditor } from "./CustomWMSBasemapEditor";
-import { Button } from "@grafana/ui";
+import { Button, ControlledCollapse } from "@grafana/ui";
 import React, { useRef, useState } from "react";
 import { css } from "@emotion/css";
 import { v4 as uuidv4 } from 'uuid';
@@ -13,6 +13,8 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         value : []);
     
     const cacheRef = useRef<{ [url: string]: Array<SelectableValue<string>> }>({});
+
+    const wmsEntityIDs = useRef<string[]>([]);
 
     function updateWMSEditor(wmsEntity: WMSConfig, index: number) {
         wmsEntities.splice(index, 1, wmsEntity);
@@ -27,21 +29,28 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
     }
 
     let wmsEditors = (value || []).map((el, index) => {
+        if(!wmsEntityIDs.current[index]) {
+            wmsEntityIDs.current.push(uuidv4());
+        }
+
         return (
-            <div key={/*crypto.randomUUID()*/ uuidv4()}>
-                <CustomWMSBasemapEditor cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
-                <Button aria-label={`wms remove button`} style={{marginTop: "6px"}} size="sm" variant="destructive" icon="minus" type="button" onClick={() => {
-                    if (wmsEntities.length === 1) {
-                        setWMSEntities([]);
-                        onChange([]);
-                    } else {
-                        // const newWMSEntities = [...wmsEntities];
-                        removeWMSEntity(index);
-                    }
-                }}>Remove WMS</Button>
-                {/* <div style={{
-                    height: "3px"
-                }}></div> */}
+            <div key={wmsEntityIDs.current[index]}>
+                <ControlledCollapse label={`WMS #${index}`} isOpen={true} collapsible={true}>
+                    <CustomWMSBasemapEditor cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
+                    <Button aria-label={`wms remove button`} style={{marginTop: "6px"}} size="sm" variant="destructive" icon="minus" type="button" onClick={() => {
+                        wmsEntityIDs.current.splice(index, 1);
+                        if (wmsEntities.length === 1) {
+                            setWMSEntities([]);
+                            onChange([]);
+                        } else {
+                            // const newWMSEntities = [...wmsEntities];
+                            removeWMSEntity(index);
+                        }
+                    }}>Remove WMS</Button>
+                    {/* <div style={{
+                        height: "3px"
+                    }}></div> */}
+                </ControlledCollapse >
                 <hr className={styles.divider}></hr>
             </div>
         )
