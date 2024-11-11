@@ -1,0 +1,134 @@
+
+name: Release_manually
+
+on: on: workflow_dispatch
+
+permissions:
+  contents: write # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+
+jobs:
+  lint:
+    uses: ./.github/workflows/linting.yml
+
+  test:
+    uses: ./.github/workflows/test.yml
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - uses: actions/checkout@v3
+    - run: npm install
+    - run: npm run build
+
+  validate:
+    # needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - uses: actions/checkout@v3
+    - run: npm install
+    - run: npm run build
+    - name: Sign plugin
+      run: npm run sign
+      shell: bash
+      env:
+        GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
+      if: ${{ env.GRAFANA_ACCESS_POLICY_TOKEN != '' }} # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#using-secrets-in-a-workflow https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-secrets
+    - name: Zip the dist folder
+      run: zip -qr felixrelleum-geomapwms-panel.zip felixrelleum-geomapwms-panel
+    - name: Run validator
+      run: npx --yes @grafana/plugin-validator@latest -sourceCodeUri file://. felixrelleum-geomapwms-panel.zip # https://github.com/grafana/plugin-validator
+  
+  release:
+    runs-on: ubuntu-latest
+    needs: [lint, test, build, validate]
+    # Not applicable since uses dist folder as build output directory
+    # https://github.com/grafana/plugin-actions/blob/main/build-plugin/action.yml
+    # - uses: grafana/plugin-actions/build-plugin@release
+    #   with:
+    #     grafana_token: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
+    steps:
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - uses: actions/checkout@v3
+    - run: npm install
+    - run: npm run build
+    - name: Sign plugin
+      run: npm run sign
+      shell: bash
+      env:
+        GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
+      if: ${{ env.GRAFANA_ACCESS_POLICY_TOKEN != '' }} # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#using-secrets-in-a-workflow https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-secrets
+
+    - name: Get plugin metadata
+      id: metadata
+      run: |
+        sudo apt-get install jq
+
+        export GRAFANA_PLUGIN_ID=$(cat felixrelleum-geomapwms-panel/plugin.json | jq -r .id)
+        export GRAFANA_PLUGIN_VERSION=$(cat felixrelleum-geomapwms-panel/plugin.json | jq -r .info.version)
+        export GRAFANA_PLUGIN_TYPE=$(cat felixrelleum-geomapwms-panel/plugin.json | jq -r .type)
+        export GRAFANA_PLUGIN_ARTIFACT=${GRAFANA_PLUGIN_ID}-${GRAFANA_PLUGIN_VERSION}.zip
+        export GRAFANA_PLUGIN_ARTIFACT_SHA1SUM=${GRAFANA_PLUGIN_ARTIFACT}.sha1
+
+        echo "plugin-id=${GRAFANA_PLUGIN_ID}" >> $GITHUB_OUTPUT
+        echo "plugin-version=${GRAFANA_PLUGIN_VERSION}" >> $GITHUB_OUTPUT
+        echo "plugin-type=${GRAFANA_PLUGIN_TYPE}" >> $GITHUB_OUTPUT
+        echo "archive=${GRAFANA_PLUGIN_ARTIFACT}" >> $GITHUB_OUTPUT
+        echo "archive-sha1sum=${GRAFANA_PLUGIN_ARTIFACT_SHA1SUM}" >> $GITHUB_OUTPUT
+
+        echo "github-tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Read changelog
+      id: changelog
+      run: |
+        awk '/^## / {s++} s == 1 {print}' CHANGELOG.md > release_notes.md
+        echo "path=release_notes.md" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Check package version
+      run: if [ "v${{ steps.metadata.outputs.plugin-version }}" != "${{ steps.metadata.outputs.github-tag }}" ]; then printf "\033[0;31mPlugin version doesn't match tag name. The tag should be v${{ steps.metadata.outputs.plugin-version }} \033[0m\n"; exit 1; fi
+      shell: bash
+
+    - name: Package plugin
+      id: package-plugin
+      run: |
+        zip ${{ steps.metadata.outputs.archive }} ${{ steps.metadata.outputs.plugin-id }} -r
+        sha1sum ${{ steps.metadata.outputs.archive }} | cut -f1 -d' ' > ${{ steps.metadata.outputs.archive-sha1sum }}
+      shell: bash
+    - name: Create Github release
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: true
+        generate_release_notes: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          ./${{ steps.metadata.outputs.archive }}
+          ./${{ steps.metadata.outputs.archive-sha1sum }}
+        body: |
+          **This Github draft release has been created for your plugin.**
+
+          _Note: if this is the first release for your plugin please consult the [distributing-your-plugin section](https://github.com/${{github.repository}}/blob/main/README.md#distributing-your-plugin) of the README_
+
+          If you would like to submit this release to Grafana please consider the following steps:
+
+          - Check the Validate plugin step in the [release workflow](https://github.com/${{github.repository}}/commit/${{github.sha}}/checks/${{github.run_id}}) for any warnings that need attention
+          - Navigate to https://grafana.com/auth/sign-in/ to sign into your account
+          - Once logged in click **My Plugins** in the admin navigation
+          - Click the **Submit Plugin** button
+          - Fill in the Plugin Submission form:
+            - Paste this [.zip asset link](https://github.com/${{ github.repository }}/releases/download/v${{ steps.metadata.outputs.plugin-version }}/${{ steps.metadata.outputs.archive }}) in the Plugin URL field
+            - Paste this [.zip.sha1 link](https://github.com/${{ github.repository }}/releases/download/v${{ steps.metadata.outputs.plugin-version }}/${{ steps.metadata.outputs.archive-sha1sum }}) in the SHA1 field
+
+          Once done please remove these instructions and publish this release.
