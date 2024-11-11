@@ -209,14 +209,14 @@
         "name": "geomap_wms_spatial_filter_geometry",
         "query": "POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))",
         "skipUrlSync": false,
-        "type": "constant"
+        "type": "textbox"
       },
       {
         "hide": 2,
         "name": "datalink_test",
         "query": "constant",
         "skipUrlSync": false,
-        "type": "constant"
+        "type": "textbox"
       }
     ]
   },
