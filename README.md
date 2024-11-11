@@ -251,9 +251,9 @@ npm run validate
 ## Use automatic generation of changelog
 At first bump the version of the npm package (package.json and package-lock.json):
 ```bash
-npm version <version>
+npm --no-git-tag-version version <version>
 ```
-Run the changelog generation:
+Run the [automatic changelog generation](https://github.com/absolute-version/commit-and-tag-version?tab=readme-ov-file#how-it-works):
 ```bash
 npm run release
 ```
