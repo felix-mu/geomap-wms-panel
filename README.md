@@ -132,7 +132,7 @@ The spatial filter tool uses the geographic coordinate system _urn:ogc:def:crs:O
 
 To enable the spatial filter tool follow the steps below:
 
-1. Create a [dashboard variable](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/) of type "Constant" and the name "geomap_wms_spatial_filter_geometry" (**the spatial filter tool will update this variable internally and as for now does not provide the functionality of setting a different variable name externally**). As initial value use e.g. `POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))`, to selec all, if no polygon is drawn.
+1. Create a [dashboard variable](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/) of type "Textbox" or "Custom" (eventually set the display property to "Nothing" to hide the variable from the user) and the name "geomap_wms_spatial_filter_geometry" (**the spatial filter tool will update this variable internally and as for now does not provide the functionality of setting a different variable name externally**). As initial value use e.g. `POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))`, to selec all, if no polygon is drawn.
 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_2.png)
 
