@@ -1,7 +1,7 @@
 
 name: Release_manually
 
-on: on: workflow_dispatch
+on: workflow_dispatch
 
 permissions:
   contents: write # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
