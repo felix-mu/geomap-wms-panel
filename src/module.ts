@@ -98,12 +98,12 @@ export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
         name: 'Show spatial filter tool',
         description: 'Show tool for interactive spatial filtering',
         defaultValue: false,
+      })
+      .addBooleanSwitch({
+        category,
+        path: 'controls.showDataExtentZoom',
+        name: 'Show data extent zoom',
+        description: 'Fit map view to data extent',
+        defaultValue: true,
       });
-      // .addBooleanSwitch({
-      //   category,
-      //   path: 'controls.showBasemapLegend',
-      //   name: 'Show basemap legend',
-      //   description: 'Show legend of basemap if available',
-      //   defaultValue: false,
-      // });
   });

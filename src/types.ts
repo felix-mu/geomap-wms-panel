@@ -25,8 +25,8 @@ export interface ControlsOptions {
   // Custom control: spatial filter
   showSpatialFilter?: boolean
 
-  // Custom control: spatial filter
-  // showBasemapLegend?: boolean
+  // Custom control: data extent zoom
+  showDataExtentZoom?: boolean
 }
 
 export interface MapViewConfig {
