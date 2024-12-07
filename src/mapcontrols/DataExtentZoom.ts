@@ -25,8 +25,11 @@ export class DataExtentZoom extends Control {
         const button = document.createElement('button');
         // button.ariaLabel = "wms legend collapse button";
         button.setAttribute("data-testid", DATA_EXTENT_ZOOM_TEST_ID);
+        button.title = options.tooltipTitle || "Zoom to data extent";
         const icon = document.createElement('i');
         icon.className = "bi bi-bounding-box-circles";
+        // icon.className = "bi bi-aspect-ratio";
+        // icon.className = "bi bi-arrows-fullscreen";
         button.appendChild(icon);
 
         const element = document.createElement('div');
