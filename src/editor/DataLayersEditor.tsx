@@ -7,8 +7,16 @@ import { defaultMarkersConfig } from '../layers/data/markersLayer';
 import { hasAlphaPanels } from 'config';
 import { LayerEditor } from './LayerEditor';
 import _ from 'lodash';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { css } from '@emotion/css';
+
+const reorder = (list: ExtendMapLayerOptions[], startIndex: number, endIndex: number) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
 
 function dataLayerFilter(layer: ExtendMapLayerRegistryItem): boolean {
   if (layer.isBaseMap) {
@@ -33,11 +41,30 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
     newData.push(defaultMarkersConfig);
     onChange(newData);
   };
+
   const onDeleteLayer = (index: number) => {
     let newData: ExtendMapLayerOptions[] = value ? _.cloneDeep(value) : [];
     newData.splice(index, 1);
     onChange(newData);
   };
+
+  function onDragEnd(result: DropResult) {
+    if (!result.destination) {
+      return;
+    }
+
+    if (result.destination.index === result.source.index) {
+      return;
+    }
+
+    const newData: ExtendMapLayerOptions[] = reorder(
+      value,
+      result.source.index,
+      result.destination.index
+    );
+
+    onChange(newData);
+  }
   
   return (
     <>
@@ -46,13 +73,14 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
           Add Layer
         </ToolbarButton>
       </div>
-      <DragDropContext onDragEnd={() => {return}}>
+      <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="list">
           {provided => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
               {(value || []).map((v, index) => {
                 return (
-                  <Draggable draggableId={v.name ? v.name + ' layer' : `unnamed layer-${index}`} index={index} key={index}>
+                  <Draggable draggableId={v.name ? v.name + ' layer' : `unnamed layer-${index}`}
+                       index={index} key={v.name ? v.name + ' layer' : `unnamed layer-${index}`}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
