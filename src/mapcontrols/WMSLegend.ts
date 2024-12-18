@@ -30,9 +30,13 @@ export class WMSLegend extends Control {
         const options = opt_options || {};
 
         const button = document.createElement('button');
-        button.innerHTML = '>';
+        // button.innerHTML = '>';
         // button.ariaLabel = "wms legend collapse button";
         button.setAttribute("aria-label", "wms legend collapse button");
+        button.title = options.tooltipTitle || "WMS layer legend";
+        const icon = document.createElement('i');
+        icon.className = "bi bi-list-task";
+        button.appendChild(icon);
         
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";
@@ -69,8 +73,14 @@ export class WMSLegend extends Control {
 
         let eventHandler = () => {
             if (this.legendOpened) {
-                button.innerHTML = ">";
+                // button.innerHTML = ">";
                 // this.legendContainer.className = styles.basemapLegend_hidden;
+                // button.getElementsByTagName('i')[0].setAttribute("class", "bi bi-list-task");
+                button.innerHTML = "";
+                const icon = document.createElement('i');
+                icon.className = "bi bi-list-task";
+                button.appendChild(icon);
+
                 this.element.style.width = "";
                 this.element.style.height = "";
                 this.element.style.overflow = "";
@@ -79,7 +89,9 @@ export class WMSLegend extends Control {
 
                 this.element.removeChild(this.legendContainer);
             } else {
-                button.innerHTML = "<";
+                button.getElementsByTagName('i')[0].remove();
+                button.innerHTML = "‹";
+                // button.getElementsByTagName('i')[0].setAttribute("class", "bi bi-chevron-left");
                 // this.legendContainer.className = styles.basemapLegend_visible;
 
                 this.element.style.overflow = "hidden"; // "scroll";

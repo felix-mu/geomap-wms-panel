@@ -1,30 +1,45 @@
 .ol-control.layer-switcher {
   top: 0.5em;
   right: 0.5em;
-  text-align: right;
+  /* text-align: right; */
+  text-align: left;
 }
+
 .ol-control.layer-switcher.shown.layer-switcher-activation-mode-click {
   padding-right: 0.5em;
 }
+
 .ol-control.layer-switcher.shown.layer-switcher-activation-mode-click > button {
   right: 0;
   border-left: 0;
 }
+
 .ol-control.layer-switcher.shown.layer-switcher-activation-mode-click > .panel {
   display: block;
 }
 .ol-control.layer-switcher.layer-switcher-activation-mode-click > .panel {
   display: none;
 }
+
 .ol-control.layer-switcher button {
   right: 0;
   border-left: 0;
+  /* content: url('./img/icons/layers.svg'); */
+  /* background-image: url('./img/icons/layers.svg');
+  background-repeat: no-repeat; */
+  /* https://icons.getbootstrap.com/#usage */
 }
 
 .ol-control.layer-switcher li.layer {
   list-style: none;
 }
 
+.layer-switcher li label {
+  padding-left: 0.5em;
+  /* padding-right: 1.2em; */
+  display: inline-block;
+  margin-top: 1px;
+}
 
 .data-layer-add { 
     display: flex;

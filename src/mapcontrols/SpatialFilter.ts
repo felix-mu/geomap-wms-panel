@@ -40,6 +40,7 @@ class SpatialFilterControl extends Control {
     
         const button = document.createElement('button');
         button.setAttribute("type", "button");
+        button.title = options.tooltipTitle || "Spatial filter tool";
         // button.innerHTML = 'D';
         const icon = document.createElement('i');
         icon.className = "bi bi-funnel";

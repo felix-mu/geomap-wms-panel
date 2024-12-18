@@ -10,9 +10,12 @@ import MouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 import { createEmpty, extend } from 'ol/extent';
 import VectorLayer from 'ol/layer/Vector';
 import { Vector } from 'ol/source';
-import LayerSwitcher from 'ol-layerswitcher';
+// import LayerSwitcher from 'ol-layerswitcher';
 import { isArray, isEqual } from 'lodash';
 import './GeomapPanel.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
+
+// import 'ol-layerswitcher/dist/ol-layerswitcher.css';
 
 // import WKT from 'ol/format/WKT.js';
 // import Polygon from 'ol/geom/Polygon.js';
@@ -53,6 +56,8 @@ import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
 import { Global } from '@emotion/react';
 import { Subscription } from 'rxjs';
+import { DataExtentZoom } from 'mapcontrols/DataExtentZoom';
+import { CustomLayerSwitcher } from 'mapcontrols/CustomLayerSwitcher';
 // import { BasemapLegend } from 'mapcontrols/BasemapLegend';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
@@ -606,11 +611,20 @@ export class GeomapPanel extends Component<Props, State> {
 
     if (options.showLayercontrol) {
       this.map.addControl(
-        new LayerSwitcher({
-          label: 'L',
+        // new LayerSwitcher({
+        //   label: '',
+        //   collapseLabel: '›',
+        //   tipLabel: 'Select layers',
+        //   groupSelectStyle: 'none',
+        //   activationMode: 'click',
+        // })
+        new CustomLayerSwitcher({
+          label: '',
+          collapseLabel: '›',
           tipLabel: 'Select layers',
           groupSelectStyle: 'none',
           activationMode: 'click',
+          hiddenClassNameButton: "bi bi-layers"
         })
       );
     }
@@ -622,11 +636,11 @@ export class GeomapPanel extends Component<Props, State> {
         );
     }
 
-    // if (options.showBasemapLegend === true) {
-    //   this.map.addControl(
-    //     new BasemapLegend(this.basemap!, this.props)
-    //     );
-    // }
+    if (options.showDataExtentZoom === true) {
+      this.map.addControl(
+        new DataExtentZoom()
+        );
+    }
 
     const map = this.map;
 
@@ -659,7 +673,13 @@ export class GeomapPanel extends Component<Props, State> {
     this.mouseWheelZoom!.setActive(Boolean(options.mouseWheelZoom));
 
     if (options.showAttribution) {
-      this.map.addControl(new Attribution({ collapsed: true, collapsible: true }));
+      this.map.addControl(new Attribution({
+        collapsed: true, 
+        collapsible: true ,
+        label: '',
+        expandClassName: 'bi bi-info-circle',
+        // collapseClassName: ''
+      }));
     }
 
     // Update the react overlays
