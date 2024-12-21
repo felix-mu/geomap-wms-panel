@@ -58,6 +58,7 @@ import { Global } from '@emotion/react';
 import { Subscription } from 'rxjs';
 import { DataExtentZoom } from 'mapcontrols/DataExtentZoom';
 import { CustomLayerSwitcher } from 'mapcontrols/CustomLayerSwitcher';
+import { CustomOverviewMap } from 'mapcontrols/CustomOverviewMap';
 // import { BasemapLegend } from 'mapcontrols/BasemapLegend';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
@@ -639,6 +640,12 @@ export class GeomapPanel extends Component<Props, State> {
     if (options.showDataExtentZoom === true) {
       this.map.addControl(
         new DataExtentZoom()
+        );
+    }
+
+    if (options.enableOverviewMap === true) {
+      this.map.addControl(
+        new CustomOverviewMap({})
         );
     }
 

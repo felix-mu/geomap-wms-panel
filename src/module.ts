@@ -105,5 +105,12 @@ export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
         name: 'Show data extent zoom',
         description: 'Fit map view to data extent',
         defaultValue: true,
+      })
+      .addBooleanSwitch({
+        category,
+        path: 'controls.enableOverviewMap',
+        name: 'Show overview map',
+        description: 'Add collapsible overview map',
+        defaultValue: false,
       });
   });

@@ -27,6 +27,9 @@ export interface ControlsOptions {
 
   // Custom control: data extent zoom
   showDataExtentZoom?: boolean
+
+  // Custom control: overview map
+  enableOverviewMap?: boolean
 }
 
 export interface MapViewConfig {
