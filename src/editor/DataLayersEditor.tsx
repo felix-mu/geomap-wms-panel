@@ -68,11 +68,6 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
   
   return (
     <>
-      <div className="data-layer-add">
-        <ToolbarButton icon="plus" tooltip="add new layer" variant="primary" key="Add" onClick={onAddLayer}>
-          Add Layer
-        </ToolbarButton>
-      </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="list">
           {provided => (
@@ -132,6 +127,11 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
           )}
         </Droppable>
       </DragDropContext>
+      <div className="data-layer-add">
+        <ToolbarButton icon="plus" tooltip="add new layer" variant="primary" key="Add" onClick={onAddLayer}>
+          Add Layer
+        </ToolbarButton>
+      </div>
     </>
   );
 };
