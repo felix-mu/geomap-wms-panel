@@ -29,7 +29,11 @@ export interface ControlsOptions {
   showDataExtentZoom?: boolean
 
   // Custom control: overview map
-  enableOverviewMap?: boolean
+  overviewMap?: OverviewMapConfig
+}
+
+export interface OverviewMapConfig<TConfig = any> extends ExtendMapLayerOptions {
+  enabled: boolean;
 }
 
 export interface MapViewConfig {

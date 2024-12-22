@@ -1,4 +1,4 @@
-import { css } from "@emotion/css";
+// import { css } from "@emotion/css";
 import OverviewMap, { Options } from "ol/control/OverviewMap";
 
 class CustomOverviewMap extends OverviewMap {
@@ -9,10 +9,10 @@ class CustomOverviewMap extends OverviewMap {
     }
 }
 
-const styles = {
-    extent: css({
-        borderStyle: "solid",
-    })
-}
+// const styles = {
+//     extent: css({
+//         borderStyle: "solid",
+//     })
+// }
 
 export {CustomOverviewMap};

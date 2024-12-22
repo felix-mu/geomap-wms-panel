@@ -643,7 +643,7 @@ export class GeomapPanel extends Component<Props, State> {
         );
     }
 
-    if (options.enableOverviewMap === true) {
+    if (options.overviewMap && options.overviewMap.enabled === true) {
       this.map.addControl(
         new CustomOverviewMap({})
         );
