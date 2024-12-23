@@ -31,7 +31,6 @@ export const OverviewMapEditor = ({ item, value, onChange, context }: Props) => 
             {/* https://react.dev/learn/conditional-rendering#logical-and-operator- */}
             { value.enabled && 
                 <>
-                    <hr className={getStyles().divider}/>
                     <CollapsableSection className={getStyles().basemapEditor} label={"Overview map configuration"} isOpen={false}>
                         <BaseLayerEditor value={value}
                         onChange={onChange as (value?: ExtendMapLayerOptions<any> | undefined) => void} 
@@ -47,10 +46,12 @@ export const OverviewMapEditor = ({ item, value, onChange, context }: Props) => 
 const getStyles = (/*theme: GrafanaTheme2*/) => (
     {
         basemapEditor: css({
-            fontSize: "smaller"
+            fontSize: "smaller",
+            width: "50%"
         }),
         divider: css({
-            marginTop: "0px"
+            marginTop: "0px",
+            float: "left"
         })
     }
 );
