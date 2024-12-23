@@ -51,7 +51,8 @@ const getStyles = (/*theme: GrafanaTheme2*/) => (
         }),
         divider: css({
             marginTop: "0px",
-            float: "left"
+            float: "left",
+            width: "50%"
         })
     }
 );

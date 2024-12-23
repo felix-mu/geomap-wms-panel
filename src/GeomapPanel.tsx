@@ -58,7 +58,7 @@ import { Global } from '@emotion/react';
 import { Subscription } from 'rxjs';
 import { DataExtentZoom } from 'mapcontrols/DataExtentZoom';
 import { CustomLayerSwitcher } from 'mapcontrols/CustomLayerSwitcher';
-import { CustomOverviewMap } from 'mapcontrols/CustomOverviewMap';
+import { CustomOverviewMapWrapper } from 'mapcontrols/CustomOverviewMapWrapper';
 // import { BasemapLegend } from 'mapcontrols/BasemapLegend';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
@@ -373,7 +373,7 @@ export class GeomapPanel extends Component<Props, State> {
     });
     this.mouseWheelZoom = new MouseWheelZoom();
     this.map.addInteraction(this.mouseWheelZoom);
-    this.initControls(options.controls);
+    await this.initControls(options.controls);
     this.initBasemap(options.basemap);
     await this.initLayers(options.layers);
     this.forceUpdate(); // first render
@@ -591,7 +591,7 @@ export class GeomapPanel extends Component<Props, State> {
     return view;
   }
 
-  initControls(options: ControlsOptions) {
+  async initControls(options: ControlsOptions) {
     if (!this.map) {
       return;
     }
@@ -644,9 +644,14 @@ export class GeomapPanel extends Component<Props, State> {
     }
 
     if (options.overviewMap && options.overviewMap.enabled === true) {
+      const item = geomapLayerRegistry.getIfExists(options.overviewMap.type);
+      const handler = await item!.create(new Map({}), options.overviewMap as ExtendMapLayerOptions<any>, config.theme2);
+      const layer = handler.init();
       this.map.addControl(
-        new CustomOverviewMap({})
-        );
+        new CustomOverviewMapWrapper({
+          layers: [layer]
+        }).getOverviewMap()
+      );
     }
 
     const map = this.map;
