@@ -110,7 +110,7 @@ export class WMSLegend extends Control {
                 }
 
                 this.element.appendChild(this.legendContainer);
-                this.element.style.width = "30%";
+                // this.element.style.width = "30%";
                 this.element.style.height = "30%";
             }
 
