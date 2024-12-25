@@ -1,18 +1,30 @@
+/**
+ * @jest-environment jsdom
+ */
+
+// import { LegendItem } from "layers/basemaps/wms";
 import { LegendItem } from "layers/basemaps/wms";
 import { WMSLegend } from "./WMSLegend";
+import { cleanup, render, screen} from '@testing-library/react';
+import { asArray } from "ol/color";
+// import React from 'react';
+
+afterEach(cleanup);
 
 describe("Build legend method", () => {
-    test("empty legends url array should return empty div array", () => {
+    test("empty legends url array should return empty div array", async () => {
         const wmsLegend: WMSLegend = new WMSLegend([]);
-        const divElements: HTMLDivElement[] = wmsLegend.buildLegend([]);
-        expect(divElements.length).toBe(0);
+        const wmsLegendContainer: JSX.Element = wmsLegend.buildLegend([]);
+        render(wmsLegendContainer);
+        expect(screen.queryAllByLabelText (/^wms legend image container/i)).toHaveLength(0);
     });
 
     test("legends url array should return same size", () => {
         const legendItems: LegendItem[] = [{label: "", url: ""}, {label: "", url: ""}];
         const wmsLegend: WMSLegend = new WMSLegend(legendItems);
-        const divElements: HTMLDivElement[] = wmsLegend.buildLegend(legendItems);
-        expect(divElements.length).toBe(legendItems.length);
+        const wmsLegendContainer: JSX.Element = wmsLegend.buildLegend(legendItems);
+        render(wmsLegendContainer);
+        expect(screen.queryAllByLabelText (/^wms legend image container/i)).toHaveLength(legendItems.length);
     });
 });
 
@@ -30,8 +42,16 @@ describe("Test event listener", () => {
         const el = wmsLegend.getElement();
         const btn = el.getElementsByTagName("button")[0];
         btn.dispatchEvent(new Event("click"));
+
+        // Get elements that start with 'wms legend image container'
+        let wmsLegendContainerCount = 0;
+        for (const e of el.getElementsByTagName("div")) {
+            if (e.getAttribute("aria-label")?.includes("wms legend image container")) {
+                ++wmsLegendContainerCount;
+            }
+        }
         
-        expect(wmsLegend.isLegendOpened() && el.getElementsByTagName("div").length === items.length + 1).toBeTruthy();
+        expect(wmsLegend.isLegendOpened() && wmsLegendContainerCount === items.length).toBeTruthy();
     });
 
     test("click event should close opened legend and remove legend container", () => {

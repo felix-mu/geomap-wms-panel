@@ -214,9 +214,9 @@ export class WMSLegend extends Control {
     buildLegend(legendURLs: LegendItem[]): JSX.Element {
         return (
             <CustomScrollbar className={getStyles(this.theme).customScrollbar}>
-                {legendURLs.map((legendItem, index) => {
+                {legendURLs.length > 0 && legendURLs.map((legendItem, index) => {
                     return (
-                        <div style={{display: "block"}} aria-label={`wms legend image container ${index}`}>
+                        <div key={legendItem.url} style={{display: "block"}} aria-label={`wms legend image container ${index}`}>
                             <label style={{display: "block", color: this.theme.colors.text.maxContrast}}
                                 htmlFor={legendItem.url}>{legendItem.label}</label>
                             <img id={legendItem.url} src={legendItem.url}></img>
