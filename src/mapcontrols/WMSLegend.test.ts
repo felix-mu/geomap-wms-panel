@@ -6,7 +6,6 @@
 import { LegendItem } from "layers/basemaps/wms";
 import { WMSLegend } from "./WMSLegend";
 import { cleanup, render, screen} from '@testing-library/react';
-import { asArray } from "ol/color";
 // import React from 'react';
 
 afterEach(cleanup);
