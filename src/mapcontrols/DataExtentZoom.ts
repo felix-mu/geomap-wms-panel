@@ -35,7 +35,8 @@ export class DataExtentZoom extends Control {
         const element = document.createElement('div');
         // element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
         element.className = `${olCss.CLASS_CONTROL} ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
-        element.style.top = "80%";
+        element.style.bottom = "20%";
+        element.style.top = "unset";
 
         element.appendChild(button);
 

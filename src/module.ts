@@ -6,6 +6,7 @@ import { MapViewEditor } from './editor/MapViewEditor';
 import { defaultView, GeomapPanelOptions } from './types';
 import { mapPanelChangedHandler } from './migrations';
 import { DEFAULT_BASEMAP_CONFIG } from './layers/registry';
+import { OverviewMapEditor } from 'editor/OverviewMapEditor';
 
 export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
   .setNoPadding()
@@ -105,5 +106,19 @@ export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
         name: 'Show data extent zoom',
         description: 'Fit map view to data extent',
         defaultValue: true,
+      })/*.addNestedOptions({ // https://community.grafana.com/t/panel-options-subcategories/107812
+        path: '',
+        build: function (builder: PanelOptionsEditorBuilder<unknown>, context: StandardEditorContext<unknown, any>): void {
+          throw new Error('Function not implemented.');
+        }
+      }).*/
+      .addCustomEditor({
+        category,
+        path: 'controls.overviewMap',
+        name: 'Show overview map',
+        description: 'Add collapsible overview map',
+        defaultValue: {enabled: false},
+        editor: OverviewMapEditor,
+        id: 'overviewmap'
       });
   });

@@ -8,7 +8,10 @@ import Control from "ol/control/Control";
 // import LayerGroup from "ol/layer/Group";
 // import { ImageWMS } from "ol/source";
 import * as olCss from "ol/css";
-
+import { CustomScrollbar } from "@grafana/ui";
+// import { Scrollbars } from 'react-custom-scrollbars-2';
+import ReactDOM from 'react-dom';
+import React from "react";
 
 // class PanelOptionsChangedEvent extends BusEventBase {
 //     static type = 'panels-options-changed';
@@ -40,11 +43,14 @@ export class WMSLegend extends Control {
         
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";
-        // legendContainer.ariaLabel = "wms legend container";
         legendContainer.setAttribute("aria-label", "wms legend container");
-        legendContainer.style.overflow = "scroll";
+        // legendContainer.style.overflow = "scroll";
         legendContainer.style.height = "100%";
+        legendContainer.style.padding = "5px 15px 5px 5px";
         // legendContainer.className = styles.basemapLegend_hidden;
+        // const legendContainerRoot = createRoot(legendContainer);
+        // legendContainerRoot.render(<CustomScrollbar></CustomScrollbar>);
+        // ReactDOM.render(<CustomScrollbar></CustomScrollbar>, legendContainer);
 
         const element = document.createElement('div');
         // element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
@@ -99,11 +105,12 @@ export class WMSLegend extends Control {
                 // this.element.style.background = config.theme2.colors.background.primary; //"rgba(255,255,255, 1)";
                 
                 if(this.legendContainer.getElementsByTagName("div").length === 0) {
-                    this.legendContainer.append(...this.buildLegend(this.legendURLs));
+                    // this.legendContainer.append(...this.buildLegend(this.legendURLs));
+                    ReactDOM.render(this.buildLegend(this.legendURLs), legendContainer);
                 }
 
                 this.element.appendChild(this.legendContainer);
-                this.element.style.width = "30%";
+                // this.element.style.width = "30%";
                 this.element.style.height = "30%";
             }
 
@@ -165,42 +172,61 @@ export class WMSLegend extends Control {
     //     }
     //     return legendItems;
     // }
-    buildLegend(legendURLs: LegendItem[]): HTMLDivElement[] {
-        let legendItems: HTMLDivElement[] = [];
-        let index = 0;
-        for (let l of legendURLs) {
-            let imageContainer = document.createElement("div");
-            imageContainer.style.display = "block";
-            imageContainer.ariaLabel = `wms legend image container ${index}`;
-            // imageContainer.setAttribute("aria-label", `wms legend image container ${index}`);
 
-            let image = document.createElement("img");
-            image.id = l.url;
-            image.src = l.url;
-            // image.className = styles.legendImage;
+    // buildLegend(legendURLs: LegendItem[]): HTMLDivElement[] {
+    //     let legendItems: HTMLDivElement[] = [];
+    //     let index = 0;
+    //     for (let l of legendURLs) {
+    //         let imageContainer = document.createElement("div");
+    //         imageContainer.style.display = "block";
+    //         imageContainer.ariaLabel = `wms legend image container ${index}`;
+    //         // imageContainer.setAttribute("aria-label", `wms legend image container ${index}`);
 
-            let label = document.createElement("label");
-            label.innerText = /*"Layer: " + */l.label;
-            label.htmlFor = l.url;
-            label.style.display = "block";
-            label.style.color = this.theme.colors.text.maxContrast;
+    //         let image = document.createElement("img");
+    //         image.id = l.url;
+    //         image.src = l.url;
+    //         // image.className = styles.legendImage;
 
-            let divider = document.createElement("hr");
-            divider.className = getStyles(this.theme).grafanaDivider; // divider
+    //         let label = document.createElement("label");
+    //         label.innerText = /*"Layer: " + */l.label;
+    //         label.htmlFor = l.url;
+    //         label.style.display = "block";
+    //         label.style.color = this.theme.colors.text.maxContrast;
 
-            imageContainer.appendChild(label);
-            imageContainer.appendChild(image);
-            imageContainer.appendChild(divider);
+    //         let divider = document.createElement("hr");
+    //         divider.className = getStyles(this.theme).grafanaDivider; // divider
 
-            legendItems.push(
-                imageContainer
-                // image
-            );
+    //         imageContainer.appendChild(label);
+    //         imageContainer.appendChild(image);
+    //         imageContainer.appendChild(divider);
 
-            ++index;
+    //         legendItems.push(
+    //             imageContainer
+    //             // image
+    //         );
 
-            }
-        return legendItems;
+    //         ++index;
+
+    //         }
+    //     return legendItems;
+    // }
+
+    buildLegend(legendURLs: LegendItem[]): JSX.Element {
+        return (
+            <CustomScrollbar className={getStyles(this.theme).customScrollbar}>
+                {legendURLs.length > 0 && legendURLs.map((legendItem, index) => {
+                    return (
+                        <div key={legendItem.url} style={{display: "block"}} aria-label={`wms legend image container ${index}`}>
+                            <label style={{display: "block", color: this.theme.colors.text.maxContrast}}
+                                htmlFor={legendItem.url}>{legendItem.label}</label>
+                            <img id={legendItem.url} src={legendItem.url}></img>
+                            <hr className={getStyles(this.theme).grafanaDivider}></hr>
+                        </div>
+                    );
+                })
+                }
+            </CustomScrollbar>
+        );
     }
 
 }
@@ -229,6 +255,48 @@ const getStyles = (theme: GrafanaTheme2) => {
         borderTop: `${theme.colors.border.strong} 1px solid`,
         marginTop: "4px",
         marginBottom: "0px",
+      }),
+      customScrollbar: css({
+        // Fix for Firefox. For some reason sometimes .view container gets a height of its content, but in order to
+        // make scroll working it should fit outer container size (scroll appears only when inner container size is
+        // greater than outer one).
+        display: 'flex',
+        flexGrow: 1,
+        '.scrollbar-view': {
+          display: 'flex',
+          flexGrow: 1,
+          flexDirection: 'column',
+        },
+        '.track-vertical': {
+          borderRadius: theme.shape.borderRadius(2),
+          width: `${theme.spacing(1)} !important`,
+          right: 0,
+          bottom: theme.spacing(0.25),
+          top: theme.spacing(0.25),
+        },
+        '.track-horizontal': {
+          borderRadius: theme.shape.borderRadius(2),
+          height: `${theme.spacing(1)} !important`,
+          right: theme.spacing(0.25),
+          bottom: theme.spacing(0.25),
+          left: theme.spacing(0.25),
+        },
+        '.thumb-vertical': {
+          background: theme.colors.action.focus,
+          borderRadius: theme.shape.borderRadius(2),
+          opacity: 0,
+        },
+        '.thumb-horizontal': {
+          background: theme.colors.action.focus,
+          borderRadius: theme.shape.borderRadius(2),
+          opacity: 0,
+        },
+        '&:hover': {
+          '.thumb-vertical, .thumb-horizontal': {
+            opacity: 1,
+            transition: 'opacity 0.3s ease-in-out',
+          },
+        },
       }),
     }
 };
