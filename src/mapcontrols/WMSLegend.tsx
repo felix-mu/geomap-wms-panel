@@ -60,7 +60,7 @@ export class WMSLegend extends Control {
         legendContainer.setAttribute("aria-label", "wms legend container");
         // legendContainer.style.overflow = "scroll";
         legendContainer.style.height = "100%";
-        legendContainer.style.padding = "5px 15px 5px 5px";
+        legendContainer.style.padding = "5px 5px 5px 5px";
         // legendContainer.className = styles.basemapLegend_hidden;
         // const legendContainerRoot = createRoot(legendContainer);
         // legendContainerRoot.render(<CustomScrollbar></CustomScrollbar>);
@@ -105,6 +105,7 @@ export class WMSLegend extends Control {
                 this.element.style.height = "";
                 this.element.style.overflow = "";
                 this.element.style.resize = "";
+                this.element.style.paddingBottom = "";
                 // this.element.style.background = config.theme2.colors.background.primary; // "rgba(255,255,255, 0.4)";
 
                 this.element.removeChild(this.legendContainer);
@@ -116,6 +117,7 @@ export class WMSLegend extends Control {
 
                 this.element.style.overflow = "hidden"; // "scroll";
                 this.element.style.resize = "both";
+                this.element.style.paddingBottom = "30px";
                 // this.element.style.background = config.theme2.colors.background.primary; //"rgba(255,255,255, 1)";
                 
                 if(this.legendContainer.getElementsByTagName("div").length === 0) {
@@ -230,11 +232,17 @@ export class WMSLegend extends Control {
             <CustomScrollbar className={getStyles(this.theme).customScrollbar}>
                 {legendURLs.length > 0 && legendURLs.map((legendItem, index) => {
                     return (
-                        <div key={legendItem.url} style={{display: "block"}} aria-label={`wms legend image container ${index}`}>
+                        <div key={legendItem.url} style={{
+                                borderBottom: `${this.theme.colors.border.strong} 1px solid`,
+                                paddingBottom: "4px",
+                                display: "block", 
+                                marginRight: "12px", 
+                                marginBottom: index === legendURLs.length - 1 ? "12px" : "auto"
+                            }} aria-label={`wms legend image container ${index}`}>
                             <label style={{display: "block", color: this.theme.colors.text.maxContrast}}
                                 htmlFor={legendItem.url}>{legendItem.label}</label>
-                            <img id={legendItem.url} src={legendItem.url}></img>
-                            <hr className={getStyles(this.theme).grafanaDivider}></hr>
+                            <img id={legendItem.url} src={legendItem.url} className={getStyles(this.theme).legendImg}></img>
+                            {/* <hr className={getStyles(this.theme).grafanaDivider}></hr> */}
                         </div>
                     );
                 })
@@ -247,6 +255,13 @@ export class WMSLegend extends Control {
 
 const getStyles = (theme: GrafanaTheme2) => {
     return {
+    legendImg: css({
+        // borderBottom: `${theme.colors.border.strong} 1px solid`,
+        // paddingBottom: "4px"
+        // width: "100%"
+        maxWidth: "100%", // https://www.w3schools.com/css/css_rwd_images.asp
+        height: "auto"
+    }),
     basemapLegend_hidden: css`
         display: hidden;
     `,
