@@ -118,3 +118,13 @@ export function getFirstDirectChildNodeByLocalName(childNodes: NodeListOf<ChildN
   
     return layers;
   }
+
+export function buildWMSGetLegendURL(wmsBaseURL: string, layerName: string): URL {
+  const legendURL: URL = new URL(wmsBaseURL);
+  legendURL.searchParams.append("service", "WMS");
+  legendURL.searchParams.append("request", "GetLegendGraphic");
+  legendURL.searchParams.append("format", "image/png");
+  legendURL.searchParams.append("layer", layerName);
+
+  return legendURL;
+}
