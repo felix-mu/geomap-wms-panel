@@ -12,6 +12,7 @@ import { CustomScrollbar } from "@grafana/ui";
 // import { Scrollbars } from 'react-custom-scrollbars-2';
 import ReactDOM from 'react-dom';
 import React from "react";
+import { Map } from "ol";
 
 // class PanelOptionsChangedEvent extends BusEventBase {
 //     static type = 'panels-options-changed';
@@ -28,6 +29,19 @@ export class WMSLegend extends Control {
     // private legendContainerCache: HTMLDivElement;
     private legendURLs: LegendItem[];
     private theme: GrafanaTheme2;
+
+    static removeWMSLegendControlFromMap(map: Map) {
+        for(let i = 0; i < map.getControls().getLength(); ++i) {
+            try {
+              if ((map.getControls().getArray()[i] as WMSLegend).getControlName() === WMSLegend.CONTROL_NAME) {
+                map.getControls().removeAt(i);
+                break;
+              }
+            } catch (error) {
+              continue;
+            }
+          }
+    }
 
     constructor(legendURLs: LegendItem[], /*baseLayer: BaseLayer, props: any,*/ opt_options?: any) {
         const options = opt_options || {};

@@ -6,6 +6,7 @@
 import { LegendItem } from "layers/basemaps/wms";
 import { WMSLegend } from "./WMSLegend";
 import { cleanup, render, screen} from '@testing-library/react';
+import { Map } from "ol";
 // import React from 'react';
 
 afterEach(cleanup);
@@ -63,4 +64,22 @@ describe("Test event listener", () => {
         
         expect(!wmsLegend.isLegendOpened() && el.getElementsByTagName("div").length === 0).toBeTruthy();
     });
+});
+
+describe("Remove control from map", () => {
+    test("wms legend control should be removed from map", () => {
+        const map = new Map({});
+        map.addControl(new WMSLegend([]));
+
+        WMSLegend.removeWMSLegendControlFromMap(map);
+
+        let wmsLegendControlCounter = 0;
+        map.getControls().getArray().forEach((el) => {
+            if (el instanceof WMSLegend) {
+                ++wmsLegendControlCounter
+            }
+        });
+
+        expect(wmsLegendControlCounter).toBe(0);
+    })
 });

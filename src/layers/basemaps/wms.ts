@@ -58,16 +58,7 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
    */
   create: async (map: Map, options: ExtendMapLayerOptions<WMSBaselayerConfig>) => {
     // Remove previous legend control if it exists
-    for(let i = 0; i < map.getControls().getLength(); ++i) {
-      try {
-        if ((map.getControls().getArray()[i] as WMSLegend).getControlName() === "WMSLegend") {
-          map.getControls().removeAt(i);
-          break;
-        }
-      } catch (error) {
-        continue;
-      }
-    }
+    WMSLegend.removeWMSLegendControlFromMap(map);
 
     let layers: BaseLayer[] = [];
     let legendItems: LegendItem[] = [];
@@ -111,9 +102,11 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
           if (wmsItem.showLegend){
             const wmsURL = wmsSource.getUrl();
             selectedWmsLayers.forEach((value) => legendItems.push(
-              {label: value.title,
-                url: wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value.name}`
-              })
+                {
+                  label: value.title,
+                  url: wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value.name}`
+                }
+              )
             );
           }
         }
