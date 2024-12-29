@@ -258,8 +258,8 @@ const getStyles = (theme: GrafanaTheme2) => {
     legendImg: css({
         // borderBottom: `${theme.colors.border.strong} 1px solid`,
         // paddingBottom: "4px"
-        // width: "100%"
-        maxWidth: "100%", // https://www.w3schools.com/css/css_rwd_images.asp
+        width: "100%",
+        // maxWidth: "100%", // https://www.w3schools.com/css/css_rwd_images.asp
         height: "auto"
     }),
     basemapLegend_hidden: css`
