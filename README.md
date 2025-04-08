@@ -103,6 +103,8 @@ When using multiple queries in the Geomap Panel it is required to pay attention 
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/layer_style_0.PNG)
 ![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/layer_style_1.PNG)
 
+### ⚠️ Using shared views between maps
+If using the shared view feature (that is if one map a drag or zoom event happens it is applied to all map instances in the dashboard) it is important to use the identical `Initial view` parameters in the `Map view` control throughout all the map instances with enabled shared view to avoid undesired zooming effects when entering the page.
 
 ## ⚠️ Troubleshooting data layers when merging multiple datasource queries into one map layer
 In some occasions it might be necessary to join mutliple datasource queries into one output dataset to summarize information coming from different sources in a single map layer. This can be achieved by applying [transformations](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/) on the returned data frames.
