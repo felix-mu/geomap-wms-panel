@@ -1,5 +1,6 @@
 {
     "version": "0.2.0",
+    "reference": "https://jestjs.io/docs/troubleshooting#debugging-in-vs-code",
     "configurations": [
       {
         "name": "Debug Jest Tests",
