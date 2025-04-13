@@ -1,5 +1,7 @@
 import {expect, jest, test} from '@jest/globals';
-import { getWMTSCapabilitiesFromService } from "./wmts";
+import { getWMTSCapabilitiesFromService, getWMTSLegendURLForLayer } from "./wmts";
+import WMTSCapabilities from 'ol/format/WMTSCapabilities';
+import WMTS, { Options, optionsFromCapabilities } from 'ol/source/WMTS';
 
 const capabilitesXMLDocument: string = `
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
@@ -468,10 +470,7 @@ const capabilitesXMLDocument: string = `
 <ServiceMetadataURL xlink:href="https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml"/>
 </Capabilities>`;
 
-test("getWMTSCapabilitiesFromService should return object from rest endpoint", async () => {
-    // https://jestjs.io/docs/mock-function-api#jestfnimplementation
-    // https://stackoverflow.com/questions/64818305/simple-fetch-mock-using-typescript-and-jest
-    // https://jestjs.io/docs/jest-object#jestfnimplementation
+beforeEach(() => {
     global.fetch = jest.fn<typeof fetch>((a, b?) => {
         return new Promise<any>(function(resolve, reject) {
             resolve({
@@ -483,7 +482,100 @@ test("getWMTSCapabilitiesFromService should return object from rest endpoint", a
             });
         });
     });
+  });
 
-    const data = await getWMTSCapabilitiesFromService("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
-    expect(data).toBe('peanut butter');
+test("getWMTSCapabilitiesFromService should return object from rest endpoint", async () => {
+    // https://jestjs.io/docs/mock-function-api#jestfnimplementation
+    // https://stackoverflow.com/questions/64818305/simple-fetch-mock-using-typescript-and-jest
+    // https://jestjs.io/docs/jest-object#jestfnimplementation
+    // global.fetch = jest.fn<typeof fetch>((a, b?) => {
+    //     return new Promise<any>(function(resolve, reject) {
+    //         resolve({
+    //             text: () =>  {
+    //                 return new Promise<string>((resolve, reject) => {
+    //                 resolve(capabilitesXMLDocument);
+    //             })
+    //         }
+    //         });
+    //     });
+    // });
+
+    const parsedWMTSCapabilites = await getWMTSCapabilitiesFromService("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
+    expect(parsedWMTSCapabilites).not.toBeNull();
+    expect(parsedWMTSCapabilites).not.toBeUndefined();
+  });
+
+test("getWMTSCapabilitiesFromService should raise error for invalid URL", async () => {
+    // https://jestjs.io/docs/expect#tothrowerror
+    getWMTSCapabilitiesFromService("//sgx.geodatenzentrum@de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml").
+        catch((error: Error) => expect(error.name).toMatch('TypeError'));
+  });
+
+test("getWMTSLegendURLForLayer should return URL for given layer identifier", () => {
+    const parser: WMTSCapabilities = new WMTSCapabilities();
+    const wmtsCapabilities = parser.read(capabilitesXMLDocument);
+    const layerID: string = "web";
+
+    const url: string = getWMTSLegendURLForLayer(wmtsCapabilities, layerID);
+
+    expect(url).toBe("https://sgx.geodatenzentrum.de/wmts_topplus_open/legend/web.png");
+
+  });
+
+test("getWMTSLegendURLForLayer should throw error for not existent layer identifier", () => {
+    const parser: WMTSCapabilities = new WMTSCapabilities();
+    const wmtsCapabilities = parser.read(capabilitesXMLDocument);
+    const layerID: string = "web99999";
+
+    expect(() => getWMTSLegendURLForLayer(wmtsCapabilities, layerID)).toThrowError();
+  });
+
+test("getWMTSLegendURLForLayer should throw error for not empty legend URL array", () => {
+    const layerID: string = "web";
+    const wmtsCapMock = {
+        Contents: {
+            Layer: [
+                {
+                    Identifier: layerID,
+                    Style: [
+                        {
+                            isDefault: false,
+                            LegendURL: []
+                        }
+                    ]
+                }
+            ]
+        }
+    };
+
+    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrowError();
+  });
+
+test("getWMTSLegendURLForLayer should throw return first URL of default style legend URLs", () => {
+    const layerID: string = "web";
+    const defaultLegendUrls = [
+        {"href": "default_0"},
+        {"href": "default_1"}
+    ];
+    const wmtsCapMock = {
+        Contents: {
+            Layer: [
+                {
+                    Identifier: layerID,
+                    Style: [
+                        {
+                            isDefault: false,
+                            LegendURL: []
+                        },
+                        {
+                            isDefault: true,
+                            LegendURL: defaultLegendUrls
+                        }
+                    ]
+                }
+            ]
+        }
+    };
+
+    expect(getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toBe(defaultLegendUrls[0].href);
   });

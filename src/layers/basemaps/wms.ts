@@ -141,7 +141,7 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
     builder
     .addCustomEditor(
       {
-        id: 'wsm-layers',
+        id: 'wms-layers',
         // name: 'URL',
         name: 'WMS',
         path: 'config.wmsBaselayer',

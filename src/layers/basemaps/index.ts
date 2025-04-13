@@ -3,6 +3,7 @@ import { esriLayers } from './esri';
 import { genericLayers } from './generic';
 import { osmLayers } from './osm';
 import { wmsLayers } from './wms';
+import { wmtsLayers } from './wmts';
 
 /**
  * Registry for layer handlers
@@ -13,4 +14,5 @@ export const basemapLayers = [
   ...esriLayers, // keep formatting
   ...genericLayers,
   ...wmsLayers,
+  ...wmtsLayers
 ];

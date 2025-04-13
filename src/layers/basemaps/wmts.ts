@@ -1,6 +1,4 @@
 import Map from 'ol/Map';
-import ImageLayer from 'ol/layer/Image';
-import ImageWMS from 'ol/source/ImageWMS';
 
 import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 // import {
@@ -10,8 +8,11 @@ import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 import { MultipleWMSEditor } from 'editor/MultipleWMSEditor';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
-import { getWMSCapabilitiesFromService, getProjection, buildWMSGetLegendURL } from 'mapServiceHandlers/wms';
+import { getWMTSCapabilitiesFromService/*, getProjection, buildWMSGetLegendURL*/ } from 'mapServiceHandlers/wmts';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
+import TileLayer from 'ol/layer/Tile';
+import { WMTS } from 'ol/source';
+import { Options, optionsFromCapabilities } from 'ol/source/WMTS';
 
 // import {
   // RefreshEvent,
@@ -23,9 +24,9 @@ import { WMSLegend } from 'mapcontrols/WMSLegend';
 // Constants
 // Since the constants are global they should be set each time the panel is accessed
 // let optionsBuilder: PanelOptionsEditorBuilder<ExtendMapLayerOptions>;
-type WMSTuple = {
+type WMTSTuple = {
   title: string,
-  name: string
+  identifier: string
 }
 
 export type LegendItem = {
@@ -33,88 +34,83 @@ export type LegendItem = {
   url: string
 }
 
-export interface WMSConfig {
+export interface WMTSConfig {
     url: string,
-    layers: WMSTuple[],
+    layer: WMTSTuple,
     opacity: number,
     attribution: string,
     showLegend: boolean
 }
 
-export interface WMSBaselayerConfig {
-  wmsBaselayer: WMSConfig[],
+export interface WMTSBaselayerConfig {
+  wmtsBaselayer: WMTSConfig[],
   // attribution: string,
 }
 
-export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
-  id: 'wms',
-  name: 'OGC Web Map Service',
-  description: 'Add an OGC Web Map Service',
+export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
+  id: 'wmts',
+  name: 'OGC Web Map Tile Service',
+  description: 'Add an OGC Web Map Tile Service',
   isBaseMap: true,
 
   /**
    * Function that configures transformation and returns a transformer
    * @param options
    */
-  create: async (map: Map, options: ExtendMapLayerOptions<WMSBaselayerConfig>) => {
+  create: async (map: Map, options: ExtendMapLayerOptions<WMTSBaselayerConfig>) => {
     // Remove previous legend control if it exists
-    WMSLegend.removeWMSLegendControlFromMap(map);
+    // WMTSLegend.removeWMTSLegendControlFromMap(map);
 
     let layers: BaseLayer[] = [];
     let legendItems: LegendItem[] = [];
     const cfg = { ...options.config };
 
-    if (cfg.wmsBaselayer) {
-      for (let wmsItem of cfg.wmsBaselayer) {
-        let xmlNodeWMS: Node | undefined;
-        let epsgCode: string;
-        let selectedWmsLayers: WMSTuple[] = [];
+    if (cfg.wmtsBaselayer) {
+      for (let wmtsItem of cfg.wmtsBaselayer) {
+        let wmtsCapabilities: object | undefined;
+        let selectedWmtsLayer: WMTSTuple | undefined = undefined;
+        let wmtsOptions: Options | null;
     
         // Set selectedWmsLayer to empty array if accessed in edit mode for the first time
-        selectedWmsLayers = !wmsItem || /*wmsItem.wms === undefined ||*/ ((wmsItem.layers as unknown) as string) === "" ? [] : wmsItem.layers;
-    
-        // This happens in edit mode when the WMS url changes
-        // This will fail if the panel is opened in edit mode for the first time
-        try {
-          xmlNodeWMS = await getWMSCapabilitiesFromService(wmsItem.url as string);
-          epsgCode = await getProjection(xmlNodeWMS!) as string;
-        } catch (error) {
-          epsgCode = "EPSG:3857";
-          selectedWmsLayers = [];
-        }
+        selectedWmtsLayer = !wmtsItem || ((wmtsItem.layer as unknown) as string) === "" ? undefined : wmtsItem.layer;
 
-        if (selectedWmsLayers.length !== 0) {
-          const wmsSource = new ImageWMS({
-            url: wmsItem.url as string,
-            params: {"LAYERS": selectedWmsLayers.map(el => el.name).join(',')},
-            ratio: 1,
-            crossOrigin: 'anonymous', // https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
-            attributions: wmsItem.attribution ? wmsItem.attribution : "", // Testing purposes
-            projection: epsgCode
-          });
+        if (selectedWmtsLayer) {
+          // This happens in edit mode when the WMS url changes
+          // This will fail if the panel is opened in edit mode for the first time
+          try {
+            wmtsCapabilities = await getWMTSCapabilitiesFromService(wmtsItem.url as string);
+            wmtsOptions = optionsFromCapabilities(wmtsCapabilities, {"layer": selectedWmtsLayer.identifier, "crossOrigin": "anonymous"});
+          } catch (error) {
+            continue;
+          }
+
+          if (!wmtsOptions) {
+            continue;
+          }
+
+          const wmtsSource = new WMTS(wmtsOptions!);
           layers.push(
-            new ImageLayer({
-              source: wmsSource,
-              opacity: wmsItem.opacity ? wmsItem.opacity : 1.0
+            new TileLayer({
+              source: wmtsSource,
+              opacity: wmtsItem.opacity ? wmtsItem.opacity : 1.0
             })
           );
 
-          if (wmsItem.showLegend){
-            const wmsURL = wmsSource.getUrl();
-            selectedWmsLayers.forEach((value) => legendItems.push(
+          if (wmtsItem.showLegend){
+            const wmtsLegendURL = wmtsSource.getStyle(); // TODO: get legendurl from style
+            legendItems.push(
                 {
-                  label: value.title,
-                  url: wmsURL ? buildWMSGetLegendURL(wmsURL, value.name).toString() : "" // wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value.name}`
+                  label: selectedWmtsLayer.title,
+                  url: wmtsLegendURL // wmtsURL ? buildWMTSGetLegendURL(wmsURL, value.name).toString() : "" // wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value.name}`
                 }
               )
-            );
           }
         }
       }
     }
 
     if (legendItems.length > 0) {
-      map.addControl(new WMSLegend(legendItems));
+      // map.addControl(new WMTSLegend(legendItems));
     }
 
     // Dummy promise returns epsgCode from the constants which is then used to initialize the image layer
@@ -141,13 +137,14 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
     builder
     .addCustomEditor(
       {
-        id: 'wsm-layers',
+        id: 'wmts-layers',
         // name: 'URL',
-        name: 'WMS',
-        path: 'config.wmsBaselayer',
+        name: 'WMTS',
+        path: 'config.wmtsBaselayer',
         // description: 'URL to WMS endpoint (required)',
         // description: 'WMS',
         editor: MultipleWMSEditor,
+        // editor: MultipleWMTSEditor,
       }
     );
     // .addTextInput({
@@ -159,4 +156,4 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
     },
 };
 
-export const wmsLayers = [wms];
+export const wmtsLayers = [wmts];
