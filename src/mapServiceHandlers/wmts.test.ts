@@ -1,7 +1,6 @@
 import {expect, jest, test} from '@jest/globals';
 import { getWMTSCapabilitiesFromService, getWMTSLegendURLForLayer } from "./wmts";
 import WMTSCapabilities from 'ol/format/WMTSCapabilities';
-import WMTS, { Options, optionsFromCapabilities } from 'ol/source/WMTS';
 
 const capabilitesXMLDocument: string = `
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
