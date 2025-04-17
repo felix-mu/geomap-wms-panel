@@ -68,7 +68,7 @@ export class DataExtentZoom extends Control {
               }
             }
             if (!isEqual(extent, createEmpty())) {
-                this.getMap()?.getView().fit(extent);
+              this.getMap()?.getView().fit(extent);
               let zoom = this.getMap()?.getView().getZoom();
               if (zoom) {
                 this.getMap()?.getView().setZoom(zoom - 0.5);
