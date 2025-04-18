@@ -18,6 +18,7 @@ export const DATA_EXTENT_ZOOM_TEST_ID = "data-testid dataextentzoom-button";
 
 export class DataExtentZoom extends Control {
     static CONTROL_NAME =  "DataExtentZoom";
+    // protected eventHandler: () => void = () => {};
 
     constructor(opt_options?: any) {
         const options = opt_options || {};
