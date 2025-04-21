@@ -77,7 +77,7 @@ export const CustomWMTSBasemapEditor = ({ onChange, value }: Props) => {
   // https://github.com/grafana/grafana/blob/ef5d71711a523efc65da089d45083e28201b58ab/packages/grafana-ui/src/components/Forms/Label.tsx
   return (
       <div aria-label="wmts container">
-        <Label description={'URL to WMTS capabilities endpoint (required)'}>
+        <Label description={'URL to WMTS capabilities endpoint/file (required)'}>
           URL
         </Label>
         <Input value={url.current} aria-label="URL input"
