@@ -1,6 +1,38 @@
-import {expect, jest, test} from '@jest/globals';
-import { getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer } from "./wmts";
-import WMTSCapabilities from 'ol/format/WMTSCapabilities';
+// import { getWMTSCapabilitiesFromService } from "mapServiceHandlers/wmts";
+
+// https://jestjs.io/docs/jest-object#jestspyonobject-methodname
+// https://stackoverflow.com/a/59312672
+/*const spyOnGetWMTSCapabilitiesFromService = jest.spyOn(wmtsSvcHandler, "getWMTSCapabilitiesFromService");
+spyOnGetWMTSCapabilitiesFromService.mockImplementation((url: string) => {
+    return new Promise(function(resolve: (data: string) => void, reject){
+        resolve(capabilitiesXMLDocument);
+    })
+});*/
+
+// https://jestjs.io/docs/manual-mocks#using-with-es-module-imports
+// https://jestjs.io/docs/mock-functions#mocking-partials
+// https://jestjs.io/docs/ecmascript-modules
+// jest.mock("../../mapServiceHandlers/wmts", () => {
+//     const originalModule = jest.requireActual("mapServiceHandlers/wmts");
+    
+//     //Mock the default export and named export 'foo'
+//     return {
+//             __esModule: true,
+//             ...originalModule,
+//         //   default: jest.fn(() => 'mocked baz'),
+//             getWMTSCapabilitiesFromService: jest.fn((url: string) => {
+//                 return new Promise(function(resolve: (data: string) => void, reject){
+//                     resolve(capabilitiesXMLDocument);
+//                 });
+//             }),
+//         };
+//     });
+
+import { Map } from "ol";
+import { wmts } from "./wmts";
+import { createTheme } from '@grafana/data';
+import Control from "ol/control/Control";
+import { WMSLegend } from "mapcontrols/WMSLegend";
 
 const capabilitiesXMLDocument: string = `
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
@@ -469,8 +501,13 @@ const capabilitiesXMLDocument: string = `
 <ServiceMetadataURL xlink:href="https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml"/>
 </Capabilities>`;
 
+// afterEach(() => {
+//     // restore the spy created with spyOn
+//     jest.restoreAllMocks();
+//   });
+
 beforeEach(() => {
-    global.fetch = jest.fn<typeof fetch>((a, b?) => {
+    global.fetch = jest.fn((a, b?) => {
         return new Promise<any>(function(resolve, reject) {
             resolve({
                 text: () =>  {
@@ -483,157 +520,79 @@ beforeEach(() => {
     });
   });
 
-test("getWMTSCapabilitiesFromService should return object from rest endpoint", async () => {
-    // https://jestjs.io/docs/mock-function-api#jestfnimplementation
-    // https://stackoverflow.com/questions/64818305/simple-fetch-mock-using-typescript-and-jest
-    // https://jestjs.io/docs/jest-object#jestfnimplementation
-    // global.fetch = jest.fn<typeof fetch>((a, b?) => {
-    //     return new Promise<any>(function(resolve, reject) {
-    //         resolve({
-    //             text: () =>  {
-    //                 return new Promise<string>((resolve, reject) => {
-    //                 resolve(capabilitesXMLDocument);
-    //             })
-    //         }
-    //         });
-    //     });
-    // });
+describe("WMTS base layer", () => {
+    const theme = createTheme();
 
-    const parsedWMTSCapabilites = await getWMTSCapabilitiesFromService("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
-    expect(parsedWMTSCapabilites).not.toBeNull();
-    expect(parsedWMTSCapabilites).not.toBeUndefined();
-  });
+    test("should return empty layer group from init function and map should not have legend control", async () => {
+        const options = { type: "wmts" };
+        const map = new Map({});
+        const wmtsBaselayer = await wmts.create(map, options, theme);
+        const layerGrp = wmtsBaselayer.init();
+        expect(layerGrp.getLayersArray().length).toBe(0);
+        expect(map.getControls().getArray().filter((el: Control) => { 
+            try {
+                return (el as WMSLegend).getControlName() == WMSLegend.CONTROL_NAME
+            } catch (exc) {
+                return false;
+            }
+        }).length).toBe(0);
+    });
 
-test("getWMTSCapabilitiesFromService should raise error for invalid URL", async () => {
-    // https://jestjs.io/docs/expect#tothrowerror
-    getWMTSCapabilitiesFromService("//sgx.geodatenzentrum@de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml").
-        catch((error: Error) => expect(error.message).toMatch('wmtsGetCapabilitiesUrl is not a valid URL'));
-  });
-
-test("getWMTSLegendURLForLayer should return URL for given layer identifier", () => {
-    const parser: WMTSCapabilities = new WMTSCapabilities();
-    const wmtsCapabilities = parser.read(capabilitiesXMLDocument);
-    const layerID: string = "web";
-
-    const url: string = getWMTSLegendURLForLayer(wmtsCapabilities, layerID);
-
-    expect(url).toBe("https://sgx.geodatenzentrum.de/wmts_topplus_open/legend/web.png");
-
-  });
-
-test("getWMTSLegendURLForLayer should throw error for not existent layer identifier", () => {
-    const parser: WMTSCapabilities = new WMTSCapabilities();
-    const wmtsCapabilities = parser.read(capabilitiesXMLDocument);
-    const layerID: string = "web99999";
-
-    expect(() => getWMTSLegendURLForLayer(wmtsCapabilities, layerID)).toThrowError();
-  });
-
-test("getWMTSLegendURLForLayer should throw error for empty legend URL array", () => {
-    const layerID: string = "web";
-    const wmtsCapMock = {
-        Contents: {
-            Layer: [
-                {
-                    Identifier: layerID,
-                    Style: [
-                        {
-                            isDefault: false,
-                            LegendURL: []
-                        }
-                    ]
+    test("should return non-empty layer group and map should have a legend control when enabled", async () => {
+        const map = new Map({});
+        const options = {
+            type: "wmts",
+            config: {
+                wmtsBaselayer: {
+                    url: "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+                    opacity: 1.0,
+                    attribution: "",
+                    showLegend: true,
+                    layer: {
+                        identifier: "web",
+                        title: "TopPlusOpen"
+                    }
                 }
-            ]
-        }
-    };
+            }
+        };
+        const wmtsBaselayer = await wmts.create(map, options, theme);
+        const layerGrp = wmtsBaselayer.init();
+        expect(layerGrp.getLayersArray().length).toBe(1);
+        expect(map.getControls().getArray().filter((el: Control) => { 
+            try {
+                return (el as WMSLegend).getControlName() == WMSLegend.CONTROL_NAME
+            } catch (exc) {
+                return false;
+            }
+        }).length).toBe(1);
+    });
 
-    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrowError("Style element does not contain any legend Urls");
-  });
-
-test("getWMTSLegendURLForLayer should throw error for missing Contents property", () => {
-    const layerID: string = "web";
-    const wmtsCapMock = {
-    };
-
-    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrowError("wmtsCapabilites.Contents is undefined or null");
-  });
-
-test("getWMTSLegendURLForLayer should throw error for missing Layer property", () => {
-    const layerID: string = "web";
-    const wmtsCapMock = {
-        Contents: {
-        }
-    };
-
-    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrowError("wmtsCapabilites.Contents.Layer is undefined or null");
-  });
-
-test("getWMTSLegendURLForLayer should throw error for empty Layer array", () => {
-    const layerID: string = "web";
-    const wmtsCapMock = {
-        Contents: {
-            Layer: []
-        }
-    };
-
-    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrowError("wmtsCapabilites.Contents.Layer.length is 0 and does not contain any elements");
-  });
-
-test("getWMTSLegendURLForLayer should throw error when wmtCapabilities is null", () => {
-    const layerID: string = "web";
-    expect(() => getWMTSLegendURLForLayer(null, layerID)).toThrowError("wmtsCapabilites is undefined or null");
-  });
-
-test("getWMTSLegendURLForLayer should throw error when wmtCapabilities is undefined", () => {
-    const layerID: string = "web";
-    expect(() => getWMTSLegendURLForLayer(undefined, layerID)).toThrowError("wmtsCapabilites is undefined or null");
-  });
-
-test("getWMTSLegendURLForLayer should return first URL of default style legend URLs", () => {
-    const layerID: string = "web";
-    const defaultLegendUrls = [
-        {"href": "default_0"},
-        {"href": "default_1"}
-    ];
-    const wmtsCapMock = {
-        Contents: {
-            Layer: [
-                {
-                    Identifier: layerID,
-                    Style: [
-                        {
-                            isDefault: false,
-                            LegendURL: []
-                        },
-                        {
-                            isDefault: true,
-                            LegendURL: defaultLegendUrls
-                        }
-                    ]
+    test("should return non-empty layer group and map should not have a legend control when disabled", async () => {
+        const map = new Map({});
+        const options = {
+            type: "wmts",
+            config: {
+                wmtsBaselayer: {
+                    url: "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml",
+                    opacity: 1.0,
+                    attribution: "",
+                    showLegend: false,
+                    layer: {
+                        identifier: "web",
+                        title: "TopPlusOpen"
+                    }
                 }
-            ]
-        }
-    };
-
-    expect(getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toBe(defaultLegendUrls[0].href);
-  });
-
-test("getWMTSLayers should return when layer with Title equal to the Identifier when Title is missing", () => {
-    const layerID: string = "web";
-    const wmtsCapMock = {
-        Contents: {
-            Layer: [
-                {
-                    Identifier: layerID
-                }
-            ]
-        }
-    };
-    const layers = getWMTSLayers(wmtsCapMock);
-    expect(layers).toHaveLength(1);
-    expect(layers[0].label).toBe(layers[0].value);
-  });
-
-test.each([null, undefined])("getWMTSLayers should throw error when wmtsCapabilities is null or undefined", (val) => {
-    expect(() => getWMTSLayers(val)).toThrowError("wmtsCapabilites is undefined or null");
-  });
+            }
+        };
+        const wmtsBaselayer = await wmts.create(map, options, theme);
+        const layerGrp = wmtsBaselayer.init();
+        expect(layerGrp.getLayersArray().length).toBe(1);
+        expect(map.getControls().getArray().filter((el: Control) => { 
+            try {
+                return (el as WMSLegend).getControlName() == WMSLegend.CONTROL_NAME
+            } catch (exc) {
+                return false;
+            }
+        }).length).toBe(0);
+    });
+});

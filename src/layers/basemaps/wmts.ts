@@ -37,7 +37,7 @@ export type LegendItem = {
 }
 
 export interface WMTSConfig {
-    [x: string]: {};
+    // [x: string]: {};
     url: string,
     layer: WMTSTuple,
     opacity: number,
