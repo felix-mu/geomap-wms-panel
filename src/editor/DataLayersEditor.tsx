@@ -19,9 +19,6 @@ const reorder = (list: ExtendMapLayerOptions[], startIndex: number, endIndex: nu
 };
 
 function dataLayerFilter(layer: ExtendMapLayerRegistryItem): boolean {
-  if (layer.isBaseMap) {
-    return false;
-  }
   if (layer.state === PluginState.alpha) {
     return hasAlphaPanels;
   }
