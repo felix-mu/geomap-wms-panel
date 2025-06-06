@@ -84,7 +84,7 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
                         {/* Controlling a whole draggable by just a part of it: https://github.com/hello-pangea/dnd/blob/main/docs/api/draggable.md#draghandleprops-example-custom-drag-handlem */}
                         <div {...provided.dragHandleProps}> 
                           <IconButton className={styles.grabButton} name="draggabledots" size="lg" iconType="default"
-                              tooltip={"Drag data layer"} variant="secondary"></IconButton>
+                              tooltip={"Drag layer"} variant="secondary"></IconButton>
                         </div>
                           {/* <CollapsableSection label={v.name ? v.name + ' layer' : 'unnamed layer'} isOpen={false}> */}
                           <ControlledCollapse label={v.name ? v.name + ' layer' : 'unnamed layer'} isOpen={false}>
