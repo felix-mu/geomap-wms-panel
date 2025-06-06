@@ -97,6 +97,7 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
                                 onChange(newData);
                               }}
                               filter={dataLayerFilter}
+                              showNameField={true}
                             />
                             <div className="data-layer-remove">
                               <ToolbarButton

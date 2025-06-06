@@ -22,9 +22,10 @@ export interface LayerEditorProps<TConfig = any> {
   data: DataFrame[]; // All results
   onChange: (options: ExtendMapLayerOptions<TConfig>) => void;
   filter: (item: ExtendMapLayerRegistryItem) => boolean;
+  showNameField?: boolean; // Show the name field in the options
 }
 
-export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, filter }) => {
+export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, filter, showNameField }) => {
   // all basemaps
   const layerTypes = useMemo(() => {
     return geomapLayerRegistry.selectOptions(
@@ -43,6 +44,16 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
     }
 
     const builder = new PanelOptionsEditorBuilder<ExtendMapLayerOptions>();
+
+    if (showNameField) {
+      builder.addTextInput({
+        path: 'name',
+        name: 'Name',
+        description: 'Layer name',
+        settings: {},
+      });
+    }
+
     if (layer.id === 'nextzen') {
       builder.addTextInput({
         path: 'apiKey',
@@ -54,12 +65,6 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
 
     if (layer.showLocation) {
       builder
-        .addTextInput({
-          path: 'name',
-          name: 'Name',
-          description: 'Layer name',
-          settings: {},
-        })
         .addCustomEditor({
           id: 'query',
           path: 'query',
@@ -206,7 +211,7 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
       // TODO -- add opacity check
     }
     return builder;
-  }, [options?.type]);
+  }, [options?.type, showNameField]);
 
   // The react componnets
   const layerOptions = useMemo(() => {
