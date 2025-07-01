@@ -36,6 +36,7 @@ export const xyzTiles: ExtendMapLayerRegistryItem<XYZConfig> = {
         }),
         minZoom: cfg.minZoom,
         maxZoom: cfg.maxZoom,
+        ...options
       });
     },
   }),
