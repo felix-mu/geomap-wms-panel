@@ -49,6 +49,7 @@ export const carto: ExtendMapLayerRegistryItem<CartoConfig> = {
           attributions: `<a href="https://carto.com/attribution/">© CARTO</a>`,
           url: `https://{1-4}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}.png`,
         }),
+        ...options
       });
     },
   }),

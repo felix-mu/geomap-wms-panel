@@ -24,5 +24,5 @@ export const BaseLayerEditor: FC<StandardEditorProps<ExtendMapLayerOptions, any,
     return <div>The base layer is configured by the server admin.</div>;
   }
 
-  return <LayerEditor options={value} data={context.data} onChange={onChange} filter={baseMapFilter} />;
+  return <LayerEditor options={value} data={context.data} onChange={onChange} filter={baseMapFilter} showNameField={false} />;
 };
