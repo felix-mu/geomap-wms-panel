@@ -16,9 +16,11 @@ export const standard: ExtendMapLayerRegistryItem = {
     init: () => {
       return new TileLayer({
         source: new OSM(),
+        ...options
       });
     },
   }),
+  registerOptionsUI: (builder) => {}
 };
 
 export const osmLayers = [standard];

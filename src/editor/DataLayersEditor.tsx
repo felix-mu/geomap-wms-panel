@@ -22,6 +22,11 @@ function dataLayerFilter(layer: ExtendMapLayerRegistryItem): boolean {
   if (layer.state === PluginState.alpha) {
     return hasAlphaPanels;
   }
+
+  if (layer.id === "default") {
+    return false;
+  }
+
   return true;
 }
 
@@ -93,7 +98,9 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
                               data={context.data}
                               onChange={(cfg) => {
                                 let newData: ExtendMapLayerOptions[] = value ? _.cloneDeep(value) : [];
-                                newData[index] = cfg;
+                                // newData[index] = cfg;
+                                cfg.opacity = cfg.opacity ? cfg.opacity : 1;
+                                newData.splice(index, 1, cfg);
                                 onChange(newData);
                               }}
                               filter={dataLayerFilter}

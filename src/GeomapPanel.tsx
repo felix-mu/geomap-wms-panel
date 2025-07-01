@@ -59,6 +59,8 @@ import { Subscription } from 'rxjs';
 import { DataExtentZoom } from 'mapcontrols/DataExtentZoom';
 import { CustomLayerSwitcher } from 'mapcontrols/CustomLayerSwitcher';
 import { CustomOverviewMapWrapper } from 'mapcontrols/CustomOverviewMapWrapper';
+import Group from 'ol/layer/Group';
+import { GroupLayerOptions } from 'ol-layerswitcher';
 // import { BasemapLegend } from 'mapcontrols/BasemapLegend';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
@@ -527,7 +529,8 @@ export class GeomapPanel extends Component<Props, State> {
       }
 
       const handler = await item.create(this.map!, overlay, config.theme2);
-      const layer = handler.init();
+      // If it is a basemap create group with title to make it visible in the legend: https://github.com/walkermatt/ol-layerswitcher/blob/main/examples/layerswitcher.js#L10
+      const layer = item.isBaseMap ? new Group({layers: [handler.init()], title: overlay.name} as GroupLayerOptions) : handler.init();
       (layer as any).___handler = handler;
       this.map!.addLayer(layer);
       this.layers.push({

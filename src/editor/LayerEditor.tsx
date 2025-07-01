@@ -51,6 +51,7 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
         name: 'Name',
         description: 'Layer name',
         settings: {},
+        defaultValue: 'unnamed layer'
       });
     }
 
@@ -210,10 +211,22 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
     if (layer.showOpacity) {
       // TODO -- add opacity check
     }
+
+    builder.addSliderInput({
+      path: 'opacity',
+      name: 'Opacity',
+      defaultValue: 1,
+      settings: {
+        min: 0,
+        max: 1,
+        step: 0.1,
+      },
+    });
+
     return builder;
   }, [options?.type, showNameField]);
 
-  // The react componnets
+  // The react components
   const layerOptions = useMemo(() => {
     const layer = geomapLayerRegistry.getIfExists(options?.type);
     if (!optionsEditorBuilder || !layer) {
