@@ -530,7 +530,7 @@ export class GeomapPanel extends Component<Props, State> {
 
       const handler = await item.create(this.map!, overlay, config.theme2);
       // If it is a basemap create group with title to make it visible in the legend: https://github.com/walkermatt/ol-layerswitcher/blob/main/examples/layerswitcher.js#L10
-      const layer = item.isBaseMap ? new Group({layers: [handler.init()], title: overlay.name} as GroupLayerOptions) : handler.init();
+      const layer = item.isBaseMap ? new Group({layers: [handler.init()], title: overlay.name, combine: true,} as GroupLayerOptions) : handler.init();
       (layer as any).___handler = handler;
       this.map!.addLayer(layer);
       this.layers.push({
