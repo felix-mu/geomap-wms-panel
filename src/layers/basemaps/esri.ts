@@ -57,6 +57,7 @@ export const esriXYZTiles: ExtendMapLayerRegistryItem<ESRIXYZConfig> = {
   id: 'esri-xyz',
   name: 'ArcGIS MapServer',
   isBaseMap: true,
+  showOpacity: true,
 
   create: async (map: Map, options: ExtendMapLayerOptions<ESRIXYZConfig>, theme: GrafanaTheme2) => {
     const cfg = { ...options.config };

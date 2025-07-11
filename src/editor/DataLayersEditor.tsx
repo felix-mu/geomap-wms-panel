@@ -99,7 +99,7 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
                               onChange={(cfg) => {
                                 let newData: ExtendMapLayerOptions[] = value ? _.cloneDeep(value) : [];
                                 // newData[index] = cfg;
-                                cfg.opacity = cfg.opacity ? cfg.opacity : 1;
+                                // cfg.opacity = cfg.opacity === undefined ? 1.0 : cfg.opacity;
                                 newData.splice(index, 1, cfg);
                                 onChange(newData);
                               }}

@@ -205,23 +205,25 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
           defaultValue: true,
         })*/;
     }
+
+    if (layer.showOpacity) {
+      builder.addSliderInput({
+        path: 'opacity',
+        name: 'Opacity',
+        defaultValue: 1,
+        settings: {
+          min: 0,
+          max: 1,
+          step: 0.1,
+        },
+      });
+    }
+
     if (layer.registerOptionsUI) {
       layer.registerOptionsUI(builder);
     }
-    if (layer.showOpacity) {
-      // TODO -- add opacity check
-    }
 
-    builder.addSliderInput({
-      path: 'opacity',
-      name: 'Opacity',
-      defaultValue: 1,
-      settings: {
-        min: 0,
-        max: 1,
-        step: 0.1,
-      },
-    });
+
 
     return builder;
   }, [options?.type, showNameField]);
@@ -240,8 +242,11 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
 
     const context: StandardEditorContext<any> = {
       data,
-      options: options,
+      // options: options,
+      options: {...options, opacity: options?.opacity === undefined && layer.showOpacity ? 1.0 : options?.opacity}
     };
+
+    
 
     const currentOptions = { ...options, type: layer.id, config: { ...layer.defaultOptions, ...options?.config } };
 

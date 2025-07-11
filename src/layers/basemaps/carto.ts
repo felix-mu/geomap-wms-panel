@@ -27,6 +27,7 @@ export const carto: ExtendMapLayerRegistryItem<CartoConfig> = {
   name: 'CARTO reference map',
   isBaseMap: true,
   defaultOptions: defaultCartoConfig,
+  showOpacity: true,
 
   /**
    * Function that configures transformation and returns a transformer

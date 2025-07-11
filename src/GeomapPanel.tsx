@@ -482,6 +482,8 @@ export class GeomapPanel extends Component<Props, State> {
     if (ttip.data !== currentTTip?.data || ttip.rowIndex !== currentTTip?.rowIndex) {
       if (hoverPayload.propsToShow !== undefined || hoverPayload.data === undefined) { // only update/show tooltip if data is not undefined (hovering over feature) or data is undefined (not hovering over feature)
         this.setState({ ttip: { ...hoverPayload } });
+      } else {
+        this.clearTooltip();
       }
     }
   };
