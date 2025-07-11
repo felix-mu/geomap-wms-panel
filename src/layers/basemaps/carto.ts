@@ -27,6 +27,7 @@ export const carto: ExtendMapLayerRegistryItem<CartoConfig> = {
   name: 'CARTO reference map',
   isBaseMap: true,
   defaultOptions: defaultCartoConfig,
+  showOpacity: true,
 
   /**
    * Function that configures transformation and returns a transformer
@@ -49,6 +50,7 @@ export const carto: ExtendMapLayerRegistryItem<CartoConfig> = {
           attributions: `<a href="https://carto.com/attribution/">© CARTO</a>`,
           url: `https://{1-4}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}.png`,
         }),
+        ...options
       });
     },
   }),

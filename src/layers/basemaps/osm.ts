@@ -7,6 +7,7 @@ export const standard: ExtendMapLayerRegistryItem = {
   id: 'osm-standard',
   name: 'Open Street Map',
   isBaseMap: true,
+  showOpacity: true,
 
   /**
    * Function that configures transformation and returns a transformer
@@ -16,9 +17,11 @@ export const standard: ExtendMapLayerRegistryItem = {
     init: () => {
       return new TileLayer({
         source: new OSM(),
+        ...options
       });
     },
   }),
+  registerOptionsUI: (builder) => {}
 };
 
 export const osmLayers = [standard];

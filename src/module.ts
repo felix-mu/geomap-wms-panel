@@ -42,10 +42,10 @@ export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
     });
 
     builder.addCustomEditor({
-      category: ['Data layer'],
+      category: ['Map layers'],
       id: 'layers',
       path: 'layers',
-      name: 'Data layer',
+      name: 'Map layers',
       editor: DataLayersEditor,
     });
 

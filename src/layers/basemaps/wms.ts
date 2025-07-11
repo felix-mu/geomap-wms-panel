@@ -51,6 +51,7 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
   name: 'OGC Web Map Service',
   description: 'Add an OGC Web Map Service',
   isBaseMap: true,
+  showOpacity: true,
 
   /**
    * Function that configures transformation and returns a transformer

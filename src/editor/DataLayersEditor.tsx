@@ -19,12 +19,14 @@ const reorder = (list: ExtendMapLayerOptions[], startIndex: number, endIndex: nu
 };
 
 function dataLayerFilter(layer: ExtendMapLayerRegistryItem): boolean {
-  if (layer.isBaseMap) {
-    return false;
-  }
   if (layer.state === PluginState.alpha) {
     return hasAlphaPanels;
   }
+
+  if (layer.id === "default") {
+    return false;
+  }
+
   return true;
 }
 
@@ -87,7 +89,7 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
                         {/* Controlling a whole draggable by just a part of it: https://github.com/hello-pangea/dnd/blob/main/docs/api/draggable.md#draghandleprops-example-custom-drag-handlem */}
                         <div {...provided.dragHandleProps}> 
                           <IconButton className={styles.grabButton} name="draggabledots" size="lg" iconType="default"
-                              tooltip={"Drag data layer"} variant="secondary"></IconButton>
+                              tooltip={"Drag layer"} variant="secondary"></IconButton>
                         </div>
                           {/* <CollapsableSection label={v.name ? v.name + ' layer' : 'unnamed layer'} isOpen={false}> */}
                           <ControlledCollapse label={v.name ? v.name + ' layer' : 'unnamed layer'} isOpen={false}>
@@ -96,10 +98,13 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
                               data={context.data}
                               onChange={(cfg) => {
                                 let newData: ExtendMapLayerOptions[] = value ? _.cloneDeep(value) : [];
-                                newData[index] = cfg;
+                                // newData[index] = cfg;
+                                // cfg.opacity = cfg.opacity === undefined ? 1.0 : cfg.opacity;
+                                newData.splice(index, 1, cfg);
                                 onChange(newData);
                               }}
                               filter={dataLayerFilter}
+                              showNameField={true}
                             />
                             <div className="data-layer-remove">
                               <ToolbarButton
