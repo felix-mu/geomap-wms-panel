@@ -34,7 +34,7 @@ import { createTheme } from '@grafana/data';
 import Control from "ol/control/Control";
 import { WMSLegend } from "mapcontrols/WMSLegend";
 
-const capabilitiesXMLDocument: string = `
+const capabilitiesXMLDocument = `
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
 <ows:ServiceIdentification>
 <ows:Title>WMTS TopPlusOpen</ows:Title>
@@ -531,7 +531,7 @@ describe("WMTS base layer", () => {
         expect(layerGrp.getLayersArray().length).toBe(0);
         expect(map.getControls().getArray().filter((el: Control) => { 
             try {
-                return (el as WMSLegend).getControlName() == WMSLegend.CONTROL_NAME
+                return (el as WMSLegend).getControlName() === WMSLegend.CONTROL_NAME
             } catch (exc) {
                 return false;
             }
@@ -560,7 +560,7 @@ describe("WMTS base layer", () => {
         expect(layerGrp.getLayersArray().length).toBe(1);
         expect(map.getControls().getArray().filter((el: Control) => { 
             try {
-                return (el as WMSLegend).getControlName() == WMSLegend.CONTROL_NAME
+                return (el as WMSLegend).getControlName() === WMSLegend.CONTROL_NAME
             } catch (exc) {
                 return false;
             }
@@ -589,7 +589,7 @@ describe("WMTS base layer", () => {
         expect(layerGrp.getLayersArray().length).toBe(1);
         expect(map.getControls().getArray().filter((el: Control) => { 
             try {
-                return (el as WMSLegend).getControlName() == WMSLegend.CONTROL_NAME
+                return (el as WMSLegend).getControlName() === WMSLegend.CONTROL_NAME
             } catch (exc) {
                 return false;
             }

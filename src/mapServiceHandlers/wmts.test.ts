@@ -2,7 +2,7 @@ import {expect, jest, test} from '@jest/globals';
 import { getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer } from "./wmts";
 import WMTSCapabilities from 'ol/format/WMTSCapabilities';
 
-const capabilitiesXMLDocument: string = `
+const capabilitiesXMLDocument = `
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
 <ows:ServiceIdentification>
 <ows:Title>WMTS TopPlusOpen</ows:Title>
@@ -513,7 +513,7 @@ test("getWMTSCapabilitiesFromService should raise error for invalid URL", async 
 test("getWMTSLegendURLForLayer should return URL for given layer identifier", () => {
     const parser: WMTSCapabilities = new WMTSCapabilities();
     const wmtsCapabilities = parser.read(capabilitiesXMLDocument);
-    const layerID: string = "web";
+    const layerID = "web";
 
     const url: string = getWMTSLegendURLForLayer(wmtsCapabilities, layerID);
 
@@ -524,13 +524,13 @@ test("getWMTSLegendURLForLayer should return URL for given layer identifier", ()
 test("getWMTSLegendURLForLayer should throw error for not existent layer identifier", () => {
     const parser: WMTSCapabilities = new WMTSCapabilities();
     const wmtsCapabilities = parser.read(capabilitiesXMLDocument);
-    const layerID: string = "web99999";
+    const layerID = "web99999";
 
     expect(() => getWMTSLegendURLForLayer(wmtsCapabilities, layerID)).toThrowError();
   });
 
 test("getWMTSLegendURLForLayer should throw error for empty legend URL array", () => {
-    const layerID: string = "web";
+    const layerID = "web";
     const wmtsCapMock = {
         Contents: {
             Layer: [
@@ -551,7 +551,7 @@ test("getWMTSLegendURLForLayer should throw error for empty legend URL array", (
   });
 
 test("getWMTSLegendURLForLayer should throw error for missing Contents property", () => {
-    const layerID: string = "web";
+    const layerID = "web";
     const wmtsCapMock = {
     };
 
@@ -559,7 +559,7 @@ test("getWMTSLegendURLForLayer should throw error for missing Contents property"
   });
 
 test("getWMTSLegendURLForLayer should throw error for missing Layer property", () => {
-    const layerID: string = "web";
+    const layerID = "web";
     const wmtsCapMock = {
         Contents: {
         }
@@ -569,7 +569,7 @@ test("getWMTSLegendURLForLayer should throw error for missing Layer property", (
   });
 
 test("getWMTSLegendURLForLayer should throw error for empty Layer array", () => {
-    const layerID: string = "web";
+    const layerID = "web";
     const wmtsCapMock = {
         Contents: {
             Layer: []
@@ -580,17 +580,17 @@ test("getWMTSLegendURLForLayer should throw error for empty Layer array", () => 
   });
 
 test("getWMTSLegendURLForLayer should throw error when wmtCapabilities is null", () => {
-    const layerID: string = "web";
+    const layerID = "web";
     expect(() => getWMTSLegendURLForLayer(null, layerID)).toThrowError("wmtsCapabilites is undefined or null");
   });
 
 test("getWMTSLegendURLForLayer should throw error when wmtCapabilities is undefined", () => {
-    const layerID: string = "web";
+    const layerID = "web";
     expect(() => getWMTSLegendURLForLayer(undefined, layerID)).toThrowError("wmtsCapabilites is undefined or null");
   });
 
 test("getWMTSLegendURLForLayer should return first URL of default style legend URLs", () => {
-    const layerID: string = "web";
+    const layerID = "web";
     const defaultLegendUrls = [
         {"href": "default_0"},
         {"href": "default_1"}
@@ -619,7 +619,7 @@ test("getWMTSLegendURLForLayer should return first URL of default style legend U
   });
 
 test("getWMTSLayers should return when layer with Title equal to the Identifier when Title is missing", () => {
-    const layerID: string = "web";
+    const layerID = "web";
     const wmtsCapMock = {
         Contents: {
             Layer: [
