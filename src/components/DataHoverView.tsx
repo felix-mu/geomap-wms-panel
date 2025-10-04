@@ -38,7 +38,7 @@ export class DataHoverView extends PureComponent<Props> {
           ))}
           {propsToShow.map((f: Field<any, Vector<any>>, i: number | undefined) => (
             <div key={`${i}/${rowIndex}`} className={this.style.row}>
-              <span>{getFieldDisplayName(f, data)}:</span>
+              <span>{getFieldDisplayName(f, data)}: </span>
               <span>{fmt(f, rowIndex)}</span>
             </div>
           ))}
