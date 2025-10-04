@@ -23,9 +23,10 @@ export interface LayerEditorProps<TConfig = any> {
   onChange: (options: ExtendMapLayerOptions<TConfig>) => void;
   filter: (item: ExtendMapLayerRegistryItem) => boolean;
   showNameField?: boolean; // Show the name field in the options
+  isBaselayerEditor?: boolean;
 }
 
-export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, filter, showNameField }) => {
+export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, filter, showNameField, isBaselayerEditor = false }) => {
   // all basemaps
   const layerTypes = useMemo(() => {
     return geomapLayerRegistry.selectOptions(
@@ -210,12 +211,22 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
       builder.addSliderInput({
         path: 'opacity',
         name: 'Opacity',
-        defaultValue: 1,
         settings: {
           min: 0,
           max: 1,
           step: 0.1,
         },
+        defaultValue: 1,
+      });
+    }
+
+    if (!isBaselayerEditor) {
+      builder.addBooleanSwitch({
+        path: 'visible',
+        name: 'Layer is selected by default in the layer switch control',
+        description: 'If toggled the layer is selected by default in the layer switch control. Uncheck to have the layer invisible by default.',
+        settings: {},
+        defaultValue: true
       });
     }
 
@@ -223,10 +234,8 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
       layer.registerOptionsUI(builder);
     }
 
-
-
     return builder;
-  }, [options?.type, showNameField]);
+  }, [options?.type, showNameField, isBaselayerEditor]);
 
   // The react components
   const layerOptions = useMemo(() => {
@@ -243,10 +252,12 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
     const context: StandardEditorContext<any> = {
       data,
       // options: options,
-      options: {...options, opacity: options?.opacity === undefined && layer.showOpacity ? 1.0 : options?.opacity}
+      options: {
+        ...options, 
+        opacity: options?.opacity === undefined && layer.showOpacity ? 1.0 : options?.opacity,
+        visible: options?.visible === undefined ? true : options?.visible
+      }
     };
-
-    
 
     const currentOptions = { ...options, type: layer.id, config: { ...layer.defaultOptions, ...options?.config } };
 
