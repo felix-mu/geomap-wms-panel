@@ -18,6 +18,7 @@ export const DATA_EXTENT_ZOOM_TEST_ID = "data-testid dataextentzoom-button";
 
 export class DataExtentZoom extends Control {
     static CONTROL_NAME =  "DataExtentZoom";
+    // protected eventHandler: () => void = () => {};
 
     constructor(opt_options?: any) {
         const options = opt_options || {};
@@ -68,7 +69,7 @@ export class DataExtentZoom extends Control {
               }
             }
             if (!isEqual(extent, createEmpty())) {
-                this.getMap()?.getView().fit(extent);
+              this.getMap()?.getView().fit(extent);
               let zoom = this.getMap()?.getView().getZoom();
               if (zoom) {
                 this.getMap()?.getView().setZoom(zoom - 0.5);
