@@ -50,7 +50,8 @@ export interface ExtendMapLayerOptions<TConfig = any> {
   displayProperties?: string[];
   titleField?: string;
   timeField?: string;
-  visible?: boolean
+  visible?: boolean;
+  enabledForDataLinks?: boolean;
 }
 
 export interface ExtendMapLayerRegistryItem<TConfig = ExtendMapLayerOptions> extends RegistryItemWithOptions {

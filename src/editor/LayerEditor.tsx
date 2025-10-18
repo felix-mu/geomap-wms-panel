@@ -228,6 +228,13 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
         settings: {},
         defaultValue: true
       });
+      builder.addBooleanSwitch({
+        path: 'enabledForDataLinks',
+        name: 'Toggle to include the data layer for data links',
+        description: 'If toggled the layer is used to interpolate the data links URL.',
+        settings: {},
+        defaultValue: true
+      });
     }
 
     if (layer.registerOptionsUI) {
@@ -255,7 +262,8 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
       options: {
         ...options, 
         opacity: options?.opacity === undefined && layer.showOpacity ? 1.0 : options?.opacity,
-        visible: options?.visible === undefined ? true : options?.visible
+        visible: options?.visible === undefined ? true : options?.visible,
+        enabledForDataLinks: options?.enabledForDataLinks === undefined ? true : options?.enabledForDataLinks,
       }
     };
 
