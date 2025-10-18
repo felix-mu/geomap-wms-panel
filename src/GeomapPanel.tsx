@@ -149,6 +149,31 @@ export class GeomapPanel extends Component<Props, State> {
 
         let dataFrame: DataFrame = event.payload.data!;
         let rowIndex: number = event.payload.rowIndex!;
+
+        // Return if either dataframe or rowIndex are undefined
+        if (dataFrame === undefined || rowIndex === undefined) {
+          return;
+        }
+
+        // Get options for data layer with refIf of dataframes and check if the data layer is configured for datalinks
+        const dataLayer = this.props.options.layers.find((el) => {
+          try {
+            return el.query!.options === dataFrame.refId;
+          } catch (error) {
+            return false;
+          }
+        })
+
+        if (!dataLayer) {
+          return;
+        }
+
+        // By default 'enabledForDataLinks' is considered to be true, even though it might not be defined.
+        // I.e. the value must be explicitely set to false to be excluded
+        if (dataLayer.enabledForDataLinks !== undefined && dataLayer.enabledForDataLinks === false) {
+          return;
+        }
+
         // let proxyObject = getFieldDisplayValuesProxy({
         //   frame: this.state.ttip!.data!,
         //   rowIndex: this.state.ttip!.rowIndex!
