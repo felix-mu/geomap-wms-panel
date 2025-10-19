@@ -1,4 +1,4 @@
-import Units from 'ol/proj/Units';
+import { Units } from 'ol/control/ScaleLine';
 import { MapCenterID } from './view';
 import { ExtendMapLayerOptions } from 'extension';
 

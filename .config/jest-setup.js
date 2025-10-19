@@ -22,4 +22,13 @@ Object.defineProperty(global, 'matchMedia', {
   })),
 });
 
+Object.defineProperty(global, 'ResizeObserver', {
+  writable: true,
+  value: jest.fn().mockImplementation((query) => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    disconnect: jest.fn(),
+  })),
+});
+
 HTMLCanvasElement.prototype.getContext = () => {};
