@@ -18,9 +18,11 @@ Due to Grafana Labs' [plugin guidelines](https://grafana.com/legal/plugins/#plug
 ## Features
 * Integration of mutliple OGC WMS 1.3.0 from different endpoints as base map layer
 * Opacity setting for each WMS endpoint
-* Collapsable legend of used WNS layers
+* Collapsable legend of used WMS layers
 * Interactive spatial filter
 * Minimal data links implementation
+* Button to reset the map view to the data extent
+* Support for WMTS (Web Map Tile Service)
 
 ## Migration from Geomap WMS Panel Plugin v1.0.1
 Due to the capability of using multiple WMS endpoints as base map layer a change in the plugin configuration object was required, not being backwards compatible with the configuration object used for plugins of version 1.y.z.
@@ -197,6 +199,21 @@ This repository refers to the following version of its original: https://github.
 <!-- - Minikube
 - Helm -->
 
+## Dependency resolution
+Note that some of the `@grafana/*` packages also include `Openlayers` as part of their dependencies. Since the plugin itself also uses Openlayers as dependency it is required that the Openlayer versions of the `@grafana/*` packages and the one used in the panel plugin are compatible.
+This is achieved by hard-coding the `ol` version in the [`overrides` section](https://docs.npmjs.com/cli/v9/configuring-npm/package-json#overrides) of the `package.json`:
+```json
+...
+  "overrides": {
+    "ol": "7.2.2",
+    "jspdf": "3.0.2",
+    "uplot": "1.6.31"
+  },
+...
+```
+
+> ⚠️ When running in build errors after updating certain packages with [transitive dependencies](https://en.wikipedia.org/wiki/Transitive_dependency) listed in the `overrides` section it is recommend to check if the overriding versions conflict with the versions required by the updated packages
+
 ## Run the tests
 ### Unit/integration tests
 ```bash
@@ -204,7 +221,7 @@ npm run test:all
 ```
 
 ### E2E tests
-> Requires a Docker container of grafana running on localhost:3000 with default credentials (user: admin, password: admin).
+> Requires a Docker container of grafana running on `localhost:3000` with default credentials (`user: admin, password: admin`).
 ```bash
 npm run e2e
 ```
