@@ -98,10 +98,16 @@ const config = async (env): Promise<Configuration> => ({
       // {
       //   test: /fontmaki.*\.css/,
       //   use: [
-      //     { loader: "style-loader", options: { injectType: "linkTag", attributes: { re: "preload" } } },
-      //     "css-loader"
+      //     { loader: "style-loader", options: { injectType: "linkTag", attributes: { rel: "preload", as: "style", onload: "this.rel = 'stylesheet'" } } },
+      //     // "css-loader"
       //   ],
       //   type: 'asset/resource',
+      //   generator: {
+      //     // Keep publicPath relative for host.com/grafana/ deployments
+      //     publicPath: `public/plugins/${pluginJson.id}/static/css/`,
+      //     outputPath: 'static/css/',
+      //     filename: Boolean(env.production) ? '[hash][ext]' : '[name][ext]',
+      //   },
       // },
       {
         test: /\.css$/,

@@ -15,6 +15,10 @@ import { isArray, isEqual } from 'lodash';
 import './GeomapPanel.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 
+// Load directly when plugin
+import 'static/css/fontmaki2.css';
+import 'static/css/fontmaki.css';
+
 // import 'ol-layerswitcher/dist/ol-layerswitcher.css';
 
 // import WKT from 'ol/format/WKT.js';
@@ -386,6 +390,14 @@ export class GeomapPanel extends Component<Props, State> {
       this.map.dispose();
     }
 
+    // Load fontmaki fonts which are used for icons
+    for (const fontFace of document.fonts) {
+      // if (fontFace.family.toLowerCase().includes("fontmaki") || 
+      //         fontFace.family.toLowerCase().includes("grafana")) {
+        await fontFace.load()
+      // }
+    }
+    // await document.fonts.ready
 
     const { options } = this.props;
     this.map = new Map({
@@ -513,7 +525,7 @@ export class GeomapPanel extends Component<Props, State> {
     }
   };
 
-  async initBasemap(cfg: ExtendMapLayerOptions) {
+  async initBasemap(cfg: ExtendMapLayerOptions) {    
     if (!this.map) {
       return;
     }
