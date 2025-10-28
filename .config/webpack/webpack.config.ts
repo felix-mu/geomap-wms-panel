@@ -95,8 +95,17 @@ const config = async (env): Promise<Configuration> => ({
           },
         },
       },
+      // {
+      //   test: /fontmaki.*\.css/,
+      //   use: [
+      //     { loader: "style-loader", options: { injectType: "linkTag", attributes: { re: "preload" } } },
+      //     "css-loader"
+      //   ],
+      //   type: 'asset/resource',
+      // },
       {
         test: /\.css$/,
+        // exclude: /fontmaki.*\.css/,
         use: ["style-loader", "css-loader"]
       },
       {
