@@ -458,7 +458,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
   },
   // Marker overlay options
   registerOptionsUI: (builder) => {
-    const iconType = Object.getOwnPropertyNames(FontSymbol.prototype.defs.glyphs);
+    const iconType = Object.getOwnPropertyNames(FontSymbol.defs.glyphs);
     let iconValues: any = [];
     iconValues.push({ value: '', label: 'none' });
     iconType.map((n) => iconValues.push({ value: n, label: n.replace('fa-', '') }));

@@ -228,13 +228,15 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
         settings: {},
         defaultValue: true
       });
-      builder.addBooleanSwitch({
-        path: 'enabledForDataLinks',
-        name: 'Toggle to include the data layer for data links',
-        description: 'If toggled the layer is used to interpolate the data links URL.',
-        settings: {},
-        defaultValue: true
-      });
+      if (!layer.isBaseMap) {
+        builder.addBooleanSwitch({
+          path: 'enabledForDataLinks',
+          name: 'Toggle to include the data layer for data links',
+          description: 'If toggled the layer is used to interpolate the data links URL.',
+          settings: {},
+          defaultValue: true
+        });
+      }
     }
 
     if (layer.registerOptionsUI) {
@@ -267,7 +269,7 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
       }
     };
 
-    const currentOptions = { ...options, type: layer.id, config: { ...layer.defaultOptions, ...options?.config } };
+    const currentOptions = { /*...options*/...context.options, type: layer.id, config: { ...layer.defaultOptions, ...options?.config } };
 
     // Update the panel options if not set
     if (!options || (layer.defaultOptions && !options.config)) {
