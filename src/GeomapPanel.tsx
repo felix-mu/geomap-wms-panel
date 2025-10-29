@@ -413,7 +413,7 @@ export class GeomapPanel extends Component<Props, State> {
     this.mouseWheelZoom = new MouseWheelZoom();
     this.map.addInteraction(this.mouseWheelZoom);
     await this.initControls(options.controls);
-    this.initBasemap(options.basemap);
+    await this.initBasemap(options.basemap);
     await this.initLayers(options.layers);
     this.forceUpdate(); // first render
 
