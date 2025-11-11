@@ -1,7 +1,5 @@
 import Control from "ol/control/Control";
 import * as olCss from "ol/css";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import "ol/ol.css";
 import { Vector as VectorSource } from 'ol/source.js';
 import { Vector as VectorLayer } from 'ol/layer.js';
 import Draw, { DrawEvent } from 'ol/interaction/Draw.js';

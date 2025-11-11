@@ -12,7 +12,7 @@ import VectorLayer from 'ol/layer/Vector';
 import { Vector } from 'ol/source';
 import LayerSwitcher from 'ol-layerswitcher';
 import { isArray, isEqual } from 'lodash';
-import './GeomapPanel.css';
+// import './GeomapPanel.css';
 
 // import WKT from 'ol/format/WKT.js';
 // import Polygon from 'ol/geom/Polygon.js';

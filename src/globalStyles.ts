@@ -1,7 +1,9 @@
-import { css } from '@emotion/css';
+import { css } from '@emotion/react';
 import { GrafanaTheme2 } from '@grafana/data';
 
 import 'ol/ol.css';
+import 'ol-ext/dist/ol-ext.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 /**
  * Will be loaded *after* the css above
@@ -78,5 +80,41 @@ export function getGlobalStyles(theme: GrafanaTheme2) {
     '.ol-attribution:not(.ol-collapsed)': {
       backgroundColor: theme.colors.background.secondary, // rgba(255,255,255,0.8);
     },
+    '.ol-control.layer-switcher': {
+      top: "0.5em",
+      right: "0.5em",
+      textAlign: "right"
+    },
+    '.ol-control.layer-switcher.shown.layer-switcher-activation-mode-click': {
+      paddingRight: "0.5em"
+    },
+    '.ol-control.layer-switcher.shown.layer-switcher-activation-mode-click > button': {
+      right: 0,
+      borderLeft: 0,
+    },
+    '.ol-control.layer-switcher.shown.layer-switcher-activation-mode-click > .panel': {
+      display: 'block',
+    },
+    '.ol-control.layer-switcher.layer-switcher-activation-mode-click > .panel': {
+      display: 'none',
+    },
+    '.ol-control.layer-switcher button': {
+      right: 0,
+      borderLeft: 0,
+    },
+    '.ol-control.layer-switcher li.layer': {
+      listStyle: 'none',
+    },
+    '.data-layer-add': {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      marginBottom: 10,
+    },
+    '.data-layer-remove': {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      marginBottom: 10,
+      marginTop: 10,
+    }
   });
 }
