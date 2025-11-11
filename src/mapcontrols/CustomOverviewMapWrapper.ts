@@ -1,7 +1,5 @@
 // import { css } from "@emotion/css";
 import OverviewMap, { Options } from "ol/control/OverviewMap";
-import "./customOverviewMap.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
 
 interface CustomOverviewMapOptions extends Options {
 
@@ -13,10 +11,20 @@ class CustomOverviewMapWrapper {
     constructor(options: CustomOverviewMapOptions) {
         const icon = document.createElement("i");
         icon.setAttribute("class", "bi bi-map");
+        icon.style.cursor = "pointer";
+
+        const collapseLabelParent = document.createElement("div");
+        collapseLabelParent.setAttribute("style", "height: 100%; display: flex;");
+
+        const collapseLabel = document.createElement("span");
+        collapseLabel.style.margin = "auto";
+        collapseLabel.innerText = "›";
+
+        collapseLabelParent.appendChild(collapseLabel)
 
         this.overviewMap = new OverviewMap({
             className: "ol-custom-overviewmap",
-            collapseLabel: "›",
+            collapseLabel: collapseLabelParent,
             label: icon,
             ...options
         });

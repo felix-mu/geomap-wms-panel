@@ -12,12 +12,6 @@ import VectorLayer from 'ol/layer/Vector';
 import { Vector } from 'ol/source';
 // import LayerSwitcher from 'ol-layerswitcher';
 import { isArray, isEqual } from 'lodash';
-import './GeomapPanel.css';
-import "bootstrap-icons/font/bootstrap-icons.css";
-
-// Load directly when plugin
-import 'static/css/fontmaki2.css';
-import 'static/css/fontmaki.css';
 
 // import 'ol-layerswitcher/dist/ol-layerswitcher.css';
 

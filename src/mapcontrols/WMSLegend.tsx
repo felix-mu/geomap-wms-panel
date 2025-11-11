@@ -53,8 +53,10 @@ export class WMSLegend extends Control {
         button.title = options.tooltipTitle || "WMS layer legend";
         const icon = document.createElement('i');
         icon.className = "bi bi-list-task";
+        icon.style.cursor = "pointer";
         button.appendChild(icon);
-        button.style.pointerEvents = "auto";
+        // button.style.pointerEvents = "auto";
+        button.style.cursor= "pointer";
         
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";

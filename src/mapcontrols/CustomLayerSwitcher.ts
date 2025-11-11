@@ -15,8 +15,9 @@ export class CustomLayerSwitcher extends LayerSwitcher {
 
       this.icon = document.createElement('i');
       this.icon.setAttribute("class", hiddenClassNameButton!);
+      this.icon.style.cursor = "pointer";
       this.button.appendChild(this.icon);
-      this.button.style.pointerEvents = "auto";
+      // this.button.style.pointerEvents = "auto";
 
       this.text = document.createTextNode("");
       this.button.appendChild(this.text);

@@ -1,7 +1,5 @@
 import Control from "ol/control/Control";
 import * as olCss from "ol/css";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import "ol/ol.css";
 import { Vector as VectorSource } from 'ol/source.js';
 import { Vector as VectorLayer } from 'ol/layer.js';
 import Draw, { DrawEvent } from 'ol/interaction/Draw.js';
@@ -44,8 +42,10 @@ class SpatialFilterControl extends Control {
         // button.innerHTML = 'D';
         const icon = document.createElement('i');
         icon.className = "bi bi-funnel";
+        icon.style.cursor = "pointer";
         button.appendChild(icon);
-        button.style.pointerEvents = "auto";
+        // button.style.pointerEvents = "auto";
+        button.style.cursor= "pointer";
     
         const element = document.createElement('div');
         element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE} ${olCss.CLASS_CONTROL}`;

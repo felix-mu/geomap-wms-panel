@@ -1,4 +1,3 @@
-import "bootstrap-icons/font/bootstrap-icons.css";
 // import { BusEventBase } from "@grafana/data";
 import Control from "ol/control/Control";
 // import BaseLayer from "ol/layer/Base";
@@ -28,18 +27,20 @@ export class DataExtentZoom extends Control {
         button.setAttribute("data-testid", DATA_EXTENT_ZOOM_TEST_ID);
         button.title = options.tooltipTitle || "Zoom to data extent";
         const icon = document.createElement('i');
+        icon.style.cursor = "pointer";
         icon.className = "bi bi-bounding-box-circles";
         // icon.className = "bi bi-aspect-ratio";
         // icon.className = "bi bi-arrows-fullscreen";
         button.appendChild(icon);
-        button.style.pointerEvents = "auto";
+        // button.style.pointerEvents = "auto";
+        button.style.cursor = "pointer";
 
         const element = document.createElement('div');
         // element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
         element.className = `${olCss.CLASS_CONTROL} ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
         element.style.bottom = "20%";
         element.style.top = "unset";
-        element.style.pointerEvents = "auto";
+        // element.style.pointerEvents = "auto";
 
         element.appendChild(button);
 
