@@ -54,6 +54,7 @@ export class WMSLegend extends Control {
         const icon = document.createElement('i');
         icon.className = "bi bi-list-task";
         button.appendChild(icon);
+        button.style.pointerEvents = "auto";
         
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";

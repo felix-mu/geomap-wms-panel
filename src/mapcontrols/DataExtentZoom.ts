@@ -32,12 +32,14 @@ export class DataExtentZoom extends Control {
         // icon.className = "bi bi-aspect-ratio";
         // icon.className = "bi bi-arrows-fullscreen";
         button.appendChild(icon);
+        button.style.pointerEvents = "auto";
 
         const element = document.createElement('div');
         // element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
         element.className = `${olCss.CLASS_CONTROL} ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
         element.style.bottom = "20%";
         element.style.top = "unset";
+        element.style.pointerEvents = "auto";
 
         element.appendChild(button);
 

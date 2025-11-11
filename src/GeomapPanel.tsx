@@ -466,7 +466,7 @@ export class GeomapPanel extends Component<Props, State> {
 
     const { hoverPayload } = this;
     hoverPayload.pageX = mouse.pageX;
-    hoverPayload.pageY = mouse.pageY;
+    hoverPayload.pageY = mouse.pageY - window.scrollY; // since Grafana 11.3.1: https://github.com/grafana/grafana/blob/main/public/app/plugins/panel/geomap/utils/tooltip.ts#L59
     hoverPayload.point = {
       lat: hover[1],
       lon: hover[0],
@@ -743,12 +743,12 @@ export class GeomapPanel extends Component<Props, State> {
     }
 
     // Update the react overlays
-    let topRight: ReactNode[] = [];
+    let topRight2: ReactNode[] = [];
     if (options.showDebug) {
-      topRight = [<DebugOverlay key="debug" map={this.map} />];
+      topRight2 = [<DebugOverlay key="debug" map={this.map} />];
     }
 
-    this.setState({ topRight });
+    this.setState({ topRight2 });
   }
 
   clearTooltip = () => {
@@ -762,7 +762,7 @@ export class GeomapPanel extends Component<Props, State> {
   };
 
   render() {
-    const { ttip, topRight, bottomLeft } = this.state;
+    const { ttip, topRight2, bottomLeft } = this.state;
 
     // Tooltip handling from: https://github.com/grafana/grafana/blob/17a3ec52b651a082bbf5604f75975c12cd2ba9ed/public/app/plugins/panel/geomap/GeomapPanel.tsx#L386
     // let { ttip, ttipOpen, topRight1, legends, topRight2 } = this.state;
@@ -774,12 +774,10 @@ export class GeomapPanel extends Component<Props, State> {
 
     return (
       <>
-        {
-          <Global styles={this.globalCSS} />
-        }
+        <Global styles={this.globalCSS} />
         <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
           <div className={styles.map} ref={this.initMapRef}></div>
-          <GeomapOverlay bottomLeft={bottomLeft} topRight={topRight} />
+          <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />
         </div>
           {ttip && ttip.data && (
             <Portal>
@@ -787,6 +785,7 @@ export class GeomapPanel extends Component<Props, State> {
                 className={styles.viz}
                 position={{ x: ttip.pageX, y: ttip.pageY }}
                 offset={{ x: 10, y: 10 }}
+                allowPointerEvents
               >
                 <DataHoverView {...ttip} />
               </VizTooltipContainer>

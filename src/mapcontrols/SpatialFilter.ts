@@ -45,11 +45,13 @@ class SpatialFilterControl extends Control {
         const icon = document.createElement('i');
         icon.className = "bi bi-funnel";
         button.appendChild(icon);
+        button.style.pointerEvents = "auto";
     
         const element = document.createElement('div');
         element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE} ${olCss.CLASS_CONTROL}`;
         button.setAttribute("aria-label", "spatial filter tool button");
         element.style.top = "50%";
+        // element.style.cursor = "pointer";
         element.appendChild(button);
     
         super({
