@@ -52,7 +52,7 @@ import { DataHoverView } from './components/DataHoverView';
 import { ExtendMapLayerOptions } from './extension';
 import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
-import { Global } from '@emotion/react';
+// import { Global } from '@emotion/react'; 
 import { Subscription } from 'rxjs';
 import { DataExtentZoom } from 'mapcontrols/DataExtentZoom';
 import { CustomLayerSwitcher } from 'mapcontrols/CustomLayerSwitcher';
@@ -768,10 +768,14 @@ export class GeomapPanel extends Component<Props, State> {
 
     return (
       <>
-        <Global styles={this.globalCSS} />
-        <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
-          <div className={styles.map} ref={this.initMapRef}></div>
-          <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />
+        <div className={this.globalCSS} style={{height: "100%"}}>
+          {
+            // <Global styles={this.globalCSS} />
+          }
+          <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
+            <div className={styles.map} ref={this.initMapRef}></div>
+            <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />
+          </div>
         </div>
           {ttip && ttip.data && (
             <Portal>
@@ -785,7 +789,6 @@ export class GeomapPanel extends Component<Props, State> {
               </VizTooltipContainer>
             </Portal>
           )}
-        
       </>
     );
   }

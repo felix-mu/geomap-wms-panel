@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 
 import 'ol/ol.css';
@@ -49,130 +49,156 @@ export function getGlobalStyles(theme: GrafanaTheme2) {
   //   border: 2px dotted rgba(0,60,136,0.7);
   // }
 
-  return css({
-    '.ol-scale-line': {
-      background: theme.colors.border.weak, // rgba(0,60,136,0.3);
-    },
-    '.ol-scale-line-inner': {
-      border: `1px solid ${theme.colors.text.primary}`, // #eee;
-      borderTop: 0, // 0px;
-      color: theme.colors.text.primary, //  #eee;
-    },
-    '.ol-control': {
-      backgroundColor: theme.colors.background.primary, // rgba(255,255,255,0.4);
-    },
-    '.ol-control:hover': {
-      backgroundColor: theme.colors.background.secondary, // rgba(255,255,255,0.6);
-    },
-    '.ol-control button': {
-      color: theme.colors.secondary.text, // white;
-      backgroundColor: theme.colors.secondary.main, // rgba(0,60,136,0.5);
-    },
-    '.ol-control button:hover': {
-      color: theme.colors.secondary.text,
-      backgroundColor: theme.colors.secondary.shade, // rgba(0,60,136,0.5);
-    },
-    '.ol-control button:focus': {
-      color: theme.colors.secondary.text,
-      backgroundColor: theme.colors.secondary.main, // rgba(0,60,136,0.5);
-    },
-    '.ol-attribution ul': {
-      color: theme.colors.text.primary, //  #000;
-      textShadow: 'none',
-    },
-    '.ol-attribution:not(.ol-collapsed)': {
-      backgroundColor: theme.colors.background.secondary, // rgba(255,255,255,0.8);
-    },
-    '.ol-control.layer-switcher': {
-      top: "0.5em",
-      right: "0.5em",
-      // textAlign: "right"
-      textAlign: "left"
-    },
-    '.ol-control.layer-switcher.shown.layer-switcher-activation-mode-click': {
-      paddingRight: "0.5em"
-    },
-    '.ol-control.layer-switcher.shown.layer-switcher-activation-mode-click > button': {
-      right: 0,
-      borderLeft: 0,
-    },
-    '.ol-control.layer-switcher.shown.layer-switcher-activation-mode-click > .panel': {
-      display: 'block',
-    },
-    '.ol-control.layer-switcher.layer-switcher-activation-mode-click > .panel': {
-      display: 'none',
-    },
-    '.ol-control.layer-switcher button': {
-      right: 0,
-      borderLeft: 0,
-        /* content: url('./img/icons/layers.svg'); */
-  /* background-image: url('./img/icons/layers.svg');
-  background-repeat: no-repeat; */
-  /* https://icons.getbootstrap.com/#usage */
-    },
-    '.ol-control.layer-switcher li.layer': {
-      listStyle: 'none',
-    },
-    '.layer-switcher li label': {
-      paddingLeft: "0.5em",
-      /* padding-right: 1.2em; */
-      display: "inline-block",
-      marginTop: "1px",
-    },
-    '.data-layer-add': {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      marginBottom: 10,
-    },
-    '.data-layer-remove': {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      marginBottom: 10,
-      marginTop: 10,
-    },
-    '.ol-custom-overviewmap': {
-    /* left: 0.5em; */
-    /* bottom: 0.5em; */
-    right: "0.5em",
-    bottom: "20%",
-    padding: "1px"
-  },
-  '.ol-custom-overviewmap.ol-uncollapsible': {
-    bottom: 0,
-    left: 0,
-    borderRadius: "0 2px 0 0"
-  },
-  '.ol-custom-overviewmap .ol-overviewmap-map, .ol-custom-overviewmap button': {
-    display: "block",
-    borderRadius: "4px"
-  },
-  '.ol-custom-overviewmap .ol-overviewmap-map': {
-    border: "1px solid #7b98bc",
-    height: "150px",
-    margin: "1px",
-    width: "150px"
-  },
-  '.ol-custom-overviewmap:not(.ol-collapsed) button': {
-    bottom: "6px",
-    left: "6px",
-    position: "absolute",
-    background: theme.colors.background.secondary
-  },
-  '.ol-custom-overviewmap:not(.ol-collapsed) button:hover div': {
-    color: theme.colors.secondary.text,
-    backgroundColor: theme.colors.secondary.shade, // rgba(0,60,136,0.5);
-  },
-  '.ol-custom-overviewmap.ol-collapsed .ol-overviewmap-map, .ol-custom-overviewmap.ol-uncollapsible button': {
-    display: "none"
-  },
-  '.ol-custom-overviewmap:not(.ol-collapsed)': {
-    background: theme.colors.background.secondary
-  },
-  '.ol-custom-overviewmap .ol-overviewmap-box': {
-    border: "2px solid red"
-  },
-  '.ol-custom-overviewmap .ol-overviewmap-box:hover': {
-    cursor: "move"
+  return css`
+    .ol-scale-line {
+    background: ${theme.colors.border.weak}; /* rgba(0,60,136,0.3); */
   }
-  });
+
+  .ol-scale-line-inner {
+    border: 1px solid ${theme.colors.text.primary}; /* #eee; */
+    border-top: 0;
+    color: ${theme.colors.text.primary}; /* #eee; */
+  }
+
+  .ol-control {
+    background-color: ${theme.colors.background.primary}; /* rgba(255,255,255,0.4); */
+  }
+
+  .ol-control:hover {
+    background-color: ${theme.colors.background.secondary}; /* rgba(255,255,255,0.6); */
+  }
+
+  .ol-control button {
+    color: ${theme.colors.secondary.text}; /* white; */
+    background-color: ${theme.colors.secondary.main}; /* rgba(0,60,136,0.5); */
+  }
+
+  .ol-control button:hover {
+    color: ${theme.colors.secondary.text};
+    background-color: ${theme.colors.secondary.shade}; /* rgba(0,60,136,0.5); */
+  }
+
+  .ol-control button:focus {
+    color: ${theme.colors.secondary.text};
+    background-color: ${theme.colors.secondary.main}; /* rgba(0,60,136,0.5); */
+  }
+
+  .ol-attribution ul {
+    color: ${theme.colors.text.primary}; /* #000; */
+    text-shadow: none;
+  }
+
+  .ol-attribution:not(.ol-collapsed) {
+    background-color: ${theme.colors.background.secondary}; /* rgba(255,255,255,0.8); */
+  }
+
+  .ol-control.layer-switcher {
+    top: 0.5em;
+    right: 0.5em;
+    text-align: left;
+  }
+
+  .ol-control.layer-switcher.shown.layer-switcher-activation-mode-click {
+    padding-right: 0.5em;
+  }
+
+  .ol-control.layer-switcher.shown.layer-switcher-activation-mode-click > button {
+    right: 0;
+    border-left: 0;
+  }
+
+  .ol-control.layer-switcher.shown.layer-switcher-activation-mode-click > .panel {
+    display: block;
+  }
+
+  .ol-control.layer-switcher.layer-switcher-activation-mode-click > .panel {
+    display: none;
+  }
+
+  .ol-control.layer-switcher button {
+    right: 0;
+    border-left: 0;
+    /* content: url('./img/icons/layers.svg'); */
+    /* background-image: url('./img/icons/layers.svg');
+      background-repeat: no-repeat; */
+    /* https://icons.getbootstrap.com/#usage */
+  }
+
+  .ol-control.layer-switcher li.layer {
+    list-style: none;
+  }
+
+  .layer-switcher li label {
+    padding-left: 0.5em;
+    display: inline-block;
+    margin-top: 1px;
+  }
+
+  .data-layer-add {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+
+  .data-layer-remove {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+
+  .ol-custom-overviewmap {
+    right: 0.5em;
+    bottom: 20%;
+    padding: 1px;
+  }
+
+  .ol-custom-overviewmap.ol-uncollapsible {
+    bottom: 0;
+    left: 0;
+    border-radius: 0 2px 0 0;
+  }
+
+  .ol-custom-overviewmap .ol-overviewmap-map,
+  .ol-custom-overviewmap button {
+    display: block;
+    border-radius: 4px;
+  }
+
+  .ol-custom-overviewmap .ol-overviewmap-map {
+    border: 1px solid #7b98bc;
+    height: 150px;
+    margin: 1px;
+    width: 150px;
+  }
+
+  .ol-custom-overviewmap:not(.ol-collapsed) button {
+    bottom: 6px;
+    left: 6px;
+    position: absolute;
+    background: ${theme.colors.background.secondary};
+  }
+
+  .ol-custom-overviewmap:not(.ol-collapsed) button:hover div {
+    color: ${theme.colors.secondary.text};
+    background-color: ${theme.colors.secondary.shade}; /* rgba(0,60,136,0.5); */
+  }
+
+  .ol-custom-overviewmap.ol-collapsed .ol-overviewmap-map,
+  .ol-custom-overviewmap.ol-uncollapsible button {
+    display: none;
+  }
+
+  .ol-custom-overviewmap:not(.ol-collapsed) {
+    background: ${theme.colors.background.secondary};
+  }
+
+  .ol-custom-overviewmap .ol-overviewmap-box {
+    border: 2px solid red;
+  }
+
+  .ol-custom-overviewmap .ol-overviewmap-box:hover {
+    cursor: move;
+  }
+  `
 }
