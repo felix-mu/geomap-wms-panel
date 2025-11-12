@@ -11,7 +11,7 @@ import { createEmpty, extend } from 'ol/extent';
 import VectorLayer from 'ol/layer/Vector';
 import { Vector } from 'ol/source';
 import LayerSwitcher from 'ol-layerswitcher';
-import { isArray, isEqual } from 'lodash';
+import { isArray, isEqual } from 'lodash'; 
 // import './GeomapPanel.css';
 
 // import WKT from 'ol/format/WKT.js';
@@ -51,7 +51,7 @@ import { DataHoverView } from './components/DataHoverView';
 import { ExtendMapLayerOptions } from './extension';
 import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
-import { Global } from '@emotion/react';
+// import { Global } from '@emotion/react';
 import { Subscription } from 'rxjs';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
@@ -351,6 +351,15 @@ export class GeomapPanel extends Component<Props, State> {
     if (this.map) {
       this.map.dispose();
     }
+
+        // Load fontmaki fonts which are used for icons
+    for (const fontFace of document.fonts) {
+      // if (fontFace.family.toLowerCase().includes("fontmaki") || 
+      //         fontFace.family.toLowerCase().includes("grafana")) {
+        await fontFace.load()
+      // }
+    }
+    // await document.fonts.ready
 
 
     const { options } = this.props;
@@ -689,12 +698,11 @@ export class GeomapPanel extends Component<Props, State> {
 
     return (
       <>
-        {
-          <Global styles={this.globalCSS} />
-        }
-        <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
-          <div className={styles.map} ref={this.initMapRef}></div>
-          <GeomapOverlay bottomLeft={bottomLeft} topRight={topRight} />
+        <div className={this.globalCSS} style={{height: "100%"}}>
+          <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
+            <div className={styles.map} ref={this.initMapRef}></div>
+            <GeomapOverlay bottomLeft={bottomLeft} topRight={topRight} />
+          </div>
         </div>
           {ttip && ttip.data && (
             <Portal>
@@ -707,8 +715,8 @@ export class GeomapPanel extends Component<Props, State> {
               </VizTooltipContainer>
             </Portal>
           )}
-        
-      </>
+        </>
+      
     );
   }
 }
