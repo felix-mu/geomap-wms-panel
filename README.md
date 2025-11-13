@@ -14,7 +14,7 @@
 > Details: The submitted plugin version 1.0.2 is not greater than the latest published version 2.0.1 on grafana.com.
 > ```
 > - **Ongoing**: Currently it is worked on a release v2.0.2 to fix the tooltip location for Geomap WMS Panel 2.x which also will be submitted to the Grafana Labs Plugin catalog to be available on official channels.\
-> ℹ️ Note that the release artifacts might not be stable as long as it is not accepted by Grafana Labs, since Grafana Labs might request for minor changes due to their code rules
+> > ℹ️ Note that the release artifacts might not be stable as long as it is not accepted by Grafana Labs, since Grafana Labs might request for minor changes due to their code rules
 <br>
 <h1>
 <img src="src/img/geomap-wms-logo.svg" width="150px"/>
