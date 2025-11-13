@@ -1,10 +1,11 @@
 > [!WARNING]  
-> Since Grafana >= 11.3.x the location of the map tooltip breaks due to the [Change of body flexbox layout](https://github.com/grafana/grafana/issues/13437). This had the effect of breaking the computation of tooltips on the map canvas (https://github.com/grafana/grafana/pull/94827).
+> Since **Grafana >= 11.3.x** the location of the map tooltip breaks due to the [Change of body flexbox layout](https://github.com/grafana/grafana/issues/13437). This had the effect of breaking the computation of tooltips on the map canvas (https://github.com/grafana/grafana/pull/94827).
 > 
-> At the moment Geomap WMS Panels of version 1.0.0, 1.0.1, 2.0.0 and 2.0.1 will experience these effects of wrong tooltips locations when using Grafana >= 11.3.x.
+> At the moment **Geomap WMS Panels of version 1.0.0, 1.0.1, 2.0.0 and 2.0.1** will experience these effects of wrong tooltips locations when using **Grafana >= 11.3.x**.
 >
-> Available fixes:\
-> - [Release v1.0.2](https://github.com/felix-mu/geomap-wms-panel/releases/tag/v1.0.2) will fix the wrong tooltips locations for Geomap WMS Panels of version 1.x. Due to the restrictions of Grafana Labs it is currently (as of 13.11.2025) not possible to submit patches of older versions than the latest one
+> Available fixes:
+> - [Release v1.0.2](https://github.com/felix-mu/geomap-wms-panel/releases/tag/v1.0.2) will fix the wrong tooltips locations for **Geomap WMS Panels of version 1.x**. Due to the restrictions of Grafana Labs it is currently (as of 13.11.2025) not possible to submit patches of older versions than the latest one, so this fix must be installed by configuring Grafana to install plugins from a zip file, e.g. `felixrelleum-geomapwms-panel@@https://github.com/felix-mu/geomap-wms-panel/releases/download/v1.0.2/felixrelleum-geomapwms-panel-1.0.2.zip`.\
+> See the offical docs for how to install plugins from other sources than the Grafana Plugin Catalog ([configure docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), [configure-grafana](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#plugins-1)).
 > ```
 > ❌ wrong-plugin-version
 >
@@ -12,7 +13,7 @@
 >
 > Details: The submitted plugin version 1.0.2 is not greater than the latest published version 2.0.1 on grafana.com.
 > ```
-> - **Ongoing**: Currently it is worked on a release v2.0.2 to fix the tooltip location for Geomap WMS Panel 2.x which also will be submitted to the Grafana Labs Plugin catalog
+> - **Ongoing**: Currently it is worked on a release v2.0.2 to fix the tooltip location for Geomap WMS Panel 2.x which also will be submitted to the Grafana Labs Plugin catalog to be available on official channels
 <br>
 <h1>
 <img src="src/img/geomap-wms-logo.svg" width="150px"/>
