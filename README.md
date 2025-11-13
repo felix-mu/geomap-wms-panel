@@ -14,7 +14,7 @@
 > Details: The submitted plugin version 1.0.2 is not greater than the latest published version 2.0.1 on grafana.com.
 > ```
 > - **Ongoing**: Currently it is worked on a release v2.0.2 to fix the tooltip location for Geomap WMS Panel 2.x which also will be submitted to the Grafana Labs Plugin catalog to be available on official channels. \
-> In the mean time the fixed plugin version vor v2.x (-> 2.0.2) might be installed via URL pointing to the downloadable zip file of the release, e.g. `felixrelleum-geomapwms-panel@@https://github.com/felix-mu/geomap-wms-panel/releases/download/v2.0.2/felixrelleum-geomapwms-panel-2.0.2.zip`
+> In the mean time the fixed plugin version for v2.x (-> 2.0.2) might be installed via URL pointing to the downloadable zip file of the release, e.g. `felixrelleum-geomapwms-panel@@https://github.com/felix-mu/geomap-wms-panel/releases/download/v2.0.2/felixrelleum-geomapwms-panel-2.0.2.zip`
 > > ℹ️ Note that the release artifacts of release 2.0.2 might not be stable as long as the plugin submission is not accepted by Grafana Labs, since Grafana Labs might request for minor changes due to their code rules
 <br>
 <h1>
