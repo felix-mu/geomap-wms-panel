@@ -1,4 +1,16 @@
 # Changelog
+## [2.0.2](https://github.com/felix-mu/geomap-wms-panel/compare/v2.0.1...v2.0.2) (2025-11-14)
+
+
+### Features
+
+* add migration handler from v1.x plugin versions to v2.x ([641a1dc](https://github.com/felix-mu/geomap-wms-panel/commit/641a1dc595583d416dfc7cf121514a7d0197a18a))
+
+
+### Bug Fixes
+
+* fix map tooltip positioning as documented in https://github.com/grafana/grafana/pull/94842 ([ede19c8](https://github.com/felix-mu/geomap-wms-panel/commit/ede19c8cf08ef8072d41e3bb8530e533806326e5))
+
 ## [2.0.1](https://github.com/felix-mu/geomap-wms-panel/compare/v2.0.0...v2.0.1) (2024-11-11)
 
 

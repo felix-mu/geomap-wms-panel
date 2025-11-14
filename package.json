@@ -1,6 +1,6 @@
 {
   "name": "felixrelleum-geomapwms-panel",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
@@ -95,7 +95,22 @@
     "react-use": "^17.3.1",
     "tinycolor2": "^1.4.2",
     "tslib": "2.5.3",
-    "uuid": "^11.0.2"
+    "uuid": "^11.0.2",
+    "semver": "7.5.2"
+  },
+  "overrides": {
+    "form-data": "4.0.4",
+    "loader-utils": "2.0.4",
+    "underscore": "1.12.1",
+    "jspdf": "3.0.2",
+    "ws": "8.17.1",
+    "uplot": "1.6.31",
+    "semver": "7.5.2",
+    "playwright": "1.55.1",
+    "canvg": "3.0.11",
+    "debug": "2.6.9",
+    "ua-parser-js": "1.0.33",
+    "minimatch": "3.0.5"
   },
   "config": {
     "commitizen": {
