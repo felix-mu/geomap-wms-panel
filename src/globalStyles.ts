@@ -1,12 +1,6 @@
 import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 
-// import 'ol/ol.css';
-// import 'ol-ext/dist/ol-ext.css';
-import "bootstrap-icons/font/bootstrap-icons.css";
-import 'static/css/fontmaki2.css';
-import 'static/css/fontmaki.css';
-
 /**
  * Will be loaded *after* the css above
  */

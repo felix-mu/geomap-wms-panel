@@ -13,6 +13,9 @@ import { Vector } from 'ol/source';
 import LayerSwitcher from 'ol-layerswitcher';
 import { isArray, isEqual } from 'lodash';
 
+// import iconWoff2 from './styles/bootstrap/fonts/bootstrap-icons.woff2';
+// import iconWoff from './fonts/bootstrap-icons.woff';
+
 // import WKT from 'ol/format/WKT.js';
 // import Polygon from 'ol/geom/Polygon.js';
 // import { /*locationService,*/ getTemplateSrv } from '@grafana/runtime';
@@ -51,8 +54,11 @@ import { ExtendMapLayerOptions } from './extension';
 import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
 import { Subscription } from 'rxjs';
-import { olStyles } from './styles/olStyles';
-import { olExtStyles } from 'styles/olExtStyles';
+import { olStyles } from './styles/ol/olStyles';
+import { olExtStyles } from 'styles/ol/olExtStyles';
+import { bootstrapsIcons } from 'styles/bootstrap/bootstrapsIcons';
+import { fontmaki } from 'styles/fontmaki/fontmaki';
+import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
 
 interface MapLayerState {
   config: ExtendMapLayerOptions;
@@ -350,13 +356,22 @@ export class GeomapPanel extends Component<Props, State> {
       this.map.dispose();
     }
 
+    // const font = new FontFace('bootstrap-icons', `url(${iconWoff2}?e34853135f9e39acf64315236852cd5a) format('woff2')`,
+    //   { style: 'normal', weight: 'normal', display: "block" }
+    // );
+    // await font.load();
+    // document.fonts.add(font);
+
     // Load fontmaki fonts which are used for icons
     for (const fontFace of document.fonts) {
       // if (fontFace.family.toLowerCase().includes("fontmaki") || 
       //         fontFace.family.toLowerCase().includes("grafana")) {
+      if (fontFace.status !== 'loaded') {
         await fontFace.load()
+      }
       // }
     }
+    await document.fonts.ready
 
     const { options } = this.props;
     this.map = new Map({
@@ -700,7 +715,7 @@ export class GeomapPanel extends Component<Props, State> {
 
     return (
       <>
-        <div className={cx(olStyles, olExtStyles, this.globalCSS)} style={{height: "100%"}}>
+        <div className={cx(fontmaki, fontmaki2, bootstrapsIcons, olStyles, olExtStyles, this.globalCSS)} style={{height: "100%"}}>
           <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
             <div className={styles.map} ref={this.initMapRef}></div>
             <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />

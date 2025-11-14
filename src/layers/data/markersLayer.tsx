@@ -38,8 +38,6 @@ import { circleMarker, markerMakers } from '../../utils/regularShapes';
 import { ReplaySubject } from 'rxjs';
 import { Fill, Image, Stroke, Style, Text } from 'ol/style';
 import RenderFeature from 'ol/render/Feature';
-import 'static/css/fontmaki2.css';
-import 'static/css/fontmaki.css';
 
 // Configuration options for Circle overlays
 export interface MarkersConfig {
