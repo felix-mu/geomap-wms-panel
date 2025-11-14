@@ -35,11 +35,6 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
   };
   return (
     <>
-      <div className="data-layer-add">
-        <ToolbarButton icon="plus" tooltip="add new layer" variant="primary" key="Add" onClick={onAddLayer}>
-          Add Layer
-        </ToolbarButton>
-      </div>
       {(value || []).map((v, index) => {
         return (
           <>
@@ -71,6 +66,11 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
           </>
         );
       })}
+      <div className="data-layer-add">
+        <ToolbarButton icon="plus" tooltip="add new layer" variant="primary" key="Add" onClick={onAddLayer}>
+          Add Layer
+        </ToolbarButton>
+      </div>
     </>
   );
 };

@@ -12,7 +12,6 @@ import VectorLayer from 'ol/layer/Vector';
 import { Vector } from 'ol/source';
 import LayerSwitcher from 'ol-layerswitcher';
 import { isArray, isEqual } from 'lodash';
-import './GeomapPanel.css';
 
 // import WKT from 'ol/format/WKT.js';
 // import Polygon from 'ol/geom/Polygon.js';
@@ -41,7 +40,7 @@ import { ControlsOptions, GeomapPanelOptions, MapViewConfig } from './types';
 import { centerPointRegistry, MapCenterID } from './view';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Coordinate } from 'ol/coordinate';
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { PanelContext, PanelContextRoot, Portal ,/* stylesFactory, useStyles2, */ VizTooltipContainer } from '@grafana/ui';
 import { GeomapOverlay, OverlayProps } from './GeomapOverlay';
 import { DebugOverlay } from './components/DebugOverlay';
@@ -51,11 +50,9 @@ import { DataHoverView } from './components/DataHoverView';
 import { ExtendMapLayerOptions } from './extension';
 import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
-import { Global } from '@emotion/react';
 import { Subscription } from 'rxjs';
-// import { BasemapLegend } from 'mapcontrols/BasemapLegend';
-// import { VariablesChangedEvent } from 
-// import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
+import { olStyles } from './styles/olStyles';
+import { olExtStyles } from 'styles/olExtStyles';
 
 interface MapLayerState {
   config: ExtendMapLayerOptions;
@@ -353,6 +350,13 @@ export class GeomapPanel extends Component<Props, State> {
       this.map.dispose();
     }
 
+    // Load fontmaki fonts which are used for icons
+    for (const fontFace of document.fonts) {
+      // if (fontFace.family.toLowerCase().includes("fontmaki") || 
+      //         fontFace.family.toLowerCase().includes("grafana")) {
+        await fontFace.load()
+      // }
+    }
 
     const { options } = this.props;
     this.map = new Map({
@@ -421,7 +425,7 @@ export class GeomapPanel extends Component<Props, State> {
 
     const { hoverPayload } = this;
     hoverPayload.pageX = mouse.pageX;
-    hoverPayload.pageY = mouse.pageY;
+    hoverPayload.pageY = mouse.pageY - window.scrollY;
     hoverPayload.point = {
       lat: hover[1],
       lon: hover[0],
@@ -474,6 +478,8 @@ export class GeomapPanel extends Component<Props, State> {
     if (ttip.data !== currentTTip?.data || ttip.rowIndex !== currentTTip?.rowIndex) {
       if (hoverPayload.propsToShow !== undefined || hoverPayload.data === undefined) { // only update/show tooltip if data is not undefined (hovering over feature) or data is undefined (not hovering over feature)
         this.setState({ ttip: { ...hoverPayload } });
+      } else {
+        this.clearTooltip();
       }
     }
   };
@@ -663,12 +669,12 @@ export class GeomapPanel extends Component<Props, State> {
     }
 
     // Update the react overlays
-    let topRight: ReactNode[] = [];
+    let topRight2: ReactNode[] = [];
     if (options.showDebug) {
-      topRight = [<DebugOverlay key="debug" map={this.map} />];
+      topRight2 = [<DebugOverlay key="debug" map={this.map} />];
     }
 
-    this.setState({ topRight });
+    this.setState({ topRight2 });
   }
 
   clearTooltip = () => {
@@ -682,7 +688,7 @@ export class GeomapPanel extends Component<Props, State> {
   };
 
   render() {
-    const { ttip, topRight, bottomLeft } = this.state;
+    const { ttip, topRight2, bottomLeft } = this.state;
 
     // Tooltip handling from: https://github.com/grafana/grafana/blob/17a3ec52b651a082bbf5604f75975c12cd2ba9ed/public/app/plugins/panel/geomap/GeomapPanel.tsx#L386
     // let { ttip, ttipOpen, topRight1, legends, topRight2 } = this.state;
@@ -694,24 +700,23 @@ export class GeomapPanel extends Component<Props, State> {
 
     return (
       <>
-        {
-          <Global styles={this.globalCSS} />
-        }
-        <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
-          <div className={styles.map} ref={this.initMapRef}></div>
-          <GeomapOverlay bottomLeft={bottomLeft} topRight={topRight} />
+        <div className={cx(olStyles, olExtStyles, this.globalCSS)} style={{height: "100%"}}>
+          <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
+            <div className={styles.map} ref={this.initMapRef}></div>
+            <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />
+          </div>
         </div>
-          {ttip && ttip.data && (
-            <Portal>
-              <VizTooltipContainer
-                className={styles.viz}
-                position={{ x: ttip.pageX, y: ttip.pageY }}
-                offset={{ x: 10, y: 10 }}
-              >
-                <DataHoverView {...ttip} />
-              </VizTooltipContainer>
-            </Portal>
-          )}
+        {ttip && ttip.data && (
+          <Portal>
+            <VizTooltipContainer
+              className={styles.viz}
+              position={{ x: ttip.pageX, y: ttip.pageY }}
+              offset={{ x: 10, y: 10 }}
+            >
+              <DataHoverView {...ttip} />
+            </VizTooltipContainer>
+          </Portal>
+        )}
         
       </>
     );
