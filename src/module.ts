@@ -4,13 +4,14 @@ import { DataLayersEditor } from './editor/DataLayersEditor';
 import { GeomapPanel } from './GeomapPanel';
 import { MapViewEditor } from './editor/MapViewEditor';
 import { defaultView, GeomapPanelOptions } from './types';
-import { mapPanelChangedHandler } from './migrations';
+import { /*mapPanelChangedHandler*/ migrationHandler } from './migrations';
 import { DEFAULT_BASEMAP_CONFIG } from './layers/registry';
 import { OverviewMapEditor } from 'editor/OverviewMapEditor';
 
 export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
   .setNoPadding()
-  .setPanelChangeHandler(mapPanelChangedHandler)
+//  .setPanelChangeHandler(mapPanelChangedHandler)
+  .setMigrationHandler(migrationHandler)
   .useFieldConfig()
   .setPanelOptions((builder) => {
     let category = ['Map view'];

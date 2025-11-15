@@ -11,7 +11,7 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import LiveReloadPlugin from 'webpack-livereload-plugin';
 import path from 'path';
 import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin';
-import { Configuration } from 'webpack';
+import { Configuration, DefinePlugin } from 'webpack';
 
 import { getPackageJson, getPluginJson, hasReadme, getEntries } from './utils';
 import { SOURCE_DIR, DIST_DIR } from './constants';
@@ -154,6 +154,10 @@ const config = async (env): Promise<Configuration> => ({
   },
 
   plugins: [
+    // Replace current plugin version in migration.ts
+    new DefinePlugin({
+      PLUGIN_VERSION: JSON.stringify(getPackageJson().version),
+    }),
     new CopyWebpackPlugin({
       patterns: [
         // If src/README.md exists use it; otherwise the root README
@@ -163,12 +167,12 @@ const config = async (env): Promise<Configuration> => ({
         { from: '../LICENSE', to: '.' },
         { from: '../CHANGELOG.md', to: '.', force: true },
         { from: '**/*.json', to: '.' }, // TODO<Add an error for checking the basic structure of the repo>
-        { from: '**/*.svg', to: '.', noErrorOnMissing: true }, // Optional
+        // { from: '**/*.svg', to: '.', noErrorOnMissing: true }, // Optional
         { from: '**/*.png', to: '.', noErrorOnMissing: true }, // Optional
         { from: '**/*.html', to: '.', noErrorOnMissing: true }, // Optional
         { from: 'img/**/*', to: '.', noErrorOnMissing: true }, // Optional
         { from: 'libs/**/*', to: '.', noErrorOnMissing: true }, // Optional
-        { from: 'static/**/*', to: '.', noErrorOnMissing: true }, // Optional
+        // { from: 'static/**/*', to: '.', noErrorOnMissing: true }, // Optional
       ],
     }),
     // Replace certain template-variables in the README and plugin.json

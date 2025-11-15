@@ -7,7 +7,7 @@ import ImageWMS from 'ol/source/ImageWMS';
 import { getFirstDirectChildNodeByLocalName, getAllDirectChildNodesByLocalName, getWMSLayers, getProjection, getWMSCapabilitiesFromService } from 'mapServiceHandlers/wms';
 import LayerGroup from 'ol/layer/Group';
 
-const xmlCapabilities = `<?xml version="1.0" ?>
+export const xmlCapabilities = `<?xml version="1.0" ?>
 <WMS_Capabilities xmlns="http://www.opengis.net/wms" xmlns:sld="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs/1.0" version="1.3.0" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://inspire.ec.europa.eu/schemas/inspire_vs/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd">
 <Service>
   <Name>WMS</Name>

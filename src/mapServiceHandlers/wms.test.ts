@@ -1,29 +1,25 @@
-import { buildWMSGetLegendURL } from "./wms";
+import { getWMSGetLegendURL } from "./wms";
+import { xmlCapabilities } from "../layers/basemaps/wms.test";
+
+let capabilityNode: Element;
+
+beforeAll(() => {
+    const parser: DOMParser = new DOMParser();
+    const xmlDoc: Document = parser.parseFromString(xmlCapabilities, "text/xml");
+    capabilityNode = xmlDoc.documentElement.getElementsByTagName("Capability")[0];
+})
 
 describe("Build the URL to get the legend of a WMS layer", () => {
-    test("Malformed base URL with trailing '?' should return correct URL", () => {
-        const wmsURL = "https://example-wms.org?"
-        const layerName = "testlayer";
-
-        const getLegendURL = buildWMSGetLegendURL(wmsURL, layerName);
-
-        expect(getLegendURL.origin).toEqual(wmsURL.substring(0, wmsURL.length - 1));
-        expect(getLegendURL.searchParams.get("request")).toEqual("GetLegendGraphic");
-        expect(getLegendURL.searchParams.get("service")).toEqual("WMS");
-        expect(getLegendURL.searchParams.get("format")).toEqual("image/png");
-        expect(getLegendURL.searchParams.get("layer")).toEqual(layerName);
+    test("Get URL for existing layer name", () => {
+        const layerName = "web";
+        const getLegendURL = getWMSGetLegendURL(capabilityNode, layerName);
+        expect(getLegendURL).toEqual("https://sgx.geodatenzentrum.de/wms_topplus_open?format=image%2Fpng&layer=web&sld_version=1.1.0&request=GetLegendGraphic&service=WMS&version=1.1.1&styles=");
+        // https://sgx.geodatenzentrum.de/wms_topplus_open?format=image%2Fpng&layer=web&sld_version=1.1.0&request=GetLegendGraphic&service=WMS&version=1.1.1&styles=
     });
 
-    test("Malformed base URL with trailing '/' should return correct URL", () => {
-        const wmsURL = "https://example-wms.org/"
+    test("Get URL for not existing layer name should return undefined", () => {
         const layerName = "testlayer";
-
-        const getLegendURL = buildWMSGetLegendURL(wmsURL, layerName);
-
-        expect(getLegendURL.origin).toEqual(wmsURL.substring(0, wmsURL.length - 1));
-        expect(getLegendURL.searchParams.get("request")).toEqual("GetLegendGraphic");
-        expect(getLegendURL.searchParams.get("service")).toEqual("WMS");
-        expect(getLegendURL.searchParams.get("format")).toEqual("image/png");
-        expect(getLegendURL.searchParams.get("layer")).toEqual(layerName);
+        const getLegendURL = getWMSGetLegendURL(capabilityNode, layerName);
+        expect(getLegendURL).toBeUndefined()
     });
 });

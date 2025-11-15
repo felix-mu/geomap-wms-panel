@@ -42,7 +42,7 @@ import { ControlsOptions, GeomapPanelOptions, MapViewConfig } from './types';
 import { centerPointRegistry, MapCenterID } from './view';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Coordinate } from 'ol/coordinate';
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { PanelContext, PanelContextRoot, Portal ,/* stylesFactory, useStyles2, */ VizTooltipContainer } from '@grafana/ui';
 import { GeomapOverlay, OverlayProps } from './GeomapOverlay';
 import { DebugOverlay } from './components/DebugOverlay';
@@ -62,6 +62,11 @@ import { GroupLayerOptions } from 'ol-layerswitcher';
 // import { BasemapLegend } from 'mapcontrols/BasemapLegend';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
+import { olStyles } from './styles/ol/olStyles';
+import { olExtStyles } from 'styles/ol/olExtStyles';
+import { bootstrapsIcons } from 'styles/bootstrap/bootstrapsIcons';
+import { fontmaki } from 'styles/fontmaki/fontmaki';
+import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
 
 interface MapLayerState {
   config: ExtendMapLayerOptions;
@@ -386,12 +391,11 @@ export class GeomapPanel extends Component<Props, State> {
 
     // Load fontmaki fonts which are used for icons
     for (const fontFace of document.fonts) {
-      // if (fontFace.family.toLowerCase().includes("fontmaki") || 
-      //         fontFace.family.toLowerCase().includes("grafana")) {
+      if (fontFace.status !== 'loaded') {
         await fontFace.load()
-      // }
+      }
     }
-    // await document.fonts.ready
+    await document.fonts.ready;
 
     const { options } = this.props;
     this.map = new Map({
@@ -768,10 +772,7 @@ export class GeomapPanel extends Component<Props, State> {
 
     return (
       <>
-        <div className={this.globalCSS} style={{height: "100%"}}>
-          {
-            // <Global styles={this.globalCSS} />
-          }
+        <div className={cx(fontmaki, fontmaki2, bootstrapsIcons, olStyles, olExtStyles, this.globalCSS)} style={{height: "100%"}}>
           <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
             <div className={styles.map} ref={this.initMapRef}></div>
             <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />

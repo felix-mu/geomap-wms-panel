@@ -119,12 +119,32 @@ export function getFirstDirectChildNodeByLocalName(childNodes: NodeListOf<ChildN
     return layers;
   }
 
-export function buildWMSGetLegendURL(wmsBaseURL: string, layerName: string): URL {
-  const legendURL: URL = new URL(wmsBaseURL);
-  legendURL.searchParams.append("service", "WMS");
-  legendURL.searchParams.append("request", "GetLegendGraphic");
-  legendURL.searchParams.append("format", "image/png");
-  legendURL.searchParams.append("layer", layerName);
+export function getWMSGetLegendURL(wmsCapaNode: Node, layerName: string): string | undefined {
+  if (wmsCapaNode === undefined) {
+    throw new Error("wms capabilities node is undefined");
+  }
+  if (layerName === undefined) {
+    throw new Error("wms layer name capabilities node is undefined");
+  }
+      let layerNodes = (wmsCapaNode as Element).getElementsByTagName("Layer");
+    // Traverse through layers and add selection options to optBuilder
+    for (let layer of layerNodes) {
+      let layerNameNode = getFirstDirectChildNodeByLocalName(layer.childNodes, "Name");
+  
+      if (layerNameNode === undefined) {
+        continue;
+      };
 
-  return legendURL;
+      if (layerNameNode.textContent !== layerName) {
+        continue;
+      }
+
+      const onlineResource = layer.querySelector("Style LegendURL OnlineResource ");
+      if (onlineResource !== null && onlineResource.textContent !== null) {
+        return onlineResource.getAttribute("xlink:href") ?? undefined;
+      }
+      return undefined;
+    }
+  
+  return undefined;
 }
