@@ -23,6 +23,19 @@ const grafanaESModules = [
   'react-colorful',
   'rxjs',
   'uuid',
+  '.pnpm', // Support using pnpm symlinked packages
+  '@wojtekmaj/date-utils',
+  'd3',
+  'd3-color',
+  'd3-force',
+  'd3-interpolate',
+  'd3-scale-chromatic',
+  'get-user-locale',
+  'marked',
+  'memoize',
+  'mimic-function',
+  'ol',
+  'react-calendar',
 ];
 
 module.exports = {

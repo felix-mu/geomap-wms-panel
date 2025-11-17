@@ -8,6 +8,10 @@ on:
 
 jobs:
   compatibilitycheck:
+    permissions:
+      # Required permissions when comment-pr is set to 'yes': pull-requests: write, contents: read
+      pull-requests: write
+      contents: read
     env:
       module: './src/module.ts'
       targets: "@grafana/data,@grafana/ui,@grafana/runtime,@grafana/schema,@grafana/e2e-selectors,@grafana/experimental"
