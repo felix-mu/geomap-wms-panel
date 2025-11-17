@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { stylesFactory } from '@grafana/ui';
-import { DataFrame, Field, formattedValueToString, getFieldDisplayName, GrafanaTheme2, Vector } from '@grafana/data';
+// import { stylesFactory } from '@grafana/ui';
+import { DataFrame, Field, formattedValueToString, getFieldDisplayName, GrafanaTheme2 } from '@grafana/data';
 import { css } from '@emotion/css';
 import { config } from '../config';
 
@@ -26,7 +26,7 @@ export class DataHoverView extends PureComponent<Props> {
     if (propsToShow && propsToShow.length > 1) {
       return (
         <div className={this.style.infoWrap}>
-          {titleField.map((f: Field<any, Vector<any>>, i: number | undefined) => (
+          {titleField.map((f: Field<any>, i: number | undefined) => (
             <div key={`${i}/${rowIndex}`}>
               <div className={this.style.singleDisplay}>
                 <h5>
@@ -36,7 +36,7 @@ export class DataHoverView extends PureComponent<Props> {
               </div>
             </div>
           ))}
-          {propsToShow.map((f: Field<any, Vector<any>>, i: number | undefined) => (
+          {propsToShow.map((f: Field<any>, i: number | undefined) => (
             <div key={`${i}/${rowIndex}`} className={this.style.row}>
               <span>{getFieldDisplayName(f, data)}: </span>
               <span>{fmt(f, rowIndex)}</span>
@@ -47,7 +47,7 @@ export class DataHoverView extends PureComponent<Props> {
     } else if (propsToShow) {
       return (
         <div className={this.style.infoWrap}>
-          {propsToShow.map((f: Field<any, Vector<any>>, i: number | undefined) => (
+          {propsToShow.map((f: Field<any>, i: number | undefined) => (
             <div key={`${i}/${rowIndex}`} className={i === columnIndex ? this.style.highlight : ''}>
               <div className={this.style.singleDisplay}>
                 <h5>{getFieldDisplayName(f, data)}</h5>
@@ -60,12 +60,12 @@ export class DataHoverView extends PureComponent<Props> {
               </div>
             </div>
           ))}
-          {timeField.map((f: Field<any, Vector<any>>, i: number | undefined) => (
+          {timeField.map((f: Field<any>, i: number | undefined) => (
             <div key={`${i}/${rowIndex}`} className={this.style.rightDisplay}>
               <h6>{fmt(f, rowIndex)}</h6>
             </div>
           ))}
-          {titleField.map((f: Field<any, Vector<any>>, i: number | undefined) => (
+          {titleField.map((f: Field<any>, i: number | undefined) => (
             <div key={`${i}/${rowIndex}`} className={this.style.rightDisplay}>
               <h6>{fmt(f, rowIndex)}</h6>
             </div>
@@ -75,12 +75,12 @@ export class DataHoverView extends PureComponent<Props> {
     } else {
       return (
         <div className={this.style.infoWrap}>
-          {timeField.map((f: Field<any, Vector<any>>, i: number | undefined) => (
+          {timeField.map((f: Field<any>, i: number | undefined) => (
             <div key={`${i}/${rowIndex}`} className={this.style.rightDisplay}>
               <h6>{fmt(f, rowIndex)}</h6>
             </div>
           ))}
-          {titleField.map((f: Field<any, Vector<any>>, i: number | undefined) => (
+          {titleField.map((f: Field<any>, i: number | undefined) => (
             <div key={`${i}/${rowIndex}`} className={this.style.rightDisplay}>
               <h6>{fmt(f, rowIndex)}</h6>
             </div>
@@ -99,7 +99,7 @@ function fmt(field: Field, row: number): string {
   return `${v}`;
 }
 
-const getStyles = stylesFactory((theme: GrafanaTheme2) => ({
+const getStyles = (theme: GrafanaTheme2) => ({
   infoWrap: css`
     padding: 0px;
     div {
@@ -138,4 +138,4 @@ const getStyles = stylesFactory((theme: GrafanaTheme2) => ({
   icon: css`
     margin-right: 5px;
   `,
-}));
+});
