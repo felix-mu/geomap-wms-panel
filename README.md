@@ -1,7 +1,7 @@
 > [!WARNING]  
 > Since **Grafana >= 11.3.x** the location of the map tooltip breaks due to https://github.com/grafana/grafana/pull/89921, which makes the `<body>` the scrollable element (https://github.com/grafana/grafana/issues/89894). This had the effect of breaking the computation of tooltips on the map canvas (https://github.com/grafana/grafana/pull/94827).
 > 
-> At the moment **Geomap WMS Panels of version 1.0.0, 1.0.1, 2.0.0 and 2.0.1** will experience these effects of wrong tooltips locations when using **Grafana >= 11.3.x**.
+> **Geomap WMS Panels of version 1.0.0, 1.0.1, 2.0.0 and 2.0.1** will experience these effects of wrong tooltips locations when using **Grafana >= 11.3.x**.
 >
 > **Available fixes:**
 > - Fix for v1.x: The Geomap WMS Panel plugin `v1.0.2` is now available in the official Grafana Plugin Catalog: https://grafana.com/grafana/plugins/felixrelleum-geomapwms-panel/
