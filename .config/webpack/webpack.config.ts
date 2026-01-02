@@ -23,7 +23,8 @@ const config = async (env): Promise<Configuration> => ({
   cache: {
     type: 'filesystem',
     buildDependencies: {
-      config: [__filename],
+      // __filename doesnt work in Node 24
+      config: [path.resolve(process.cwd(), '.config', 'webpack', 'webpack.config.ts')],
     },
   },
 
