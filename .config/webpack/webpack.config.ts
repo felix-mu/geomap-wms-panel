@@ -11,7 +11,8 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import LiveReloadPlugin from 'webpack-livereload-plugin';
 import path from 'path';
 import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin';
-import { Configuration, DefinePlugin } from 'webpack';
+// import { Configuration, DefinePlugin } from 'webpack';
+import webpack, { type Configuration } from 'webpack';
 
 import { getPackageJson, getPluginJson, hasReadme, getEntries } from './utils.ts';
 import { SOURCE_DIR, DIST_DIR } from './constants.ts';
@@ -155,7 +156,7 @@ const config = async (env): Promise<Configuration> => ({
 
   plugins: [
     // Replace current plugin version in migration.ts
-    new DefinePlugin({
+    new webpack.DefinePlugin({
       PLUGIN_VERSION: JSON.stringify(getPackageJson().version),
     }),
     new CopyWebpackPlugin({
