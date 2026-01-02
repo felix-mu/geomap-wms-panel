@@ -7,6 +7,7 @@ import { LegendItem } from "layers/basemaps/wms";
 import { WMSLegend } from "./WMSLegend";
 import { cleanup, render, screen} from '@testing-library/react';
 import { Map } from "ol";
+import { act } from "react";
 // import React from 'react';
 
 afterEach(cleanup);
@@ -41,7 +42,9 @@ describe("Test event listener", () => {
         const wmsLegend: WMSLegend = new WMSLegend(items);
         const el = wmsLegend.getElement();
         const btn = el.getElementsByTagName("button")[0];
-        btn.dispatchEvent(new Event("click"));
+        act(() => {
+            btn.dispatchEvent(new Event("click"));
+        });
 
         // Get elements that start with 'wms legend image container'
         let wmsLegendContainerCount = 0;

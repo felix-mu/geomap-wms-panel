@@ -10,9 +10,10 @@ import Control from "ol/control/Control";
 import * as olCss from "ol/css";
 import { CustomScrollbar } from "@grafana/ui";
 // import { Scrollbars } from 'react-custom-scrollbars-2';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import React from "react";
 import { Map } from "ol";
+import { createRoot } from "react-dom/client";
 
 // class PanelOptionsChangedEvent extends BusEventBase {
 //     static type = 'panels-options-changed';
@@ -125,7 +126,9 @@ export class WMSLegend extends Control {
                 
                 if(this.legendContainer.getElementsByTagName("div").length === 0) {
                     // this.legendContainer.append(...this.buildLegend(this.legendURLs));
-                    ReactDOM.render(this.buildLegend(this.legendURLs), legendContainer);
+                    // ReactDOM.render(this.buildLegend(this.legendURLs), legendContainer);
+                    const root = createRoot(legendContainer);
+                    root.render(this.buildLegend(this.legendURLs));
                 }
 
                 this.element.appendChild(this.legendContainer);
