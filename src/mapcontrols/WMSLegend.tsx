@@ -8,7 +8,7 @@ import Control from "ol/control/Control";
 // import LayerGroup from "ol/layer/Group";
 // import { ImageWMS } from "ol/source";
 import * as olCss from "ol/css";
-import { CustomScrollbar } from "@grafana/ui";
+import { ScrollContainer } from "@grafana/ui";
 // import { Scrollbars } from 'react-custom-scrollbars-2';
 // import ReactDOM from 'react-dom';
 import React from "react";
@@ -235,7 +235,7 @@ export class WMSLegend extends Control {
 
     buildLegend(legendURLs: LegendItem[]): JSX.Element {
         return (
-            <CustomScrollbar className={getStyles(this.theme).customScrollbar}>
+            <ScrollContainer>
                 {legendURLs.length > 0 && legendURLs.map((legendItem, index) => {
                     return (
                         <div key={legendItem.url} style={{
@@ -253,7 +253,7 @@ export class WMSLegend extends Control {
                     );
                 })
                 }
-            </CustomScrollbar>
+            </ScrollContainer>
         );
     }
 
@@ -290,48 +290,6 @@ const getStyles = (theme: GrafanaTheme2) => {
         borderTop: `${theme.colors.border.strong} 1px solid`,
         marginTop: "4px",
         marginBottom: "0px",
-      }),
-      customScrollbar: css({
-        // Fix for Firefox. For some reason sometimes .view container gets a height of its content, but in order to
-        // make scroll working it should fit outer container size (scroll appears only when inner container size is
-        // greater than outer one).
-        display: 'flex',
-        flexGrow: 1,
-        '.scrollbar-view': {
-          display: 'flex',
-          flexGrow: 1,
-          flexDirection: 'column',
-        },
-        '.track-vertical': {
-          borderRadius: theme.shape.borderRadius(2),
-          width: `${theme.spacing(1)} !important`,
-          right: 0,
-          bottom: theme.spacing(0.25),
-          top: theme.spacing(0.25),
-        },
-        '.track-horizontal': {
-          borderRadius: theme.shape.borderRadius(2),
-          height: `${theme.spacing(1)} !important`,
-          right: theme.spacing(0.25),
-          bottom: theme.spacing(0.25),
-          left: theme.spacing(0.25),
-        },
-        '.thumb-vertical': {
-          background: theme.colors.action.focus,
-          borderRadius: theme.shape.borderRadius(2),
-          opacity: 0,
-        },
-        '.thumb-horizontal': {
-          background: theme.colors.action.focus,
-          borderRadius: theme.shape.borderRadius(2),
-          opacity: 0,
-        },
-        '&:hover': {
-          '.thumb-vertical, .thumb-horizontal': {
-            opacity: 1,
-            transition: 'opacity 0.3s ease-in-out',
-          },
-        },
       }),
     }
 };
