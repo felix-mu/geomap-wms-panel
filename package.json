@@ -50,7 +50,7 @@
     "@types/react-highlight-words": "^0.20.0",
     "commit-and-tag-version": "^12.4.1",
     "commitizen": "^4.3.0",
-    "copy-webpack-plugin": "^11.0.0",
+    "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^6.7.3",
     "cz-conventional-changelog": "^3.3.0",
     "eslint-webpack-plugin": "^4.0.1",
