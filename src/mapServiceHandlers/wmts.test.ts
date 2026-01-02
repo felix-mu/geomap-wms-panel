@@ -505,7 +505,6 @@ test("getWMTSCapabilitiesFromService should return object from rest endpoint", a
   });
 
 test("getWMTSCapabilitiesFromService should raise error for invalid URL", async () => {
-    // https://jestjs.io/docs/expect#tothrowerror
     getWMTSCapabilitiesFromService("//sgx.geodatenzentrum@de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml").
         catch((error: Error) => expect(error.message).toMatch('wmtsGetCapabilitiesUrl is not a valid URL'));
   });
@@ -526,7 +525,7 @@ test("getWMTSLegendURLForLayer should throw error for not existent layer identif
     const wmtsCapabilities = parser.read(capabilitiesXMLDocument);
     const layerID = "web99999";
 
-    expect(() => getWMTSLegendURLForLayer(wmtsCapabilities, layerID)).toThrowError();
+    expect(() => getWMTSLegendURLForLayer(wmtsCapabilities, layerID)).toThrow();
   });
 
 test("getWMTSLegendURLForLayer should throw error for empty legend URL array", () => {
@@ -547,7 +546,7 @@ test("getWMTSLegendURLForLayer should throw error for empty legend URL array", (
         }
     };
 
-    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrowError("Style element does not contain any legend Urls");
+    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrow("Style element does not contain any legend Urls");
   });
 
 test("getWMTSLegendURLForLayer should throw error for missing Contents property", () => {
@@ -555,7 +554,7 @@ test("getWMTSLegendURLForLayer should throw error for missing Contents property"
     const wmtsCapMock = {
     };
 
-    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrowError("wmtsCapabilites.Contents is undefined or null");
+    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrow("wmtsCapabilites.Contents is undefined or null");
   });
 
 test("getWMTSLegendURLForLayer should throw error for missing Layer property", () => {
@@ -565,7 +564,7 @@ test("getWMTSLegendURLForLayer should throw error for missing Layer property", (
         }
     };
 
-    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrowError("wmtsCapabilites.Contents.Layer is undefined or null");
+    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrow("wmtsCapabilites.Contents.Layer is undefined or null");
   });
 
 test("getWMTSLegendURLForLayer should throw error for empty Layer array", () => {
@@ -576,17 +575,17 @@ test("getWMTSLegendURLForLayer should throw error for empty Layer array", () => 
         }
     };
 
-    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrowError("wmtsCapabilites.Contents.Layer.length is 0 and does not contain any elements");
+    expect(() => getWMTSLegendURLForLayer(wmtsCapMock, layerID)).toThrow("wmtsCapabilites.Contents.Layer.length is 0 and does not contain any elements");
   });
 
 test("getWMTSLegendURLForLayer should throw error when wmtCapabilities is null", () => {
     const layerID = "web";
-    expect(() => getWMTSLegendURLForLayer(null, layerID)).toThrowError("wmtsCapabilites is undefined or null");
+    expect(() => getWMTSLegendURLForLayer(null, layerID)).toThrow("wmtsCapabilites is undefined or null");
   });
 
 test("getWMTSLegendURLForLayer should throw error when wmtCapabilities is undefined", () => {
     const layerID = "web";
-    expect(() => getWMTSLegendURLForLayer(undefined, layerID)).toThrowError("wmtsCapabilites is undefined or null");
+    expect(() => getWMTSLegendURLForLayer(undefined, layerID)).toThrow("wmtsCapabilites is undefined or null");
   });
 
 test("getWMTSLegendURLForLayer should return first URL of default style legend URLs", () => {
@@ -635,5 +634,5 @@ test("getWMTSLayers should return when layer with Title equal to the Identifier 
   });
 
 test.each([null, undefined])("getWMTSLayers should throw error when wmtsCapabilities is null or undefined", (val) => {
-    expect(() => getWMTSLayers(val)).toThrowError("wmtsCapabilites is undefined or null");
+    expect(() => getWMTSLayers(val)).toThrow("wmtsCapabilites is undefined or null");
   });
