@@ -1,5 +1,6 @@
 import { defineConfig } from 'eslint/config';
 import baseConfig from './.config/eslint.config.mjs';
+import { DIST_DIR } from './.config/webpack/constants.ts';
 
 export default defineConfig([
   {
@@ -33,7 +34,31 @@ export default defineConfig([
       'playwright/.auth/',
       '**/.idea',
       '**/.eslintcache',
+      '**/jest*',
+      '**/*.prettier*',
+      '**/prettier*',
+      '**/cypress/',
+      '**/.config/',
+      '**/eslint.*',
+      `${DIST_DIR}/`
     ],
   },
   ...baseConfig,
+  {
+    // files: ['src/**/*.{ts,tsx}'],
+
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-deprecated': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/rules-of-hooks': 'off'
+    },
+  },
 ]);

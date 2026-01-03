@@ -149,7 +149,7 @@ export function migrationHandler(panel: PanelModel<GeomapPanelOptions>) {
    NOTE: the migration handler is only called if the plugin version provided in the panel JSON definition differs from
    the current plugin version.
    */
-  if (majorVersion >= major(CURRENT_PLUGIN_VERSION) || majorVersion === 1) {
+  if (majorVersion! >= major(CURRENT_PLUGIN_VERSION) || majorVersion === 1) {
     // Get basemap name from config
     const basemapType = options.basemap.type; // type is defined from layer.id -> LayerEditor.tsx type: layer.id,
 

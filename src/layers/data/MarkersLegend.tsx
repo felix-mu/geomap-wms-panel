@@ -1,5 +1,5 @@
 import React from 'react';
-import { Label, stylesFactory, useTheme2, VizLegendItem } from '@grafana/ui';
+import { Label, useStyles2, useTheme2, VizLegendItem } from '@grafana/ui';
 import {
   getFieldColorModeForField,
   formattedValueToString,
@@ -25,7 +25,7 @@ export function MarkersLegend(props: MarkersLegendProps) {
     return <></>;
   }
 
-  const style = getStyles(theme);
+  const style = useStyles2(getStyles);
   const fmt = (v: any) => `${formattedValueToString(color.field!.display!(v))}`;
   const colorMode = getFieldColorModeForField(color!.field!);
 
@@ -78,7 +78,7 @@ export function MarkersLegend(props: MarkersLegendProps) {
   );
 }
 
-const getStyles = stylesFactory((theme: GrafanaTheme2) => ({
+const getStyles = (theme: GrafanaTheme2) => ({
   infoWrap: css`
     background: ${theme.colors.background.secondary};
     border-radius: 2px;
@@ -108,4 +108,4 @@ const getStyles = stylesFactory((theme: GrafanaTheme2) => ({
     font-size: ${theme.typography.bodySmall.fontSize};
     padding: ${theme.spacing(0, 0.5)};
   `,
-}));
+});
