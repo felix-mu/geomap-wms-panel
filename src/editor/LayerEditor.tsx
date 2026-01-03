@@ -40,7 +40,7 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
   // The options change with each layer type
   const optionsEditorBuilder = useMemo(() => {
     const layer = geomapLayerRegistry.getIfExists(options?.type);
-    if (!layer || !(layer.registerOptionsUI || layer.showLocation || layer.showOpacity || layer.id === 'nextzen')) {
+    if (!layer || !(layer.registerOptionsUI || layer.showLocation || layer.showOpacity)) {
       return null;
     }
 
@@ -53,15 +53,6 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
         description: 'Layer name',
         settings: {},
         defaultValue: 'unnamed layer'
-      });
-    }
-
-    if (layer.id === 'nextzen') {
-      builder.addTextInput({
-        path: 'apiKey',
-        name: 'API key',
-        description: 'API key for nextzen',
-        settings: {},
       });
     }
 
