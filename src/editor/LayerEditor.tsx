@@ -124,8 +124,6 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
             noFieldsMessage: 'No strings fields found',
           },
           showIf: (opts) => opts.location?.mode === ExtendFrameGeometrySourceMode.Geohash,
-          // eslint-disable-next-line react/display-name
-          // info: (props) => <div>HELLO</div>,
         })
         .addFieldNamePicker({
           path: 'location.lookup',

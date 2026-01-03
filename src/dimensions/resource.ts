@@ -42,14 +42,15 @@ export function getResourceDimension(
     const mapper = (v: any) => getPublicOrAbsoluteUrl(`${v}`);
     return {
       field,
-      get: (i) => mapper(field.values.get(i)),
+      get: (i) => mapper(field.values[i]),
       value: () => mapper(getLastNotNullFieldValue(field)),
     };
   }
 
   return {
     field,
-    get: field.values.get,
+    // get: field.values.get,
+    get: (i) => field.values[i],
     value: () => getLastNotNullFieldValue(field),
   };
 }

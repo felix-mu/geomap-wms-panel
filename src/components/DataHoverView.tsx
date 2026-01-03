@@ -92,7 +92,7 @@ export class DataHoverView extends PureComponent<Props> {
 }
 
 function fmt(field: Field, row: number): string {
-  const v = field.values.get(row);
+  const v = field.values[row];
   if (field.display) {
     return formattedValueToString(field.display(v));
   }

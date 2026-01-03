@@ -105,7 +105,8 @@ export class NumberInput extends PureComponent<Props, State> {
         value={this.state.text}
         onChange={this.onChange}
         onBlur={this.updateValue}
-        onKeyPress={this.onKeyPress}
+        // onKeyPress={this.onKeyPress}
+        onKeyUp={this.onKeyPress}
         placeholder={this.props.placeholder}
       />
     );
