@@ -99,7 +99,7 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
             layers.push(
               new TileLayer({
                 source: wmtsSource,
-                opacity: wmtsItem.opacity ? wmtsItem.opacity : 1.0
+                opacity: wmtsItem.opacity ?? 1.0
               })
             );
   
