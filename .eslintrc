@@ -1,4 +1,0 @@
-{
-  "extends": "./.config/.eslintrc",
-  "ignorePatterns": ["./.gitignore", "*/module.js", "playwright-report/**"] // https://eslint.org/docs/latest/use/configure/ignore#ignorepatterns-in-config-files
-}
