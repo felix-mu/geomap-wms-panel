@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Select } from '@grafana/ui';
+import { Combobox, ComboboxOption } from '@grafana/ui';
 import {
   DataFrame,
   PanelOptionsEditorBuilder,
@@ -302,10 +302,10 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
 
   return (
     <div>
-      <Select
-        menuShouldPortal
-        options={layerTypes.options}
-        value={layerTypes.current}
+      <Combobox
+        // menuShouldPortal
+        options={layerTypes.options as Array<ComboboxOption<string>>}
+        value={layerTypes.current[0] as ComboboxOption<string>}
         onChange={(v) => {
           const layer = geomapLayerRegistry.getIfExists(v.value);
           if (!layer) {

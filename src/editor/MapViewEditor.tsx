@@ -1,6 +1,6 @@
 import React, { FC, useMemo, useCallback } from 'react';
 import { StandardEditorProps, SelectableValue } from '@grafana/data';
-import { Button, InlineField, InlineFieldRow, Select, VerticalGroup } from '@grafana/ui';
+import { Button, Combobox, InlineField, InlineFieldRow, ComboboxOption, Stack } from '@grafana/ui';
 import { GeomapPanelOptions, MapViewConfig } from '../types';
 import { centerPointRegistry, MapCenterID } from '../view';
 import { NumberInput } from '../dimensions/editors/NumberInput';
@@ -115,7 +115,7 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
     <>
       <InlineFieldRow>
         <InlineField label="View" labelWidth={labelWidth} grow={true}>
-          <Select menuShouldPortal options={views.options} value={views.current} onChange={onSelectView} />
+          <Combobox options={views.options as Array<ComboboxOption<string>>} value={views.current[0] as ComboboxOption<string>} onChange={onSelectView} />
         </InlineField>
       </InlineFieldRow>
       {value?.id === MapCenterID.Coordinates && (
@@ -163,11 +163,11 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
         </InlineField>
       </InlineFieldRow>
 
-      <VerticalGroup>
+      <Stack direction={'column'}>
         <Button variant="secondary" size="sm" fullWidth onClick={onSetCurrentView}>
           <span>Use current map settings</span>
         </Button>
-      </VerticalGroup>
+      </Stack>
     </>
   );
 };

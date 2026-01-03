@@ -1,8 +1,8 @@
 import { css } from '@emotion/css';
 import React, { FC, useCallback } from 'react';
 
-import { GrafanaTheme2, SelectableValue, StandardEditorProps } from '@grafana/data';
-import { Select, ColorPicker, useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2, StandardEditorProps,SelectableValue } from '@grafana/data';
+import { Combobox, ColorPicker, useStyles2, ComboboxOption } from '@grafana/ui';
 import { useFieldDisplayNames, useSelectOptions } from './utils';
 
 import { ColorDimensionConfig } from '../types';
@@ -24,7 +24,7 @@ export const ColorDimensionEditor: FC<StandardEditorProps<ColorDimensionConfig, 
   const selectOptions = useSelectOptions(names, fieldName, fixedColorOption);
 
   const onSelectChange = useCallback(
-    (selection: SelectableValue<string>) => {
+    (selection: ComboboxOption<string>) => {
       const field = selection.value;
       if (field && field !== fixedColorOption.value) {
         onChange({
@@ -57,11 +57,10 @@ export const ColorDimensionEditor: FC<StandardEditorProps<ColorDimensionConfig, 
   return (
     <>
       <div className={styles.container}>
-        <Select
-          value={selectedOption}
-          options={selectOptions}
+        <Combobox
+          value={selectedOption as ComboboxOption<string>}
+          options={selectOptions as Array<ComboboxOption<string>>}
           onChange={onSelectChange}
-          noOptionsMessage="No fields found"
         />
         {isFixed && (
           <div className={styles.picker}>

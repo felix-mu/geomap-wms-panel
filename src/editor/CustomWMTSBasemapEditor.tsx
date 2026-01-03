@@ -1,6 +1,6 @@
 // import { css } from "@emotion/css";
 import { SelectableValue, StandardEditorProps } from "@grafana/data";
-import { Field, Input, Label, Select, Slider, Switch, /*useStyles2*/ } from "@grafana/ui";
+import { Combobox, ComboboxOption, Field, Input, Label, Slider, Switch, /*useStyles2*/ } from "@grafana/ui";
 import { WMTSConfig } from "layers/basemaps/wmts";
 import { getWMTSCapabilitiesFromService, getWMTSLayers } from "mapServiceHandlers/wmts";
 import React, { useEffect, useRef, useState } from "react";
@@ -100,10 +100,10 @@ export const CustomWMTSBasemapEditor = ({ onChange, value }: Props) => {
         <Label description={'Select the layer to be displayed in base map'}>
           Layers
         </Label>
-        <Select aria-label="wmts layer select" options={options} value={selection} onChange={(selectableValue) => {
+        <Combobox aria-label="wmts layer select" options={options as Array<ComboboxOption<string>>} value={selection as ComboboxOption<string>} onChange={(selectableValue) => {
           setSelection(selectableValue);
           onChange({url: url.current, layer: {title: selectableValue.label || "", identifier: selectableValue.value || ""}, attribution: attribution, opacity: opacityRef.current, showLegend: showLegendRef.current}); // onChange sets the config.wms property; Only change it when layers are selected
-          }}></Select>
+          }}></Combobox>
         <Field label="Opacity" aria-label="wmts opacity slider">
           <Slider value={opacityRef.current} step={0.1} min={0} max={1} onAfterChange={(val) => {
             onChange({url: url.current, layer: {title: selection.label || "", identifier: selection.value || ""}, attribution: attribution, opacity: val!, showLegend: showLegendRef.current})
