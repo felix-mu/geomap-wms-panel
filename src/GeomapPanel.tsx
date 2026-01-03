@@ -380,7 +380,7 @@ export class GeomapPanel extends Component<Props, State> {
 
   initMapRef = async (div: HTMLDivElement) => {
     if (!div) {
-      this.map = undefined as unknown as Map;
+      // this.map = undefined as unknown as Map;
       return;
     }
 
