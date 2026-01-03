@@ -233,7 +233,7 @@ export class WMSLegend extends Control {
     //     return legendItems;
     // }
 
-    buildLegend(legendURLs: LegendItem[]): JSX.Element {
+    buildLegend(legendURLs: LegendItem[]): React.JSX.Element {
         return (
             <ScrollContainer>
                 {legendURLs.length > 0 && legendURLs.map((legendItem, index) => {

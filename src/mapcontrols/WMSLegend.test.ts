@@ -7,15 +7,14 @@ import { LegendItem } from "layers/basemaps/wms";
 import { WMSLegend } from "./WMSLegend";
 import { cleanup, render, screen} from '@testing-library/react';
 import { Map } from "ol";
-import { act } from "react";
-// import React from 'react';
+import React, { act } from "react";
 
 afterEach(cleanup);
 
 describe("Build legend method", () => {
     test("empty legends url array should return empty div array", async () => {
         const wmsLegend: WMSLegend = new WMSLegend([]);
-        const wmsLegendContainer: JSX.Element = wmsLegend.buildLegend([]);
+        const wmsLegendContainer: React.JSX.Element = wmsLegend.buildLegend([]);
         render(wmsLegendContainer);
         expect(screen.queryAllByLabelText (/^wms legend image container/i)).toHaveLength(0);
     });
@@ -23,7 +22,7 @@ describe("Build legend method", () => {
     test("legends url array should return same size", () => {
         const legendItems: LegendItem[] = [{label: "", url: ""}, {label: "", url: ""}];
         const wmsLegend: WMSLegend = new WMSLegend(legendItems);
-        const wmsLegendContainer: JSX.Element = wmsLegend.buildLegend(legendItems);
+        const wmsLegendContainer: React.JSX.Element = wmsLegend.buildLegend(legendItems);
         render(wmsLegendContainer);
         expect(screen.queryAllByLabelText (/^wms legend image container/i)).toHaveLength(legendItems.length);
     });
