@@ -1,6 +1,6 @@
 import React, { FC, useMemo, useState, useEffect } from 'react';
 import { StandardEditorProps, SelectableValue, GrafanaTheme2 } from '@grafana/data';
-import { Alert, Select, stylesFactory, useTheme2 } from '@grafana/ui';
+import { Alert, Select, useTheme2 } from '@grafana/ui';
 import { COUNTRIES_GAZETTEER_PATH, Gazetteer, getGazetteer } from '../gazetteer/gazetteer';
 import { css } from '@emotion/css';
 
@@ -70,7 +70,7 @@ export const GazetteerPathEditor: FC<StandardEditorProps<string, any, any>> = ({
   );
 };
 
-const getStyles = stylesFactory((theme: GrafanaTheme2) => {
+const getStyles = (theme: GrafanaTheme2) => {
   return {
     keys: css`
       margin-top: 4px;
@@ -83,4 +83,4 @@ const getStyles = stylesFactory((theme: GrafanaTheme2) => {
       }
     `,
   };
-});
+};

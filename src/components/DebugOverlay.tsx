@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import { Map } from 'ol';
 import { transform } from 'ol/proj';
-import { stylesFactory } from '@grafana/ui';
-import { GrafanaTheme } from '@grafana/data';
+import { GrafanaTheme2 } from '@grafana/data';
 import { css } from '@emotion/css';
-import { config } from '../config';
+// import { config } from '../config';
 import tinycolor from 'tinycolor2';
 import { Coordinate } from 'ol/coordinate';
+import { useStyles2 } from '@grafana/ui';
 
 interface Props {
   map: Map;
@@ -18,7 +18,7 @@ interface State {
 }
 
 export class DebugOverlay extends PureComponent<Props, State> {
-  style = getStyles(config.theme);
+  style = useStyles2(getStyles);
 
   constructor(props: Props) {
     super(props);
@@ -62,11 +62,11 @@ export class DebugOverlay extends PureComponent<Props, State> {
   }
 }
 
-const getStyles = stylesFactory((theme: GrafanaTheme) => ({
+const getStyles = (theme: GrafanaTheme2) => ({
   infoWrap: css`
     color: ${theme.colors.text};
-    background: ${tinycolor(theme.colors.panelBg).setAlpha(0.7).toString()};
+    background: ${tinycolor(theme.colors.background.primary).setAlpha(0.7).toString()};
     border-radius: 2px;
     padding: 8px;
   `,
-}));
+});
