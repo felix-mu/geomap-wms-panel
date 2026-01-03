@@ -421,7 +421,12 @@ export class GeomapPanel extends Component<Props, State> {
     this.map.on('singleclick', this.singleClickListener); // https://openlayers.org/en/latest/apidoc/module-ol_MapBrowserEvent-MapBrowserEvent.html
 
     this.map.getViewport().addEventListener('mouseout', (evt) => {
-      this.props.eventBus.publish(new DataHoverClearEvent());
+      try {
+        this.props.eventBus.publish(new DataHoverClearEvent());
+      } catch(error) {
+        // console.error(error);
+      }
+      
     });
 
   };
