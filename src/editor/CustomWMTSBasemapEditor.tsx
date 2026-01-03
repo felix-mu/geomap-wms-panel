@@ -19,7 +19,6 @@ import {
 type Props = StandardEditorProps<WMTSConfig>;
 
 export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
-  // ---------- State ----------
   const [url, setUrl] = useState<string>(value?.url ?? '');
   const [attribution, setAttribution] = useState<string>(value?.attribution ?? '');
   const [opacity, setOpacity] = useState<number>(value?.opacity ?? 1);
@@ -35,7 +34,6 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
   // Cache WMTS capabilities per URL
   const cacheRef = useRef<Record<string, Array<SelectableValue<string>>>>({});
 
-  // ---------- Helpers ----------
   const emitChange = () => {
     // Do NOT emit invalid configs
     if (!url || !selection?.value) {
@@ -54,16 +52,19 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
     });
   };
 
-  // ---------- Load WMTS layers ----------
   useEffect(() => {
     if (!url) {
-      setOptions([]);
-      setSelection(null);
+      new Promise(() => {
+        setOptions([]);
+        setSelection(null);
+      });
       return;
     }
 
     if (cacheRef.current[url]) {
-      setOptions(cacheRef.current[url]);
+      new Promise(() => {
+        setOptions(cacheRef.current[url]);
+      });
       return;
     }
 
@@ -78,7 +79,6 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
       });
   }, [url]);
 
-  // ---------- UI ----------
   return (
     <div aria-label="wmts-basemap-editor">
       {/* URL */}
@@ -102,7 +102,17 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
         value={selection as ComboboxOption<string>}
         onChange={(v) => {
           setSelection(v);
-          emitChange();
+          // emitChange();
+          onChange({
+            url,
+            layer: {
+              title: v.label ?? '',
+              identifier: v.value ?? '',
+            },
+            attribution,
+            opacity,
+            showLegend,
+          });
         }}
       />
 
@@ -124,7 +134,16 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
           value={showLegend}
           onChange={(e) => {
             setShowLegend(e.currentTarget.checked);
-            emitChange();
+            onChange({
+              url: url,
+              layer: {
+                title: selection!.label ?? '',
+                identifier: selection!.value ?? '',
+              },
+              attribution: attribution,
+              opacity: opacity,
+              showLegend: e.currentTarget.checked
+            });
           }}
         />
       </Field>
