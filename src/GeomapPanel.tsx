@@ -52,14 +52,10 @@ import { DataHoverView } from './components/DataHoverView';
 import { ExtendMapLayerOptions } from './extension';
 import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
-// import { Global } from '@emotion/react'; 
 import { Subscription } from 'rxjs';
 import { DataExtentZoom } from 'mapcontrols/DataExtentZoom';
 import { CustomLayerSwitcher } from 'mapcontrols/CustomLayerSwitcher';
 import { CustomOverviewMapWrapper } from 'mapcontrols/CustomOverviewMapWrapper';
-import Group from 'ol/layer/Group';
-import { GroupLayerOptions } from 'ol-layerswitcher';
-// import { BasemapLegend } from 'mapcontrols/BasemapLegend';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
 import { olStyles } from './styles/ol/olStyles';
@@ -67,6 +63,7 @@ import { olExtStyles } from 'styles/ol/olExtStyles';
 import { bootstrapsIcons } from 'styles/bootstrap/bootstrapsIcons';
 import { fontmaki } from 'styles/fontmaki/fontmaki';
 import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
+// import LayerGroup from 'ol/layer/Group';
 
 interface MapLayerState {
   config: ExtendMapLayerOptions;
@@ -572,8 +569,13 @@ export class GeomapPanel extends Component<Props, State> {
 
       const handler = await item.create(this.map!, overlay, config.theme2);
       // If it is a basemap create group with title to make it visible in the legend: https://github.com/walkermatt/ol-layerswitcher/blob/main/examples/layerswitcher.js#L10
-      const layer = item.isBaseMap ? new Group({layers: [handler.init()], title: overlay.name, combine: true,} as GroupLayerOptions) : handler.init();
-      
+      // const layer = item.isBaseMap ? new Group({layers: [handler.init()], title: overlay.name, combine: true,} as GroupLayerOptions) : handler.init();
+      let layer = handler.init();
+      if (item.isBaseMap) {
+        layer.set("title", overlay.name);
+        layer.set("combine", true);
+      }
+
       // Set visible to false if toggle is not set to make layer not selected in switch layer control
       if (overlay.visible !== undefined && overlay.visible === false) {
         layer.setVisible(false)
