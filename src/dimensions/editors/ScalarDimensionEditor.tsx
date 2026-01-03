@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import React, { FC, useCallback } from 'react';
 
 import { FieldType, GrafanaTheme2, SelectableValue, StandardEditorProps } from '@grafana/data';
-import { InlineField, InlineFieldRow, RadioButtonGroup, Select, useStyles2 } from '@grafana/ui';
+import { Combobox, ComboboxOption, InlineField, InlineFieldRow, RadioButtonGroup, useStyles2 } from '@grafana/ui';
 import { useFieldDisplayNames, useSelectOptions } from './utils';
 import { NumberInput } from './NumberInput';
 
@@ -85,11 +85,11 @@ export const ScalarDimensionEditor: FC<StandardEditorProps<ScalarDimensionConfig
             <RadioButtonGroup value={mode} options={scalarOptions} onChange={onModeChange} fullWidth />
           </InlineField>
         </InlineFieldRow>
-        <Select
-          value={selectedOption}
-          options={selectOptions}
+        <Combobox
+          value={selectedOption as ComboboxOption<string>}
+          options={selectOptions as Array<ComboboxOption<string>>}
           onChange={onSelectChange}
-          noOptionsMessage="No fields found"
+          // noOptionsMessage="No fields found"
         />
       </div>
       <div className={styles.range}>
@@ -97,7 +97,7 @@ export const ScalarDimensionEditor: FC<StandardEditorProps<ScalarDimensionConfig
           <InlineFieldRow>
             <InlineField label="Value" labelWidth={8} grow={true}>
               <NumberInput
-                value={val?.fixed ?? DEFAULT_VALUE}
+                value={(val as any).fixed ?? DEFAULT_VALUE}
                 onChange={onValueChange}
                 max={settings?.max}
                 min={settings?.min}

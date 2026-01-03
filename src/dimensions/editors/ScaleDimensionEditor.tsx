@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import React, { FC, useCallback, useMemo } from 'react';
 
 import { GrafanaTheme2, SelectableValue, StandardEditorProps } from '@grafana/data';
-import { InlineField, InlineFieldRow, Select, useStyles2 } from '@grafana/ui';
+import { Combobox, ComboboxOption, InlineField, InlineFieldRow, useStyles2 } from '@grafana/ui';
 import { useFieldDisplayNames, useSelectOptions } from './utils';
 import { NumberInput } from './NumberInput';
 
@@ -97,18 +97,18 @@ export const ScaleDimensionEditor: FC<StandardEditorProps<ScaleDimensionConfig, 
   return (
     <>
       <div>
-        <Select
-          value={selectedOption}
-          options={selectOptions}
+        <Combobox
+          value={selectedOption as ComboboxOption<string>}
+          options={selectOptions as Array<ComboboxOption<string>>}
           onChange={onSelectChange}
-          noOptionsMessage="No fields found"
+          // noOptionsMessage="No fields found"
         />
       </div>
       <div className={styles.range}>
         {isFixed && (
           <InlineFieldRow>
             <InlineField label="Value" labelWidth={8} grow={true}>
-              <NumberInput value={val.fixed} {...minMaxStep} onChange={onValueChange} />
+              <NumberInput value={(val as any).fixed} {...minMaxStep} onChange={onValueChange} />
             </InlineField>
           </InlineFieldRow>
         )}
@@ -116,12 +116,12 @@ export const ScaleDimensionEditor: FC<StandardEditorProps<ScaleDimensionConfig, 
           <>
             <InlineFieldRow>
               <InlineField label="Min" labelWidth={8} grow={true}>
-                <NumberInput value={val.min} {...minMaxStep} onChange={onMinChange} />
+                <NumberInput value={(val as any).min} {...minMaxStep} onChange={onMinChange} />
               </InlineField>
             </InlineFieldRow>
             <InlineFieldRow>
               <InlineField label="Max" labelWidth={8} grow={true}>
-                <NumberInput value={val.max} {...minMaxStep} onChange={onMaxChange} />
+                <NumberInput value={(val as any).max} {...minMaxStep} onChange={onMaxChange} />
               </InlineField>
             </InlineFieldRow>
           </>

@@ -7,7 +7,7 @@ import {
   SelectableValue,
   StandardEditorProps,
 } from '@grafana/data';
-import { Select } from '@grafana/ui';
+import { Combobox, ComboboxOption } from '@grafana/ui';
 
 const recoverRefIdMissing = (
   newRefIds: SelectableValue[],
@@ -53,7 +53,7 @@ export const FrameSelectionEditor: FC<StandardEditorProps<MatcherConfig>> = ({ v
   }, [value, listOfRefId, priorSelectionState]);
 
   const onFilterChange = useCallback(
-    (v: SelectableValue<string>) => {
+    (v: ComboboxOption<string> | null) => {
       onChange(
         v?.value
           ? {
@@ -73,12 +73,12 @@ export const FrameSelectionEditor: FC<StandardEditorProps<MatcherConfig>> = ({ v
     });
   }
   return (
-    <Select
-      options={listOfRefId}
+    <Combobox
+      options={listOfRefId as Array<ComboboxOption<string>>}
       onChange={onFilterChange}
       isClearable={true}
-      placeholder="Change filter"
-      value={currentValue}
+      // placeholder="Change filter"
+      value={currentValue as ComboboxOption<string>}
     />
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SelectableValue, StandardEditorProps } from '@grafana/data';
-import { Select } from '@grafana/ui';
+import { Combobox, ComboboxOption } from '@grafana/ui';
 
 export const QuerySelector: React.FC<StandardEditorProps<string>> = ({ item, value, onChange, context }) => {
   const options: Array<SelectableValue<string>> = [];
@@ -16,5 +16,5 @@ export const QuerySelector: React.FC<StandardEditorProps<string>> = ({ item, val
     }
   }
 
-  return <Select options={options} value={value} onChange={(selectableValue) => onChange(selectableValue.value)} />;
+  return <Combobox options={options as Array<ComboboxOption<string>>} value={value} onChange={(selectableValue) => onChange(selectableValue.value)} />;
 };

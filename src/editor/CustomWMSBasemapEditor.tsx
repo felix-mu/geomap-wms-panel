@@ -1,6 +1,6 @@
 // import { css } from "@emotion/css";
 import { SelectableValue } from "@grafana/data";
-import { Field, Input, Label, MultiSelect, Slider, Switch, /*useStyles2*/ } from "@grafana/ui";
+import { ComboboxOption, Field, Input, Label, MultiCombobox, Slider, Switch, /*useStyles2*/ } from "@grafana/ui";
 import { WMSConfig } from "layers/basemaps/wms";
 import { getWMSCapabilitiesFromService, getWMSLayers } from "mapServiceHandlers/wms";
 import React, { useEffect, useRef, useState } from "react";
@@ -111,10 +111,10 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
       <Label description={'Select the layers to be displayed in base map'}>
         Layers
       </Label>
-      <MultiSelect aria-label="wms layer multiselect" options={options} value={selection} onChange={(selectableValue) => {
+      <MultiCombobox aria-label="wms layer multiselect" options={options as Array<ComboboxOption<string>>} value={selection as Array<ComboboxOption<string>>} onChange={(selectableValue) => {
         setSelection(selectableValue);
         onChange({url: url.current!, layers: selectableValue.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: wms.opacity, showLegend: wms.showLegend}); // onChange sets the config.wms property; Only change it when layers are selected
-        }}></MultiSelect>
+        }}></MultiCombobox>
       <Field label="Opacity" aria-label="wms opacity slider">
         <Slider value={wms.opacity} step={0.1} min={0} max={1} onAfterChange={(val) => {
           onChange({url: url.current!, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: val, showLegend: wms.showLegend})

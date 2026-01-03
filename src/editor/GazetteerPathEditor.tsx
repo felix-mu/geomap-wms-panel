@@ -1,6 +1,6 @@
 import React, { FC, useMemo, useState, useEffect } from 'react';
 import { StandardEditorProps, SelectableValue, GrafanaTheme2 } from '@grafana/data';
-import { Alert, Select, useTheme2 } from '@grafana/ui';
+import { Alert, Combobox, ComboboxOption, useTheme2 } from '@grafana/ui';
 import { COUNTRIES_GAZETTEER_PATH, Gazetteer, getGazetteer } from '../gazetteer/gazetteer';
 import { css } from '@emotion/css';
 
@@ -44,13 +44,13 @@ export const GazetteerPathEditor: FC<StandardEditorProps<string, any, any>> = ({
 
   return (
     <>
-      <Select
-        menuShouldPortal
-        value={current}
-        options={options}
+      <Combobox
+        // menuShouldPortal
+        value={current as ComboboxOption<string>}
+        options={options as Array<ComboboxOption<string>>}
         onChange={(v) => onChange(v.value)}
-        allowCustomValue={true}
-        formatCreateLabel={(txt) => `Load from URL: ${txt}`}
+        createCustomValue={true}
+        // formatCreateLabel={(txt) => `Load from URL: ${txt}`}
       />
       {gaz && (
         <>
