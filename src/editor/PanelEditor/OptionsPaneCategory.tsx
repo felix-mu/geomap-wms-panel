@@ -32,7 +32,7 @@ export const OptionsPaneCategory: FC<OptionsPaneCategoryProps> = React.memo(
 
     useEffect(() => {
       if (!isExpanded && forceOpen && forceOpen > 0) {
-        setIsExpanded(true);
+        new Promise(() => setIsExpanded(true));
       }
     }, [forceOpen, isExpanded]);
 

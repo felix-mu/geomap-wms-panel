@@ -116,6 +116,7 @@ export function getGlobalStyles(theme: GrafanaTheme2) {
 
   .ol-control.layer-switcher li.layer {
     list-style: none;
+    margin-left: 2px;
   }
 
   .layer-switcher li label {
