@@ -10,7 +10,7 @@ import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 import { MultipleWMSEditor } from 'editor/MultipleWMSEditor';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
-import { getWMSCapabilitiesFromService, getProjection, getWMSGetLegendURL } from 'mapServiceHandlers/wms';
+import { getWMSCapabilitiesFromService, getProjection, getWMSGetLegendURL, createQueryParameterDictionary } from 'mapServiceHandlers/wms';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
 
 // import {
@@ -87,10 +87,10 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
         if (selectedWmsLayers.length !== 0) {
           const wmsSource = new ImageWMS({
             url: wmsItem.url as string,
-            params: {"LAYERS": selectedWmsLayers.map(el => el.name).join(',')},
+            params: {"LAYERS": selectedWmsLayers.map(el => el.name).join(','), ...createQueryParameterDictionary(wmsItem.url)},
             ratio: 1,
             crossOrigin: 'anonymous', // https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
-            attributions: wmsItem.attribution ? wmsItem.attribution : "", // Testing purposes
+            attributions: wmsItem.attribution ? wmsItem.attribution : "",
             projection: epsgCode
           });
           layers.push(

@@ -1,4 +1,4 @@
-import { getWMSGetLegendURL } from "./wms";
+import { buildGetCapabilitiesURL, createQueryParameterDictionary, getWMSGetLegendURL } from "./wms";
 import { xmlCapabilities } from "../layers/basemaps/wms.test";
 
 let capabilityNode: Element;
@@ -21,5 +21,56 @@ describe("Build the URL to get the legend of a WMS layer", () => {
         const layerName = "testlayer";
         const getLegendURL = getWMSGetLegendURL(capabilityNode, layerName);
         expect(getLegendURL).toBeUndefined()
+    });
+});
+
+describe("Build getWMSCapabilities URL", () => {
+    test("Preserve custom query parameters", () => {
+        const testURL = "https://custom-wms.org?customparameterA=a&customparameterB=b";
+        const wmsCapabilitiesURL = buildGetCapabilitiesURL(testURL);
+
+        expect(wmsCapabilitiesURL.searchParams.toString()).toEqual(
+            "service=WMS&request=GetCapabilities" + "&" + (new URL(testURL).searchParams.toString())
+        );
+    });
+    test("Build correct URL without URL custom query parameters", () => {
+        const testURL = "https://custom-wms.org?";
+        const wmsCapabilitiesURL = buildGetCapabilitiesURL(testURL);
+
+        expect(wmsCapabilitiesURL.searchParams.toString()).toEqual(
+            "service=WMS&request=GetCapabilities"
+        );
+    });
+});
+
+describe("Create query parameter dictionary", () => {
+    test("return correct dictionary of query parameters", () => {
+        const url = "https://custom-wms.org?customparameterA=a&customparameterB=b";
+        const qpDict = createQueryParameterDictionary(url);
+        const expectedResult = {
+            customparameterA: "a",
+            customparameterB: "b"
+        };
+
+        expect(qpDict["customparameterA"]).toEqual(expectedResult["customparameterA"]);
+        expect(qpDict["customparameterB"]).toEqual(expectedResult["customparameterB"]);
+    });
+
+    test("return empty dictionary of query parameters", () => {
+        const url = "https://custom-wms.org?";
+        const qpDict = createQueryParameterDictionary(url);
+
+        expect(qpDict).toEqual({});
+    });
+
+    test("return correct dictionary of incomplete query parameters", () => {
+        const url = "https://custom-wms.org?a=&b=12&c";
+        const qpDict = createQueryParameterDictionary(url);
+
+        expect(qpDict).toEqual({
+            a: "",
+            b: "12",
+            c: ""
+        });
     });
 });

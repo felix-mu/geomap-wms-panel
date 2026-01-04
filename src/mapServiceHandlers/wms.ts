@@ -25,11 +25,19 @@ export function getFirstDirectChildNodeByLocalName(childNodes: NodeListOf<ChildN
     const projDef = await response.text();
     return projDef;
   }
+
+  export function buildGetCapabilitiesURL(url: string): URL {
+    const wmsCapabilitesURL = new URL(url);
+    wmsCapabilitesURL.search = ["?service=WMS&request=GetCapabilities",  wmsCapabilitesURL.searchParams.toString()]
+    .filter((el) => el.length > 0)
+    .join("&");
+
+    return wmsCapabilitesURL;
+  }
   
   export async function getWMSCapabilitiesFromService(url: string): Promise<Node> {
     // console.log(url);
-    const wmsCapabilitesURL = new URL(url);
-    wmsCapabilitesURL.search = "?service=WMS&request=GetCapabilities";
+    const wmsCapabilitesURL = buildGetCapabilitiesURL(url);
     // console.log(url);
   
       const responseCapabilities = await fetch(wmsCapabilitesURL);
@@ -147,4 +155,13 @@ export function getWMSGetLegendURL(wmsCapaNode: Node, layerName: string): string
     }
   
   return undefined;
+}
+
+export function createQueryParameterDictionary(url: string): Record<string, string> {
+  let qpObj: Record<string, string> = {};
+  new URL(url).searchParams.forEach((value, key) => {
+    qpObj[key] = value ?? "";
+  });
+
+  return qpObj;
 }
