@@ -35,7 +35,7 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
         : [DEFAULT_BASEMAP_CONFIG.type],
       filter
     );
-  }, [options?.type, filter]);
+  }, [options, filter]);
 
   // The options change with each layer type
   const optionsEditorBuilder = useMemo(() => {

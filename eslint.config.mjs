@@ -52,13 +52,13 @@ export default defineConfig([
         project: './tsconfig.json',
       },
     },
-    rules: {
-      '@typescript-eslint/no-deprecated': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/rules-of-hooks': 'off'
-    },
+    // rules: {
+    //   '@typescript-eslint/no-deprecated': 'warn',
+    //   'react-hooks/refs': 'warn',
+    //   'react-hooks/preserve-manual-memoization': 'warn',
+    //   'react-hooks/immutability': 'warn',
+    //   'react-hooks/set-state-in-effect': 'warn',
+    //   'react-hooks/rules-of-hooks': 'off'
+    // },
   },
 ]);
