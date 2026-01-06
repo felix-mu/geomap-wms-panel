@@ -125,7 +125,8 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
           return new LayerGroup({
             layers: [
               ...layers
-            ]
+            ],
+            opacity: options.opacity ?? 1.0
           });
         }
       })
