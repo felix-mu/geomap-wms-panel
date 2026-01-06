@@ -27,7 +27,7 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
       ids.push(centerPointRegistry.list()[0].id);
     }
     return centerPointRegistry.selectOptions(ids);
-  }, [value?.id]);
+  }, [value]);
 
   const onSetCurrentView = useCallback(() => {
     const map = lastGeomapPanelInstance?.map;

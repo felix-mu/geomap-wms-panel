@@ -20,12 +20,12 @@ export interface MarkersLegendProps {
 export function MarkersLegend(props: MarkersLegendProps) {
   const { color } = props;
   const theme = useTheme2();
+  const style = useStyles2(getStyles);
 
   if (!color || (!color.field && color.fixed)) {
     return <></>;
   }
 
-  const style = useStyles2(getStyles);
   const fmt = (v: any) => `${formattedValueToString(color.field!.display!(v))}`;
   const colorMode = getFieldColorModeForField(color!.field!);
 
