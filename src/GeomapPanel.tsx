@@ -428,7 +428,7 @@ export class GeomapPanel extends Component<Props, State> {
 
   };
 
-  singleClickListener = (evt: MapBrowserEvent<UIEvent>) => {
+  singleClickListener = (evt: MapBrowserEvent) => {
     // console.log("Fired single click event");
     evt.preventDefault();
     evt.stopPropagation();
@@ -456,7 +456,7 @@ export class GeomapPanel extends Component<Props, State> {
   }
 
 
-  pointerMoveListener = (evt: MapBrowserEvent<UIEvent>) => {
+  pointerMoveListener = (evt: MapBrowserEvent) => {
     if (!this.map) {
       return;
     }

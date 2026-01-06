@@ -95,7 +95,7 @@
     "@types/proj4": "^2.5.2",
     "@types/tinycolor2": "^1.4.3",
     "bootstrap-icons": "^1.11.2",
-    "ol": "7.2.2",
+    "ol": "10.7.0",
     "ol-ext": "^4.0.36",
     "ol-layerswitcher": "^4.1.2",
     "proj4": "^2.9.0",
@@ -109,8 +109,8 @@
     "uuid": "^13.0.0"
   },
   "overrides": {
-    "ol": "7.2.2",
-    "jspdf": "3.0.2",
+    "ol": "10.7.0",
+    "jspdf": "4.0.0",
     "uplot": "1.6.31"
   },
   "config": {
