@@ -1,4 +1,4 @@
-import React, { PureComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Map } from 'ol';
 import { transform } from 'ol/proj';
 import { GrafanaTheme2 } from '@grafana/data';
