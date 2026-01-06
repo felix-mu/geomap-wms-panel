@@ -2,29 +2,27 @@ import { SelectableValue, StandardEditorProps } from "@grafana/data";
 import { WMSConfig } from "layers/basemaps/wms";
 import { CustomWMSBasemapEditor } from "./CustomWMSBasemapEditor";
 import { Button, ControlledCollapse } from "@grafana/ui";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { css } from "@emotion/css";
 import { v4 as uuidv4 } from 'uuid';
 
 type Props = StandardEditorProps<WMSConfig[]>;
 
 export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => { // onChange: https://grafana.com/developers/plugin-tools/how-to-guides/panel-plugins/custom-panel-option-editors
-    const [wmsEntities, setWMSEntities] = useState<WMSConfig[]>(value !== undefined && value.length !== 0 ?
-        value : []);
+    // const [wmsEntities, setWMSEntities] = useState<WMSConfig[]>(value !== undefined && value.length !== 0 ?
+    //     value : []);
     
     const cacheRef = useRef<{ [url: string]: Array<SelectableValue<string>> }>({});
 
     const wmsEntityIDs = useRef<string[]>([]);
 
     function updateWMSEditor(wmsEntity: WMSConfig, index: number) {
-        wmsEntities.splice(index, 1, wmsEntity);
-        setWMSEntities([...wmsEntities]);
-        onChange([...wmsEntities]);
+        value.splice(index, 1, wmsEntity);
+        onChange([...value]);
     }
 
-    function removeWMSEntity(index: number) {
-        const newWMSEntities = wmsEntities.filter((_, i) => i !== index);
-        setWMSEntities(newWMSEntities);
+    function removeWMSEntity(value: WMSConfig[], index: number) {
+        const newWMSEntities = value.filter((_, i) => i !== index);
         onChange(newWMSEntities);
     }
 
@@ -32,19 +30,16 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         if(!wmsEntityIDs.current[index]) {
             wmsEntityIDs.current.push(uuidv4());
         }
-
+        
         return (
             <div key={wmsEntityIDs.current[index]}>
                 <ControlledCollapse label={`WMS #${index}`} isOpen={true} collapsible={true}>
                     <CustomWMSBasemapEditor cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
                     <Button aria-label={`wms remove button`} style={{marginTop: "6px"}} size="sm" variant="destructive" icon="minus" type="button" onClick={() => {
-                        wmsEntityIDs.current.splice(index, 1);
-                        if (wmsEntities.length === 1) {
-                            setWMSEntities([]);
+                        if (value.length === 1) {
                             onChange([]);
                         } else {
-                            // const newWMSEntities = [...wmsEntities];
-                            removeWMSEntity(index);
+                            removeWMSEntity(value, index);
                         }
                     }}>Remove WMS</Button>
                     {/* <div style={{
@@ -56,13 +51,11 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         )
     });
 
-    // return <Select options={options} value={value} onChange={(selectableValue) => onChange(selectableValue.value)} />;
     return (
         <>
             {wmsEditors}
             <Button aria-label="wms add button" size="sm" variant="primary" icon="plus" type="button" onClick={() => {
-                setWMSEntities([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0, showLegend: false}]);
-                onChange([...wmsEntities, {url: "", layers: [], attribution: "", opacity: 1.0, showLegend: false}]);
+                onChange([...value, {url: "", layers: [], attribution: "", opacity: 1.0, showLegend: false}]);
             }}>Add WMS</Button>
         </>
         );
