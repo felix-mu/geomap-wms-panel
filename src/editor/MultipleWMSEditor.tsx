@@ -6,33 +6,39 @@ import React, { useRef } from "react";
 import { css } from "@emotion/css";
 import { v4 as uuidv4 } from 'uuid';
 
-type Props = StandardEditorProps<WMSConfig[]>;
+export interface MultipleWMSConfig extends WMSConfig {
+    id: string;
+}
+
+type Props = StandardEditorProps<MultipleWMSConfig[]>;
 
 export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => { // onChange: https://grafana.com/developers/plugin-tools/how-to-guides/panel-plugins/custom-panel-option-editors
-    // const [wmsEntities, setWMSEntities] = useState<WMSConfig[]>(value !== undefined && value.length !== 0 ?
-    //     value : []);
-    
     const cacheRef = useRef<{ [url: string]: Array<SelectableValue<string>> }>({});
 
-    const wmsEntityIDs = useRef<string[]>([]);
-
     function updateWMSEditor(wmsEntity: WMSConfig, index: number) {
-        value.splice(index, 1, wmsEntity);
+        value.splice(index, 1, {id: value[index].id, ...wmsEntity});
         onChange([...value]);
     }
 
-    function removeWMSEntity(value: WMSConfig[], index: number) {
+    function removeWMSEntity(value: MultipleWMSConfig[], index: number) {
         const newWMSEntities = value.filter((_, i) => i !== index);
         onChange(newWMSEntities);
     }
 
-    let wmsEditors = (value || []).map((el, index) => {
-        if(!wmsEntityIDs.current[index]) {
-            wmsEntityIDs.current.push(uuidv4());
-        }
-        
+    if (value.some((value) => !value.id)) {
+        const newValue = (value || []).map((el) => {
+            if (!el.id) {
+                return {...el, id: uuidv4()}
+            } else {
+                return el;
+            }
+        });
+        onChange(newValue);
+    }
+
+    const wmsEditors = (value || []).map((el, index) => {
         return (
-            <div key={wmsEntityIDs.current[index]}>
+            <div key={el.id}>
                 <ControlledCollapse label={`WMS #${index}`} isOpen={true} collapsible={true}>
                     <CustomWMSBasemapEditor cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
                     <Button aria-label={`wms remove button`} style={{marginTop: "6px"}} size="sm" variant="destructive" icon="minus" type="button" onClick={() => {
@@ -55,7 +61,7 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         <>
             {wmsEditors}
             <Button aria-label="wms add button" size="sm" variant="primary" icon="plus" type="button" onClick={() => {
-                onChange([...value, {url: "", layers: [], attribution: "", opacity: 1.0, showLegend: false}]);
+                onChange([...value, {id: uuidv4(), url: "", layers: [], attribution: "", opacity: 1.0, showLegend: false}]);
             }}>Add WMS</Button>
         </>
         );
