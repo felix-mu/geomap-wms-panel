@@ -10,11 +10,17 @@ export enum MapCenterID {
   Zero = 'zero',
   Coordinates = 'coords',
   Auto = 'auto',
+  Fit = 'fit',
 }
 
 export const centerPointRegistry = new Registry<MapCenterItems>(() => [
   {
-    id: MapCenterID.Zero as string,
+    id: MapCenterID.Fit,
+    name: 'Fit to data',
+    zoom: 15, // max zoom
+  },
+  {
+    id: MapCenterID.Zero,
     name: '(0°, 0°)',
     lat: 0,
     lon: 0,

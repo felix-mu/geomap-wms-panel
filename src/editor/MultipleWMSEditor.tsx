@@ -25,7 +25,7 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         onChange(newWMSEntities);
     }
 
-    if (value.some((value) => !value.id)) {
+    if ((value || []).some((value) => !value.id)) {
         const newValue = (value || []).map((el) => {
             if (!el.id) {
                 return {...el, id: uuidv4()}
