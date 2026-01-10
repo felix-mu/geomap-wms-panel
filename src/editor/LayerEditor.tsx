@@ -290,7 +290,7 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
   }, [optionsEditorBuilder, onChange, data, options]);
 
   return (
-    <div>
+    <div style={{overflowX: "auto"}}>
       <Combobox
         // menuShouldPortal
         options={layerTypes.options as Array<ComboboxOption<string>>}
