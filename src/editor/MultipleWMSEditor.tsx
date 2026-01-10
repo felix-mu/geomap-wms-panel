@@ -39,7 +39,7 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
     const wmsEditors = (value || []).map((el, index) => {
         return (
             <div key={el.id}>
-                <ControlledCollapse label={`WMS #${index}`} isOpen={true} collapsible={true}>
+                <ControlledCollapse label={`WMS #${index}`} isOpen={true} /*collapsible={true}*/>
                     <CustomWMSBasemapEditor cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
                     <Button aria-label={`wms remove button`} style={{marginTop: "6px"}} size="sm" variant="destructive" icon="minus" type="button" onClick={() => {
                         if (value.length === 1) {

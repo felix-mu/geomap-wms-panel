@@ -124,7 +124,7 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
           max={1}
           step={0.1}
           onChange={(v) => setOpacity(v ?? 1.0)}
-          onAfterChange={emitChange}
+          onAfterChange={emitChange} inputId={''}
         />
       </Field>
 
