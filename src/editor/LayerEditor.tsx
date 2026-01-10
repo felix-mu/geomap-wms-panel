@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Combobox, ComboboxOption } from '@grafana/ui';
+import { Combobox, ComboboxOption, ScrollContainer } from '@grafana/ui';
 import {
   DataFrame,
   PanelOptionsEditorBuilder,
@@ -290,7 +290,7 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
   }, [optionsEditorBuilder, onChange, data, options]);
 
   return (
-    <div style={{overflowX: "auto"}}>
+    <ScrollContainer>
       <Combobox
         // menuShouldPortal
         options={layerTypes.options as Array<ComboboxOption<string>>}
@@ -311,6 +311,6 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
       />
 
       {layerOptions}
-    </div>
+    </ScrollContainer>
   );
 };
