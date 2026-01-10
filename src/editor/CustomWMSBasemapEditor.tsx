@@ -111,8 +111,8 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
         }}></MultiCombobox>
       <Field label="Opacity" aria-label="wms opacity slider">
         <Slider value={wms.opacity} step={0.1} min={0} max={1} onAfterChange={(val) => {
-          onChange({url: url, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: val, showLegend: wms.showLegend})
-        }} onChange={(val) => {opacityRef.current = val}}></Slider>
+          onChange({ url: url, layers: selection.map((e) => ({ title: e.label!, name: e.value! })), attribution: attribution, opacity: val, showLegend: wms.showLegend });
+        } } onChange={(val) => { opacityRef.current = val; } } inputId={""}></Slider>
       </Field>
       <Field label="Show legend" description="Toggle to show layers in legend" aria-label="wms layer legend toggle switch">
           <Switch value={(wms.showLegend || false)} onChange={(e) => {
