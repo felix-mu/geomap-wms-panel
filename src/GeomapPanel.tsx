@@ -7,9 +7,9 @@ import ScaleLine from 'ol/control/ScaleLine';
 import BaseLayer from 'ol/layer/Base';
 import { defaults as interactionDefaults } from 'ol/interaction';
 import MouseWheelZoom from 'ol/interaction/MouseWheelZoom';
-import { createEmpty, extend } from 'ol/extent';
-import VectorLayer from 'ol/layer/Vector';
-import { Vector } from 'ol/source';
+import { createEmpty, extend, isEmpty } from 'ol/extent';
+// import VectorLayer from 'ol/layer/Vector';
+// import { Vector } from 'ol/source';
 // import LayerSwitcher from 'ol-layerswitcher';
 import { isArray, isEqual } from 'lodash';
 
@@ -63,9 +63,10 @@ import { olExtStyles } from 'styles/ol/olExtStyles';
 import { bootstrapsIcons } from 'styles/bootstrap/bootstrapsIcons';
 import { fontmaki } from 'styles/fontmaki/fontmaki';
 import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
+import { getLayersExtent } from 'utils/getLayersExtent';
 // import LayerGroup from 'ol/layer/Group';
 
-interface MapLayerState {
+export interface MapLayerState {
   config: ExtendMapLayerOptions;
   handler: MapLayerHandler;
   layer: BaseLayer; // used to add|remove
@@ -274,6 +275,10 @@ export class GeomapPanel extends Component<Props, State> {
     if (this.map && this.props.data !== prevProps.data) {
       this.dataChanged(this.props.data);
     }
+    // Handle options changes
+    if (this.props.options !== prevProps.options) {
+      this.optionsChanged(prevProps.options, this.props.options);
+    }
   }
 
   // https://github.com/grafana/grafana/blob/dfae694cff68b022a4614e1c967aebe7d059d4b7/public/app/plugins/panel/geomap/GeomapPanel.tsx#L80-L87
@@ -296,14 +301,8 @@ export class GeomapPanel extends Component<Props, State> {
       this.map.updateSize();
     }
 
-    // External configuration changed
-    let layersChanged = false;
-    if (this.props.options !== nextProps.options) {
-      layersChanged = this.optionsChanged(nextProps.options);
-    }
-
     // External data changed
-    if (layersChanged || this.props.data !== nextProps.data) {
+    if (this.props.data !== nextProps.data) {
       this.dataChanged(nextProps.data);
     }
 
@@ -313,27 +312,27 @@ export class GeomapPanel extends Component<Props, State> {
   /**
    * Called when the panel options change
    */
-  optionsChanged(options: GeomapPanelOptions): boolean {
+  optionsChanged(prevOptions: GeomapPanelOptions, currentOptions: GeomapPanelOptions): boolean {
     let layersChanged = false;
-    const oldOptions = this.props.options;
 
-    if (options.view !== oldOptions.view) {
-      this.map!.setView(this.initMapView(options.view));
+    if (currentOptions.view !== prevOptions.view) {
+      this.map!.setView(this.initMapView(currentOptions.view));
     }
 
-    if (options.controls !== oldOptions.controls) {
-      this.initControls(options.controls ?? { showZoom: true, showAttribution: true, showLayercontrol: true });
+    if (currentOptions.controls !== prevOptions.controls) {
+      this.initControls(currentOptions.controls ?? { showZoom: true, showAttribution: true, showLayercontrol: true });
     }
 
-    if (options.basemap !== oldOptions.basemap) {
-      this.initBasemap(options.basemap);
+    if (currentOptions.basemap !== prevOptions.basemap) {
+      this.initBasemap(currentOptions.basemap);
       layersChanged = true;
     }
 
-    if (options.layers !== oldOptions.layers) {
-      this.initLayers(options.layers ?? []); // async
+    if (currentOptions.layers !== prevOptions.layers) {
+      this.initLayers(currentOptions.layers ?? []); // async
       layersChanged = true;
     }
+
     return layersChanged;
   }
 
@@ -346,31 +345,11 @@ export class GeomapPanel extends Component<Props, State> {
         state.handler.update(data);
       }
     }
-    if (this.props.options.view.id === MapCenterID.Auto && this.map) {
-      let extent = createEmpty();
-      // If layer is group layer extract the layers => see markersLayer.tsx line 324 where the markers layer is returned as Group
-      // const layers = this.map.getLayers().getArray();
-      const layers = this.map.getAllLayers();
-      for (let layer of layers) {
-        if (layer instanceof VectorLayer) {
-          let source = layer.getSource();
-          if (source !== undefined && source instanceof Vector) {
-            let features = source.getFeatures();
-            for (let feature of features) {
-              let geo = feature.getGeometry();
-              if (geo) {
-                extend(extent, geo.getExtent());
-              }
-            }
-          }
-        }
-      }
-      if (!isEqual(extent, createEmpty())) {
-        this.map.getView().fit(extent);
-        let zoom = this.map.getView().getZoom();
-        if (zoom) {
-          this.map.getView().setZoom(zoom - 0.5);
-        }
+    if (this.props.options.view.id && this.map) {
+      const view = this.initMapView(this.props.options.view);
+
+      if (this.map && view) {
+        this.map.setView(view);
       }
     }
   }
@@ -615,14 +594,71 @@ export class GeomapPanel extends Component<Props, State> {
       }
     }
 
+    // const v = centerPointRegistry.getIfExists(config.id);
+    // if (v) {
+    //   let coord: Coordinate | undefined = undefined;
+    //   if (v.lat == null) {
+    //     if (v.id === MapCenterID.Coordinates || v.id === MapCenterID.Auto) {
+    //       coord = [config.lon ?? 0, config.lat ?? 0];
+    //     } else {
+    //       // console.log('TODO, view requires special handling', v);
+    //     }
+    //   } else {
+    //     coord = [v.lon ?? 0, v.lat ?? 0];
+    //   }
+    //   if (coord) {
+    //     view.setCenter(fromLonLat(coord));
+    //   }
+    // }
+
+    // if (config.maxZoom) {
+    //   view.setMaxZoom(config.maxZoom);
+    // }
+    // if (config.minZoom) {
+    //   view.setMaxZoom(config.minZoom);
+    // }
+    // if (config.zoom) {
+    //   view.setZoom(config.zoom);
+    // }
+
+    this.initViewExtent(view, config);
+
+    return view;
+  }
+
+  initViewExtent(view: View, config: MapViewConfig) {
     const v = centerPointRegistry.getIfExists(config.id);
     if (v) {
       let coord: Coordinate | undefined = undefined;
       if (v.lat == null) {
-        if (v.id === MapCenterID.Coordinates || v.id === MapCenterID.Auto) {
+        if (v.id === MapCenterID.Coordinates) {
           coord = [config.lon ?? 0, config.lat ?? 0];
+        } else if (v.id === MapCenterID.Fit) {
+          const extent = getLayersExtent(this.layers, config.allLayers, config.lastOnly, config.layer);
+          if (!isEmpty(extent)) {
+            const padding = config.padding ?? 5;
+            const res = view.getResolutionForExtent(extent, this.map?.getSize());
+            const maxZoom = config.zoom ?? config.maxZoom;
+            view.fit(extent, {
+              maxZoom: maxZoom,
+            });
+            view.setResolution(res * (padding / 100 + 1));
+            const adjustedZoom = view.getZoom();
+            if (adjustedZoom && maxZoom && adjustedZoom > maxZoom) {
+              view.setZoom(maxZoom);
+            }
+          }
+        } else if (v.id === MapCenterID.Auto) {
+          const extent = getLayersExtent(this.layers, true);
+          if (!isEqual(extent, createEmpty())) {
+            view.fit(extent, {size: this.map?.getSize()});
+            const zoom = view.getZoom();
+            if (zoom) {
+              view.setZoom(zoom - 0.5);
+            }
+          }
         } else {
-          // console.log('TODO, view requires special handling', v);
+          // TODO: view requires special handling
         }
       } else {
         coord = [v.lon ?? 0, v.lat ?? 0];
@@ -631,17 +667,15 @@ export class GeomapPanel extends Component<Props, State> {
         view.setCenter(fromLonLat(coord));
       }
     }
-
     if (config.maxZoom) {
       view.setMaxZoom(config.maxZoom);
     }
     if (config.minZoom) {
       view.setMaxZoom(config.minZoom);
     }
-    if (config.zoom) {
+    if (config.zoom && v?.id !== MapCenterID.Fit && v?.id !== MapCenterID.Auto) {
       view.setZoom(config.zoom);
     }
-    return view;
   }
 
   async initControls(options: ControlsOptions) {

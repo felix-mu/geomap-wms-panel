@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useId } from 'react';
 import { StandardEditorProps, SelectableValue } from '@grafana/data';
 import {
   Combobox,
@@ -124,7 +124,7 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
           max={1}
           step={0.1}
           onChange={(v) => setOpacity(v ?? 1.0)}
-          onAfterChange={emitChange} inputId={''}
+          onAfterChange={emitChange} inputId={useId()}
         />
       </Field>
 

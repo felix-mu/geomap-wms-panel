@@ -3,7 +3,7 @@ import { SelectableValue } from "@grafana/data";
 import { ComboboxOption, Field, Input, Label, MultiCombobox, Slider, Switch, /*useStyles2*/ } from "@grafana/ui";
 import { WMSConfig } from "layers/basemaps/wms";
 import { getWMSCapabilitiesFromService, getWMSLayers } from "mapServiceHandlers/wms";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 
 // References
 // https://github.com/grafana/grafana/blob/9772ed65269f31f846d6daec42f3673903a5171e/packages/grafana-ui/src/components/Select/Select.mdx#L6
@@ -112,7 +112,7 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
       <Field label="Opacity" aria-label="wms opacity slider">
         <Slider value={wms.opacity} step={0.1} min={0} max={1} onAfterChange={(val) => {
           onChange({ url: url, layers: selection.map((e) => ({ title: e.label!, name: e.value! })), attribution: attribution, opacity: val, showLegend: wms.showLegend });
-        } } onChange={(val) => { opacityRef.current = val; } } inputId={""}></Slider>
+        } } onChange={(val) => { opacityRef.current = val; } } inputId={useId()}></Slider>
       </Field>
       <Field label="Show legend" description="Toggle to show layers in legend" aria-label="wms layer legend toggle switch">
           <Switch value={(wms.showLegend || false)} onChange={(e) => {
