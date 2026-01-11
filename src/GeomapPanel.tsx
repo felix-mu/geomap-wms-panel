@@ -593,34 +593,7 @@ export class GeomapPanel extends Component<Props, State> {
         view = sharedView;
       }
     }
-
-    // const v = centerPointRegistry.getIfExists(config.id);
-    // if (v) {
-    //   let coord: Coordinate | undefined = undefined;
-    //   if (v.lat == null) {
-    //     if (v.id === MapCenterID.Coordinates || v.id === MapCenterID.Auto) {
-    //       coord = [config.lon ?? 0, config.lat ?? 0];
-    //     } else {
-    //       // console.log('TODO, view requires special handling', v);
-    //     }
-    //   } else {
-    //     coord = [v.lon ?? 0, v.lat ?? 0];
-    //   }
-    //   if (coord) {
-    //     view.setCenter(fromLonLat(coord));
-    //   }
-    // }
-
-    // if (config.maxZoom) {
-    //   view.setMaxZoom(config.maxZoom);
-    // }
-    // if (config.minZoom) {
-    //   view.setMaxZoom(config.minZoom);
-    // }
-    // if (config.zoom) {
-    //   view.setZoom(config.zoom);
-    // }
-
+    
     this.initViewExtent(view, config);
 
     return view;
