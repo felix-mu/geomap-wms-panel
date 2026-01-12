@@ -416,6 +416,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
                 }
               } catch (error) {
                 // console.log(error);
+                throw new Error(`${error}`)
               }
             }
             // Post updates to the legend component
