@@ -37,13 +37,18 @@ export interface OverviewMapConfig<TConfig = any> extends ExtendMapLayerOptions 
 }
 
 export interface MapViewConfig {
-  id: string; // placename > lookup
+  allLayers?: boolean;
+  id: string;
+  lastOnly?: boolean;
   lat?: number;
+  layer?: string;
   lon?: number;
-  zoom?: number;
-  minZoom?: number;
   maxZoom?: number;
+  minZoom?: number;
+  noRepeat?: boolean;
+  padding?: number;
   shared?: boolean;
+  zoom?: number;
 }
 
 export const defaultView: MapViewConfig = {

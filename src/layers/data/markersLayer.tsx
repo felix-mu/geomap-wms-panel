@@ -164,7 +164,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
         }),
       });
 
-      style.getText().setText(customValue);
+      style.getText()!.setText(customValue);
       return style;
     }
 
@@ -280,9 +280,9 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
       );
       let image: Image = new FontSymbol({});
       if (enableShadow) {
-        image = styles[1].getImage();
+        image = styles[1].getImage()!;
       } else {
-        image = styles[0].getImage();
+        image = styles[0].getImage()!;
       }
       if (image && image instanceof FontSymbol) {
         image.getFill().setColor(customStyle.color);

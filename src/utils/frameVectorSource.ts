@@ -8,7 +8,7 @@ import { dataFrameToPoints, LocationFieldMatchers } from './location';
 
 export interface FrameVectorSourceOptions {}
 
-export class FrameVectorSource<T extends Geometry = Geometry> extends VectorSource<T> {
+export class FrameVectorSource<T extends Geometry = Geometry> extends VectorSource<Feature<T>> {
   constructor(private location: LocationFieldMatchers) {
     super({});
   }

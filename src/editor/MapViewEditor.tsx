@@ -6,11 +6,7 @@ import { centerPointRegistry, MapCenterID } from '../view';
 import { NumberInput } from '../dimensions/editors/NumberInput';
 import { lastGeomapPanelInstance } from '../GeomapPanel';
 import { toLonLat } from 'ol/proj';
-import { createEmpty, extend, getCenter } from 'ol/extent';
-import VectorLayer from 'ol/layer/Vector';
-import { Vector } from 'ol/source';
-import LayerGroup from 'ol/layer/Group';
-import { isEqual } from 'lodash';
+import { FitMapViewEditor } from './FitMapViewEditor';
 
 export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPanelOptions>> = ({
   value,
@@ -27,7 +23,7 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
       ids.push(centerPointRegistry.list()[0].id);
     }
     return centerPointRegistry.selectOptions(ids);
-  }, [value?.id]);
+  }, [value]);
 
   const onSetCurrentView = useCallback(() => {
     const map = lastGeomapPanelInstance?.map;
@@ -48,25 +44,10 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
     }
   }, [value, onChange]);
 
-  const computeExtent: any = (layer: any, extent: number[]) => {
-    if (layer instanceof VectorLayer) {
-      let source = layer.getSource();
-      if (source !== undefined && source instanceof Vector) {
-        let features = source.getFeatures();
-        for (let feature of features) {
-          let geo = feature.getGeometry();
-          if (geo) {
-            extend(extent, geo.getExtent());
-          }
-        }
-      }
-    }
-  };
-
   const onSelectView = useCallback(
     (selection: SelectableValue<string>) => {
       const v = centerPointRegistry.getIfExists(selection.value);
-      if (v && v.id !== MapCenterID.Auto) {
+      if (v && v.id /*!== MapCenterID.Auto*/) {
         onChange({
           ...value,
           id: v.id,
@@ -74,38 +55,6 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
           lon: v.lon ?? value?.lon,
           zoom: v.zoom ?? value?.zoom,
         });
-      } else if (v && v.id === MapCenterID.Auto) {
-        const map = lastGeomapPanelInstance?.map;
-        if (map) {
-          let extent = createEmpty();
-          const layers = map.getLayers().getArray();
-          for (let layer of layers) {
-            computeExtent(layer, extent);
-            if (layer instanceof LayerGroup) {
-              const groupLayers = layer.getLayersArray();
-              for (let l of groupLayers) {
-                computeExtent(l, extent);
-              }
-            }
-          }
-          if (!isEqual(extent, createEmpty())) {
-            let view = map.getView();
-            let coords = view.getCenter();
-            coords = getCenter(extent);
-            view.fit(extent);
-            let zoom = view.getZoom();
-            if (coords && zoom) {
-              const center = toLonLat(coords, view.getProjection());
-              onChange({
-                ...value,
-                id: v.id,
-                lon: +center[0].toFixed(6),
-                lat: +center[1].toFixed(6),
-                zoom: +zoom.toFixed(0),
-              });
-            }
-          }
-        }
       }
     },
     [value, onChange]
@@ -146,28 +95,29 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
               />
             </InlineField>
           </InlineFieldRow>
+          <InlineFieldRow>
+            <InlineField label="Zoom" labelWidth={labelWidth} grow={true}>
+              <NumberInput
+                value={value?.zoom ?? 1}
+                min={1}
+                max={18}
+                step={0.01}
+                onChange={(v) => {
+                  onChange({ ...value, zoom: v });
+                }}
+              />
+            </InlineField>
+          </InlineFieldRow>
+          <Stack direction={'column'}>
+            <Button variant="secondary" size="sm" fullWidth onClick={onSetCurrentView}>
+              <span>Use current map settings</span>
+            </Button>
+          </Stack>
         </>
       )}
-
-      <InlineFieldRow>
-        <InlineField label="Zoom" labelWidth={labelWidth} grow={true}>
-          <NumberInput
-            value={value?.zoom ?? 1}
-            min={1}
-            max={18}
-            step={0.01}
-            onChange={(v) => {
-              onChange({ ...value, zoom: v });
-            }}
-          />
-        </InlineField>
-      </InlineFieldRow>
-
-      <Stack direction={'column'}>
-        <Button variant="secondary" size="sm" fullWidth onClick={onSetCurrentView}>
-          <span>Use current map settings</span>
-        </Button>
-      </Stack>
+      {value?.id === MapCenterID.Fit && (
+        <FitMapViewEditor value={value} onChange={onChange} context={context} />
+      )}
     </>
   );
 };
