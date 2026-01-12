@@ -1,4 +1,6 @@
 import WMTSCapabilities from 'ol/format/WMTSCapabilities.js';
+import { getEPSGLookup, register } from 'ol/proj/proj4';
+import proj4 from "proj4";
 
 export async function getWMTSCapabilitiesFromService(wmtsGetCapabilitiesUrl: string): Promise<any> {
 
@@ -85,3 +87,19 @@ export function getWMTSLayers(wmtsCapabilities: any): Array<{ value: any; label:
         
     return layers;
   }
+
+export async function registerCRSInProj4(wmtsCapabilities: any) {
+    (wmtsCapabilities.Contents.TileMatrixSet as Array<any>).forEach((el) => {
+        try {
+            const epsgCode: string = el.SupportedCRS.split(":").slice(-1);
+            const epgsLookUp = getEPSGLookup()(parseInt(epsgCode));
+            epgsLookUp.then((proj4String: string) => {
+                proj4.defs(el.SupportedCRS, proj4String);
+                register(proj4);
+            });
+        } catch (error) {
+            throw new Error(`Error registering supported WMTS CRS: ${error}`);
+        }
+
+    })
+}

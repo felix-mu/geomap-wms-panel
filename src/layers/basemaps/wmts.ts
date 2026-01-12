@@ -9,7 +9,8 @@ import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { getWMTSCapabilitiesFromService,/*, getProjection, buildWMSGetLegendURL*/ 
-getWMTSLegendURLForLayer} from 'mapServiceHandlers/wmts';
+getWMTSLegendURLForLayer,
+registerCRSInProj4} from 'mapServiceHandlers/wmts';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
 import TileLayer from 'ol/layer/Tile';
 import { WMTS } from 'ol/source';
@@ -85,9 +86,11 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
           // This will fail if the panel is opened in edit mode for the first time
           try {
             wmtsCapabilities = await getWMTSCapabilitiesFromService(wmtsItem.url as string);
+            registerCRSInProj4(wmtsCapabilities);
             wmtsOptions = optionsFromCapabilities(wmtsCapabilities, {"layer": selectedWmtsLayer.identifier, "crossOrigin": "anonymous"});
           } catch (error) {
             // continue;
+            throw new Error(`Error resolving wmts options from wmts capabilities: ${error}`)
           }
 
           // if (!wmtsOptions) {

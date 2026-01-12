@@ -65,7 +65,7 @@ export function getFirstDirectChildNodeByLocalName(childNodes: NodeListOf<ChildN
         }
       );
     } catch (error) {
-      
+      throw new Error(`Error resolving projection definition: ${error}`)
     }
   
     // console.log(epsgCodes);
