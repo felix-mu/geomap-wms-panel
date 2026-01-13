@@ -10,7 +10,7 @@ import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 import { MultipleWMSEditor } from 'editor/MultipleWMSEditor';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
-import { getWMSCapabilitiesFromService, getProjection, getWMSGetLegendURL } from 'mapServiceHandlers/wms';
+import { getWMSCapabilitiesFromService, getProjection, getWMSGetLegendURL, appendCustomQueryParameters } from 'mapServiceHandlers/wms';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
 
 // import {
@@ -105,7 +105,11 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
             selectedWmsLayers.forEach((value) => legendItems.push(
                 {
                   label: value.title,
-                  url: wmsURL ? getWMSGetLegendURL(xmlNodeWMS!, value.name) ?? "" : "" // wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value.name}`
+                  // Append custom query parameters to legend urls
+                  url: wmsURL ? appendCustomQueryParameters(
+                    getWMSGetLegendURL(xmlNodeWMS!, value.name) ?? "",
+                    new URL(wmsURL).searchParams
+                  ) : "" // wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value.name}`
                 }
               )
             );

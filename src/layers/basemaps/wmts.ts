@@ -8,8 +8,8 @@ import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 // import { MultipleWMSEditor } from 'editor/MultipleWMSEditor';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
-import { getWMTSCapabilitiesFromService,/*, getProjection, buildWMSGetLegendURL*/ 
-getWMTSLegendURLForLayer,
+import { addCustomParametersToWMTSOptionsURLs, getWMTSCapabilitiesFromService,/*, getProjection, buildWMSGetLegendURL*/ 
+getWMTSLegendURLForLayer, appendCustomQueryParameters,
 registerCRSInProj4} from 'mapServiceHandlers/wmts';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
 import TileLayer from 'ol/layer/Tile';
@@ -98,6 +98,7 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
           // }
 
           if (wmtsOptions) {
+            wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsItem.url, wmtsOptions);
             const wmtsSource = new WMTS(wmtsOptions!);
             layers.push(
               new TileLayer({
@@ -109,7 +110,11 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
             if (wmtsItem.showLegend){
               let wmtsLegendURL;
               try {
-                wmtsLegendURL = getWMTSLegendURLForLayer(wmtsCapabilities, selectedWmtsLayer.identifier);
+                // Append custom query parameters to legend urls
+                wmtsLegendURL = appendCustomQueryParameters(
+                    getWMTSLegendURLForLayer(wmtsCapabilities, selectedWmtsLayer.identifier), 
+                    new URL(wmtsItem.url).searchParams
+                );
               } catch (error) {
                 wmtsLegendURL = "";
               }

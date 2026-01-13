@@ -1,6 +1,7 @@
 import WMTSCapabilities from 'ol/format/WMTSCapabilities.js';
 import { getEPSGLookup, register } from 'ol/proj/proj4';
 import proj4 from "proj4";
+import { Options } from 'ol/source/WMTS';
 
 export async function getWMTSCapabilitiesFromService(wmtsGetCapabilitiesUrl: string): Promise<any> {
 
@@ -84,10 +85,11 @@ export function getWMTSLayers(wmtsCapabilities: any): Array<{ value: any; label:
             }
           );
     });
-        
+    
     return layers;
-  }
+}
 
+// TODO: add unit tests
 export async function registerCRSInProj4(wmtsCapabilities: any) {
     (wmtsCapabilities.Contents.TileMatrixSet as Array<any>).forEach((el) => {
         try {
@@ -100,6 +102,53 @@ export async function registerCRSInProj4(wmtsCapabilities: any) {
         } catch (error) {
             throw new Error(`Error registering supported WMTS CRS: ${error}`);
         }
+    });
+}
 
-    })
+// Add custom parameters
+// TODO: add unit tests
+export function addCustomParametersToWMTSOptionsURLs(wmtsURL: string, wmtsOptions: Options): Options {
+    const url = new URL(wmtsURL);
+    for (const key of [...url.searchParams.keys()]) {
+        if (key.toLowerCase() === "request" ||
+            key.toLowerCase() === "version" ||
+            key.toLowerCase() === "service") {
+                url.searchParams.delete(key);
+        }
+    }
+
+    if(wmtsOptions.url) {
+        const url_tmp = wmtsOptions.url += "?" + [url.searchParams.toString()].filter((el) => el.length > 0).join("&");
+        wmtsOptions = {...wmtsOptions, "url": url_tmp};
+    }
+
+    if(wmtsOptions.urls) {
+        const urls_tmp = wmtsOptions.urls.map((url_i, ) => {
+            return url_i + "?" + new URL(url).searchParams.toString()
+        });
+        wmtsOptions = {...wmtsOptions, "urls": urls_tmp};
+    }
+
+    return wmtsOptions;
+}
+
+// TODO: add unit tests
+export function appendCustomQueryParameters(originalUrl: string, customQueryParameter: URLSearchParams): string {
+  try {
+    if (new URL(originalUrl).searchParams.size > 0) {
+        const url = new URL(originalUrl);
+        for (const key of [...url.searchParams.keys()]) {
+            if (key.toLowerCase() === "request" ||
+                key.toLowerCase() === "version" ||
+                key.toLowerCase() === "service") {
+                    url.searchParams.delete(key);
+            }
+        }
+        return [new URL(originalUrl).toString(), customQueryParameter.toString()].filter(e => e.length > 0).join("&");
+    } else {
+        return [new URL(originalUrl).toString(), customQueryParameter.toString()].filter(e => e.length > 0).join("?");
+    }
+  } catch (error) {
+    return "";
+  }  
 }
