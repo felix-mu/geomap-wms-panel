@@ -166,10 +166,9 @@ export function createQueryParameterDictionary(url: string): Record<string, stri
   return qpObj;
 }
 
-// TODO: add unit tests
 export function appendCustomQueryParameters(originalUrl: string, customQueryParameter: URLSearchParams): string {
   try {
-    if (new URL(originalUrl).searchParams.size > 0) {
+    if ([...new URL(originalUrl).searchParams.keys()].length > 0) {
         return [new URL(originalUrl).toString(), customQueryParameter.toString()].filter(e => e.length > 0).join("&");
     } else {
         return [new URL(originalUrl).toString(), customQueryParameter.toString()].filter(e => e.length > 0).join("?");

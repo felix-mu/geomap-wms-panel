@@ -1,4 +1,4 @@
-import { buildGetCapabilitiesURL, createQueryParameterDictionary, getWMSGetLegendURL } from "./wms";
+import { appendCustomQueryParameters, buildGetCapabilitiesURL, createQueryParameterDictionary, getWMSGetLegendURL } from "./wms";
 import { xmlCapabilities } from "../layers/basemaps/wms.test";
 
 let capabilityNode: Element;
@@ -72,5 +72,38 @@ describe("Create query parameter dictionary", () => {
             b: "12",
             c: ""
         });
+    });
+});
+
+describe("Append custom query parameters", () => {
+    test("original URL w/o query parameters and no custom query parameter", () => {
+        const url = new URL("https://example.org").toString();
+        const customSearchParams = new URL("https://example.org").searchParams;
+        const appendedURL = appendCustomQueryParameters(url, customSearchParams);
+
+        expect(appendedURL).toBe(url);
+    });
+
+    test("original URL with query parameters and no custom query parameter", () => {
+        const url = new URL("https://example.org?a=1&b").toString();
+        const customSearchParams = new URL("https://example.org").searchParams;
+        const appendedURL = appendCustomQueryParameters(url, customSearchParams);
+
+        expect(appendedURL).toBe(url);
+    });
+
+    test("original URL with query parameters and custom query parameter", () => {
+        const url = new URL("https://example.org?a=1&b").toString();
+        const customSearchParams = new URL("https://example.org?c=test&custom=jdjdjd").searchParams;
+        const appendedURL = appendCustomQueryParameters(url, customSearchParams);
+
+        expect(appendedURL).toBe(url + "&" + customSearchParams.toString());
+    });
+
+    test("invalid original URL with query parameters and custom query parameter", () => {
+        const customSearchParams = new URL("https://example.org?c=test&custom=jdjdjd").searchParams;
+        const appendedURL = appendCustomQueryParameters(":?a=1&b", customSearchParams);
+
+        expect(appendedURL.length).toBe(0);
     });
 });

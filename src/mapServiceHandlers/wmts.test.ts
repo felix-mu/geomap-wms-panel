@@ -499,6 +499,8 @@ test("getWMTSCapabilitiesFromService should return object from rest endpoint", a
     //     });
     // });
 
+    
+
     const parsedWMTSCapabilites = await getWMTSCapabilitiesFromService("https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml");
     expect(parsedWMTSCapabilites).not.toBeNull();
     expect(parsedWMTSCapabilites).not.toBeUndefined();
