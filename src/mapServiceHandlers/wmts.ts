@@ -1,5 +1,6 @@
 import WMTSCapabilities from 'ol/format/WMTSCapabilities.js';
 import { getEPSGLookup, register } from 'ol/proj/proj4';
+import { get } from 'ol/proj';
 import proj4 from "proj4";
 import { Options } from 'ol/source/WMTS';
 
@@ -91,18 +92,28 @@ export function getWMTSLayers(wmtsCapabilities: any): Array<{ value: any; label:
 
 // TODO: add unit tests
 export async function registerCRSInProj4(wmtsCapabilities: any) {
-    (wmtsCapabilities.Contents.TileMatrixSet as Array<any>).forEach((el) => {
-        try {
-            const epsgCode: string = el.SupportedCRS.split(":").slice(-1);
-            const epgsLookUp = getEPSGLookup()(parseInt(epsgCode));
-            epgsLookUp.then((proj4String: string) => {
-                proj4.defs(el.SupportedCRS, proj4String);
-                register(proj4);
-            });
-        } catch (error) {
-            throw new Error(`Error registering supported WMTS CRS: ${error}`);
-        }
-    });
+    await Promise.all(
+         (wmtsCapabilities.Contents.TileMatrixSet as Array<any>).map(async (el) => {
+                try {
+                    // Skip if CRS is already registered
+                    if (get(el.SupportedCRS)) {
+                        return;
+                    }
+
+                    const epsgCode: string = el.SupportedCRS.split(":").slice(-1);
+                    // const epsgLookUp = getEPSGLookup()(parseInt(epsgCode));
+                    // epsgLookUp.then((proj4String: string) => {
+                    //     proj4.defs(el.SupportedCRS, proj4String);
+                    //     register(proj4);
+                    // });
+                    const proj4String = await getEPSGLookup()(parseInt(epsgCode));
+                    proj4.defs(el.SupportedCRS, proj4String);
+                    register(proj4);
+                } catch (error) {
+                    throw new Error(`Error registering supported WMTS CRS: ${error}`);
+                }
+            })
+    );
 }
 
 // Add custom parameters

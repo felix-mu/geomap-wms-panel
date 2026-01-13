@@ -86,7 +86,7 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
           // This will fail if the panel is opened in edit mode for the first time
           try {
             wmtsCapabilities = await getWMTSCapabilitiesFromService(wmtsItem.url as string);
-            registerCRSInProj4(wmtsCapabilities);
+            await registerCRSInProj4(wmtsCapabilities);
             wmtsOptions = optionsFromCapabilities(wmtsCapabilities, {"layer": selectedWmtsLayer.identifier, "crossOrigin": "anonymous"});
           } catch (error) {
             // continue;
