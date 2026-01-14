@@ -93,7 +93,7 @@ export function getWMTSLayers(wmtsCapabilities: any): Array<{ value: any; label:
 // TODO: add unit tests
 export async function registerCRSInProj4(wmtsCapabilities: any) {
     await Promise.all(
-         (wmtsCapabilities.Contents.TileMatrixSet as Array<any>).map(async (el) => {
+         (wmtsCapabilities.Contents.TileMatrixSet as any[]).map(async (el) => {
                 try {
                     // Skip if CRS is already registered
                     if (get(el.SupportedCRS)) {
@@ -106,7 +106,7 @@ export async function registerCRSInProj4(wmtsCapabilities: any) {
                     //     proj4.defs(el.SupportedCRS, proj4String);
                     //     register(proj4);
                     // });
-                    const proj4String = await getEPSGLookup()(parseInt(epsgCode));
+                    const proj4String = await getEPSGLookup()(parseInt(epsgCode, 10));
                     proj4.defs(el.SupportedCRS, proj4String);
                     register(proj4);
                 } catch (error) {
