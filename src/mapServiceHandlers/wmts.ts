@@ -90,7 +90,6 @@ export function getWMTSLayers(wmtsCapabilities: any): Array<{ value: any; label:
     return layers;
 }
 
-// TODO: add unit tests
 export async function registerCRSInProj4(wmtsCapabilities: any) {
     await Promise.all(
          (wmtsCapabilities.Contents.TileMatrixSet as any[]).map(async (el) => {

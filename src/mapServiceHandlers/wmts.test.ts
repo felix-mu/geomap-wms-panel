@@ -1,6 +1,7 @@
 import {expect, jest, test} from '@jest/globals';
-import { getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer } from "./wmts";
+import { getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer, registerCRSInProj4 } from "./wmts";
 import WMTSCapabilities from 'ol/format/WMTSCapabilities';
+import { get } from 'ol/proj';
 
 const capabilitiesXMLDocument = `
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
@@ -635,4 +636,115 @@ test("getWMTSLayers should return when layer with Title equal to the Identifier 
 
 test.each([null, undefined])("getWMTSLayers should throw error when wmtsCapabilities is null or undefined", (val) => {
     expect(() => getWMTSLayers(val)).toThrow("wmtsCapabilites is undefined or null");
-  });
+});
+
+describe("registerCRSInProj4", () => {
+    test.each([undefined, null, {}])("invalid or nullish wmtsCapabilities should throw error", async (wmtsCapabilites) => {
+        // await expect(registerCRSInProj4(wmtsCapabilites)).rejects.toThrow(TypeError);
+        expect.assertions(1);
+        try {
+            await registerCRSInProj4(wmtsCapabilites);
+        } catch (error) {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("empty wmtsCapabilities.Contents.TileMatrixSet should not throw an error", async () => {
+        expect.assertions(0);
+        try {
+            await registerCRSInProj4({
+                Contents: {
+                    TileMatrixSet: []
+                }
+            });
+        } catch (error) {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("pre-registered wmtsCapabilities.Contents.TileMatrixSet should return sliently", async () => {
+        expect.assertions(0);
+        try {
+            await registerCRSInProj4({
+                Contents: {
+                    TileMatrixSet: [
+                        {
+                            SupportedCRS: "EPSG:3857"
+                        }
+                    ]
+                }
+            });
+        } catch (error) {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("not pre-registered wmtsCapabilities.Contents.TileMatrixSet should return without error and have the respective projection registered", async () => {
+        global.fetch =jest.fn<typeof fetch>(async (a, b?) => {
+            return new Promise<any>((resolve, reject) => {
+                    resolve(
+                        {
+                            text: () => new Promise<string>((resolve, reject) => {
+                                resolve("+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs");
+                            }),
+                            ok: true
+                        }
+                    );
+                }
+            );
+            // return ({
+            //     ok: true,
+            //     text: async () => "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
+            // });
+        });
+
+        await registerCRSInProj4({
+            Contents: {
+                TileMatrixSet: [
+                    {
+                        SupportedCRS: "EPSG:3857"
+                    },
+                    {
+                        SupportedCRS: "EPSG:25832"
+                    }
+                ]
+            }
+        });
+
+        expect(get("EPSG:25832")).toBeTruthy();
+    });
+
+    test("invalid not pre-registered wmtsCapabilities.Contents.TileMatrixSet should throw error", async () => {
+        global.fetch =jest.fn<typeof fetch>(async (a, b?) => {
+            return new Promise<any>((resolve, reject) => {
+                    resolve(
+                        {
+                            text: () => new Promise<string>((resolve, reject) => {
+                                resolve("");
+                            }),
+                            ok: false
+                        }
+                    );
+                }
+            );
+        });
+
+        expect.assertions(1);
+        try {
+            await registerCRSInProj4({
+            Contents: {
+                TileMatrixSet: [
+                    {
+                        SupportedCRS: "EPSG:3857"
+                    },
+                    {
+                        SupportedCRS: "1234XYZ"
+                    }
+                ]
+            }
+        });
+        } catch (error) {
+            expect(error).toBeTruthy();   
+        }
+    });
+});
