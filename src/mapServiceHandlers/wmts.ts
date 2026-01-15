@@ -128,18 +128,18 @@ export function addCustomParametersToWMTSOptionsURLs(wmtsURL: string, wmtsOption
 
     if(wmtsOptions.url) {
         const url_tmp = [...new URL(wmtsOptions.url).searchParams.keys()].length > 0 ?
-            [new URL(wmtsOptions.url).origin + "?" + new URL(wmtsOptions.url).searchParams.toString(), ...[url.searchParams.toString()].filter(e => e.length > 0)].join("&") : 
-            [new URL(wmtsOptions.url).origin, ...[url.searchParams.toString()].filter(e => e.length)].join("?");
-        wmtsOptions = {...wmtsOptions, "url": url_tmp};
+            [new URL(wmtsOptions.url).origin + (new URL(wmtsOptions.url).pathname.length > 1 ? new URL(wmtsOptions.url).pathname : "") + "?" + new URL(wmtsOptions.url).searchParams.toString(), ...[url.searchParams.toString()].filter(e => e.length > 0)].join("&") : 
+            [new URL(wmtsOptions.url).origin + (new URL(wmtsOptions.url).pathname.length > 1 ? new URL(wmtsOptions.url).pathname : ""), ...[url.searchParams.toString()].filter(e => e.length)].join("?");
+        wmtsOptions = {...wmtsOptions, "url": decodeURI(url_tmp)};
     }
 
     if(wmtsOptions.urls) {
         const urls_tmp = wmtsOptions.urls.map((url_i) => {
             if ([...new URL(url_i).searchParams.keys()].length > 0) {
-                return [new URL(url_i).origin + "?" + new URL(url_i).searchParams.toString(), ...[new URL(url).searchParams.toString()].filter(e => e.length > 0)].join("&");
+                return decodeURI([new URL(url_i).origin + (new URL(url_i).pathname.length > 1 ? new URL(url_i).pathname : "") + "?" + new URL(url_i).searchParams.toString(), ...[new URL(url).searchParams.toString()].filter(e => e.length > 0)].join("&"));
             }
 
-            return [new URL(url_i).origin, ...[new URL(url).searchParams.toString()].filter(e => e.length > 0)].join("?");
+            return decodeURI([new URL(url_i).origin + (new URL(url_i).pathname.length > 1 ? new URL(url_i).pathname : ""), ...[new URL(url).searchParams.toString()].filter(e => e.length > 0)].join("?"));
         });
         wmtsOptions = {...wmtsOptions, "urls": urls_tmp};
     }
@@ -159,9 +159,9 @@ export function appendCustomQueryParameters(originalUrl: string, customQueryPara
                     url.searchParams.delete(key);
             }
         }
-        return [new URL(originalUrl).origin + "?" + new URL(originalUrl).searchParams.toString(), customQueryParameter.toString()].filter(e => e.length > 0).join("&");
+        return decodeURI([new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : "") + "?" + new URL(originalUrl).searchParams.toString(), customQueryParameter.toString()].filter(e => e.length > 0).join("&"));
     } else {
-        return [new URL(originalUrl).origin, customQueryParameter.toString()].filter(e => e.length > 0).join("?");
+        return decodeURI([new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : ""), customQueryParameter.toString()].filter(e => e.length > 0).join("?"));
     }
   } catch (error) {
     return "";
