@@ -1,7 +1,8 @@
 import {expect, jest, test} from '@jest/globals';
-import { getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer, registerCRSInProj4 } from "./wmts";
+import { addCustomParametersToWMTSOptionsURLs, getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer, registerCRSInProj4 } from "./wmts";
 import WMTSCapabilities from 'ol/format/WMTSCapabilities';
 import { get } from 'ol/proj';
+import { Options } from 'ol/source/WMTS';
 
 const capabilitiesXMLDocument = `
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
@@ -746,5 +747,173 @@ describe("registerCRSInProj4", () => {
         } catch (error) {
             expect(error).toBeTruthy();   
         }
+    });
+});
+
+describe("tests for addCustomParametersToWMTSOptionsURLs", () => {
+    test("throw an error when wmtsURL is not an valid URL", () => {
+        const wmtsURL = "";
+        expect.assertions(1);
+        try {
+            addCustomParametersToWMTSOptionsURLs(wmtsURL, {} as Options)
+        } catch (error) {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("wmtsUrl with no query parameters and empty wmtsOptions should return unchanged wmtsOptions", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, {} as Options);
+        expect(wmtsOptions).toEqual({});
+    });
+
+    test("wmtsUrl with query parameters and empty wmtsOptions should return unchanged wmtsOptions", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, {} as Options);
+        expect(wmtsOptions).toEqual({});
+    });
+
+    test("wmtsUrl with wmts query parameters and custom query parameters and empty wmtsOptions should return unchanged wmtsOptions", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&customA=0&customB=test";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, {} as Options);
+        expect(wmtsOptions).toEqual({});
+    });
+
+    test("wmtsUrl without wmts query parameters and custom query parameters and empty wmtsOptions should return unchanged wmtsOptions", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, {} as Options);
+        expect(wmtsOptions).toEqual({});
+    });
+
+    test("wmtsUrl without wmts query parameters and custom query parameters and url prop without query params in wmtsOptions should return wmtsOptions url prop with custom parameters appended", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml?custom=123&customwd=8999";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, { url: "http://example.org"} as Options);
+        expect(wmtsOptions).toEqual({
+            url: "http://example.org?custom=123&customwd=8999"
+        });
+    });
+
+    test("wmtsUrl without wmts query parameters and custom query parameters and urls prop with query params in wmtsOptions should return wmtsOptions url prop with custom parameters appended", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml?custom=123&customwd=8999";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, { url: "http://example.org?a=1&b=2"} as Options);
+        expect(wmtsOptions).toEqual({
+            url: "http://example.org?a=1&b=2&custom=123&customwd=8999"
+        });
+    });
+
+    test("wmtsUrl with wmts query parameters and no custom query parameters and urls prop with query params in wmtsOptions should return wmtsOptions url prop with custom parameters appended", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, { url: "http://example.org?a=1&b=2"} as Options);
+        expect(wmtsOptions).toEqual({
+            url: "http://example.org?a=1&b=2"
+        });
+    });
+
+    test("wmtsUrl with wmts query parameters and custom query parameters and url prop with query params in wmtsOptions should return wmtsOptions url prop with custom parameters appended", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0&customMap=basemap";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, { url: "http://example.org?a=1&b=2"} as Options);
+        expect(wmtsOptions).toEqual({
+            url: "http://example.org?a=1&b=2&customMap=basemap"
+        });
+    });
+
+    test("wmtsUrl with wmts query parameters and custom query parameters and urls prop with query params in wmtsOptions should return wmtsOptions urls prop with custom parameters appended", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0&customMap=basemap";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, { urls: ["http://example.org?a=1&b=2"]} as Options);
+        expect(wmtsOptions).toEqual({
+            urls: ["http://example.org?a=1&b=2&customMap=basemap"]
+        });
+    });
+
+    test("wmtsUrl with wmts query parameters and with custom query parameters and urls prop without query params in wmtsOptions should return wmtsOptions urls prop with custom parameters appended", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0&customMap=basemap";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, { urls: ["http://example.org"]} as Options);
+        expect(wmtsOptions).toEqual({
+            urls: ["http://example.org?customMap=basemap"]
+        });
+    });
+
+    test("wmtsUrl with wmts query parameters and custom query parameters and urls prop with query params in wmtsOptions should return wmtsOptions urls prop with custom parameters appended", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0&customMap=basemap";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, { urls: ["http://example.org?a=1&b=2"]} as Options);
+        expect(wmtsOptions).toEqual({
+            urls: ["http://example.org?a=1&b=2&customMap=basemap"]
+        });
+    });
+
+    test("wmtsUrl with wmts query parameters and without custom query parameters and urls prop with query params in wmtsOptions should return wmtsOptions urls prop with custom parameters appended", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, { urls: ["http://example.org?a=1&b=2"]} as Options);
+        expect(wmtsOptions).toEqual({
+            urls: ["http://example.org?a=1&b=2"]
+        });
+    });
+
+    test("wmtsUrl with wmts query parameters and without custom query parameters and urls prop without query params in wmtsOptions should return wmtsOptions urls prop with custom parameters appended", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0";
+        const wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsURL, { urls: ["http://example.org"]} as Options);
+        expect(wmtsOptions).toEqual({
+            urls: ["http://example.org"]
+        });
+    });
+
+    test("invalid url in urls prop of wtmsOptions should throw an error", () => {
+        const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0";
+        expect.assertions(1);
+        try {
+            addCustomParametersToWMTSOptionsURLs(wmtsURL, { urls: [""]} as Options);
+        } catch (error) {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test.each([
+        {
+            wmtsURL: "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0&",
+            wmtsOptions: {
+                url: "https://example.org"
+            },
+            expected: { 
+                url: "https://example.org"
+            }
+        },
+        {
+            wmtsURL: "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0&",
+            wmtsOptions: {
+                url: "https://example.org?"
+            },
+            expected: { 
+                url: "https://example.org"
+            }
+        },
+        {
+            wmtsURL: "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml?",
+            wmtsOptions: {
+                url: "https://example.org?"
+            },
+            expected: { 
+                url: "https://example.org"
+            }
+        },
+        {
+            wmtsURL: "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml?&",
+            wmtsOptions: {
+                url: "https://example.org?a"
+            },
+            expected: { 
+                url: "https://example.org?a="
+            }
+        },
+        {
+            wmtsURL: "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml?a=b&",
+            wmtsOptions: {
+                url: "https://example.org?s=t&"
+            },
+            expected: { 
+                url: "https://example.org?s=t&a=b"
+            }
+        }
+    ])("trailing '?' or '&' in URLs should be ignored", ({wmtsURL, wmtsOptions, expected}) => {
+        expect(addCustomParametersToWMTSOptionsURLs(wmtsURL, wmtsOptions as Options)).toEqual(expected);
     });
 });
