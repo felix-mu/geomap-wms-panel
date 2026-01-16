@@ -77,7 +77,7 @@ describe("Create query parameter dictionary", () => {
 
 describe("Append custom query parameters", () => {
     test("original URL w/o query parameters and no custom query parameter", () => {
-        const url = new URL("https://example.org").toString();
+        const url = decodeURI(new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png").toString());
         const customSearchParams = new URL("https://example.org").searchParams;
         const appendedURL = appendCustomQueryParameters(url, customSearchParams);
 
@@ -85,23 +85,23 @@ describe("Append custom query parameters", () => {
     });
 
     test("original URL with query parameters and no custom query parameter", () => {
-        const url = new URL("https://example.org?a=1&b").toString();
-        const customSearchParams = new URL("https://example.org").searchParams;
+        const url = decodeURI(new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png?a=1&b").toString());
+        const customSearchParams = new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png").searchParams;
         const appendedURL = appendCustomQueryParameters(url, customSearchParams);
 
         expect(appendedURL).toBe(url);
     });
 
     test("original URL with query parameters and custom query parameter", () => {
-        const url = new URL("https://example.org?a=1&b").toString();
-        const customSearchParams = new URL("https://example.org?c=test&custom=jdjdjd").searchParams;
+        const url = decodeURI(new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png?a=1&b").toString());
+        const customSearchParams = new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png?c=test&custom=jdjdjd").searchParams;
         const appendedURL = appendCustomQueryParameters(url, customSearchParams);
 
         expect(appendedURL).toBe(url + "&" + customSearchParams.toString());
     });
 
     test("invalid original URL with query parameters and custom query parameter", () => {
-        const customSearchParams = new URL("https://example.org?c=test&custom=jdjdjd").searchParams;
+        const customSearchParams = new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png?c=test&custom=jdjdjd").searchParams;
         const appendedURL = appendCustomQueryParameters(":?a=1&b", customSearchParams);
 
         expect(appendedURL.length).toBe(0);
