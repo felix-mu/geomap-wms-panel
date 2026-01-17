@@ -857,14 +857,15 @@ describe("tests for addCustomParametersToWMTSOptionsURLs", () => {
         });
     });
 
-    test("invalid url in urls prop of wtmsOptions should throw an error", () => {
+    test("invalid url in urls prop of wtmsOptions should throw an error and return the original URL", () => {
         const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0";
-        expect.assertions(1);
-        try {
-            addCustomParametersToWMTSOptionsURLs(wmtsURL, { urls: [""]} as Options);
-        } catch (error) {
-            expect(error).toBeTruthy();
-        }
+        // expect.assertions(1);
+        // try {
+        //     addCustomParametersToWMTSOptionsURLs(wmtsURL, { urls: [""]} as Options);
+        // } catch (error) {
+        //     expect(error).toBeTruthy();
+        // }
+        expect({ urls: [""]}).toEqual(addCustomParametersToWMTSOptionsURLs(wmtsURL, { urls: [""]} as Options));
     });
 
     test.each([

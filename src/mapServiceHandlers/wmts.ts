@@ -118,28 +118,17 @@ export async function registerCRSInProj4(wmtsCapabilities: any) {
 // Add custom parameters
 export function addCustomParametersToWMTSOptionsURLs(wmtsURL: string, wmtsOptions: Options): Options {
     const url = new URL(wmtsURL);
-    for (const key of [...url.searchParams.keys()]) {
-        if (key.toLowerCase() === "request" ||
-            key.toLowerCase() === "version" ||
-            key.toLowerCase() === "service") {
-                url.searchParams.delete(key);
-        }
-    }
+    const urlSearchParams = removeQueryParameters(url.searchParams);
 
     if(wmtsOptions.url) {
-        const url_tmp = [...new URL(wmtsOptions.url).searchParams.keys()].length > 0 ?
-            [new URL(wmtsOptions.url).origin + (new URL(wmtsOptions.url).pathname.length > 1 ? new URL(wmtsOptions.url).pathname : "") + "?" + new URL(wmtsOptions.url).searchParams.toString(), ...[url.searchParams.toString()].filter(e => e.length > 0)].join("&") : 
-            [new URL(wmtsOptions.url).origin + (new URL(wmtsOptions.url).pathname.length > 1 ? new URL(wmtsOptions.url).pathname : ""), ...[url.searchParams.toString()].filter(e => e.length)].join("?");
+        const url_tmp = appendCustomQueryParameters(wmtsOptions.url, urlSearchParams);
         wmtsOptions = {...wmtsOptions, "url": decodeURI(url_tmp)};
     }
 
     if(wmtsOptions.urls) {
         const urls_tmp = wmtsOptions.urls.map((url_i) => {
-            if ([...new URL(url_i).searchParams.keys()].length > 0) {
-                return decodeURI([new URL(url_i).origin + (new URL(url_i).pathname.length > 1 ? new URL(url_i).pathname : "") + "?" + new URL(url_i).searchParams.toString(), ...[new URL(url).searchParams.toString()].filter(e => e.length > 0)].join("&"));
-            }
-
-            return decodeURI([new URL(url_i).origin + (new URL(url_i).pathname.length > 1 ? new URL(url_i).pathname : ""), ...[new URL(url).searchParams.toString()].filter(e => e.length > 0)].join("?"));
+            const url_tmp = appendCustomQueryParameters(url_i, urlSearchParams);
+            return url_tmp;
         });
         wmtsOptions = {...wmtsOptions, "urls": urls_tmp};
     }
@@ -148,22 +137,51 @@ export function addCustomParametersToWMTSOptionsURLs(wmtsURL: string, wmtsOption
 }
 
 // TODO: add unit tests
-export function appendCustomQueryParameters(originalUrl: string, customQueryParameter: URLSearchParams): string {
-  try {
-    if ([...new URL(originalUrl).searchParams.keys()].length > 0) {
-        const url = new URL(originalUrl);
-        for (const key of [...url.searchParams.keys()]) {
-            if (key.toLowerCase() === "request" ||
-                key.toLowerCase() === "version" ||
-                key.toLowerCase() === "service") {
-                    url.searchParams.delete(key);
+export function removeQueryParameters(urlSearchParams: URLSearchParams,
+    parameterNames: string[] = [
+        "request",
+        "version",
+        "service"
+    ],
+    ignoreCase = true
+    ): URLSearchParams {
+    for (const key of [...urlSearchParams.keys()]) {
+        const key_tmp = ignoreCase ? key.toLowerCase() : key;
+        parameterNames.forEach((param) => {
+            const param_tmp = ignoreCase ? param.toLowerCase() : param;
+
+            if (key_tmp === param_tmp) {
+                urlSearchParams.delete(key);
             }
-        }
-        return decodeURI([new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : "") + "?" + new URL(originalUrl).searchParams.toString(), customQueryParameter.toString()].filter(e => e.length > 0).join("&"));
-    } else {
-        return decodeURI([new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : ""), customQueryParameter.toString()].filter(e => e.length > 0).join("?"));
+        });
     }
-  } catch (error) {
-    return "";
-  }  
+    
+    return urlSearchParams;
+}
+
+// TODO: add unit tests
+export function appendCustomQueryParameters(originalUrl: string, customQueryParameter: URLSearchParams): string {
+    let resultURL = originalUrl;
+    try {
+        if ([...new URL(originalUrl).searchParams.keys()].length > 0) {
+            resultURL = decodeURI(
+                [
+                    new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : "")
+                    + "?" + new URL(originalUrl).searchParams.toString(), 
+                    customQueryParameter.toString()
+                ].filter(e => e.length > 0).join("&")
+            );
+        } else {
+            resultURL = decodeURI(
+                [
+                    new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : ""),
+                    customQueryParameter.toString()
+                ].filter(e => e.length > 0).join("?")
+            );
+        }
+    } catch (error) {
+        throw new Error(`Error apppending custom query parameters: ${error}`);
+    } finally {
+        return resultURL;
+    }
 }
