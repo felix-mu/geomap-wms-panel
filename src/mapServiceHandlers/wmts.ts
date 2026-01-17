@@ -136,7 +136,6 @@ export function addCustomParametersToWMTSOptionsURLs(wmtsURL: string, wmtsOption
     return wmtsOptions;
 }
 
-// TODO: add unit tests
 export function removeQueryParameters(urlSearchParams: URLSearchParams,
     parameterNames: string[] = [
         "request",

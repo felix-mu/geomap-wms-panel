@@ -1,5 +1,5 @@
 import {expect, jest, test} from '@jest/globals';
-import { addCustomParametersToWMTSOptionsURLs, getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer, registerCRSInProj4 } from "./wmts";
+import { addCustomParametersToWMTSOptionsURLs, getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer, registerCRSInProj4, removeQueryParameters } from "./wmts";
 import WMTSCapabilities from 'ol/format/WMTSCapabilities';
 import { get } from 'ol/proj';
 import { Options } from 'ol/source/WMTS';
@@ -915,5 +915,52 @@ describe("tests for addCustomParametersToWMTSOptionsURLs", () => {
         }
     ])("trailing '?' or '&' in URLs should be ignored", ({wmtsURL, wmtsOptions, expected}) => {
         expect(addCustomParametersToWMTSOptionsURLs(wmtsURL, wmtsOptions as Options)).toEqual(expected);
+    });
+});
+
+describe("tests for removeQueryParameters",() => {
+    test("empty search parameters should return object untouched", () => {
+        const emptySearchParams = new URLSearchParams();
+        expect([...emptySearchParams.keys()].length).toBe([...removeQueryParameters(emptySearchParams).keys()].length);
+    });
+
+    test("empty parameter name array should not return any parameters", () => {
+        const parameterNames: string[] = [];
+        const emptySearchParams = new URLSearchParams({
+            "a": "1",
+            "b": "2"
+        });
+        expect(removeQueryParameters(emptySearchParams, parameterNames).toString()).toBe(emptySearchParams.toString());
+    });
+
+    test.each([
+        {
+            args: {
+                    urlSeachParams: new URLSearchParams({"a": "1"}),
+                    parameterNames: ["A"],
+                    ignoreCase: true
+            },
+            expected: 0 // [...new URLSearchParams().keys()].length
+        },
+        {
+            args: {
+                    urlSeachParams: new URLSearchParams({"a": "1"}),
+                    parameterNames: ["A"],
+                    ignoreCase: false
+            },
+            expected: 1 // [...new URLSearchParams().keys()].length
+        }
+    ])("ignoreCase flag should remove parameter when set to true, else the parameter should be preserved", ({args, expected}) => {
+        expect([...removeQueryParameters(args.urlSeachParams, args.parameterNames, args.ignoreCase)].length).toBe(expected);
+    });
+
+    test("defined parameter names of array should be removed from URL parameters", () => {
+        const parameterNames: string[] = ["a", "b"];
+        const emptySearchParams = new URLSearchParams({
+            "a": "1",
+            "b": "2",
+            "c": "3"
+        });
+        expect([...removeQueryParameters(emptySearchParams, parameterNames)].length).toBe(1);
     });
 });
