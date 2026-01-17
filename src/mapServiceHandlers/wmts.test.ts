@@ -857,7 +857,7 @@ describe("tests for addCustomParametersToWMTSOptionsURLs", () => {
         });
     });
 
-    test("invalid url in urls prop of wtmsOptions should throw an error and return the original URL", () => {
+    test("invalid url in urls prop of wtmsOptions should throw an error", () => {
         const wmtsURL = "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&version=1.3.0";
         expect.assertions(1);
         try {
