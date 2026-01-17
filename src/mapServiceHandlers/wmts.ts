@@ -161,10 +161,9 @@ export function removeQueryParameters(urlSearchParams: URLSearchParams,
 
 // TODO: add unit tests
 export function appendCustomQueryParameters(originalUrl: string, customQueryParameter: URLSearchParams): string {
-    let resultURL = originalUrl;
     try {
         if ([...new URL(originalUrl).searchParams.keys()].length > 0) {
-            resultURL = decodeURI(
+            return decodeURI(
                 [
                     new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : "")
                     + "?" + new URL(originalUrl).searchParams.toString(), 
@@ -172,7 +171,7 @@ export function appendCustomQueryParameters(originalUrl: string, customQueryPara
                 ].filter(e => e.length > 0).join("&")
             );
         } else {
-            resultURL = decodeURI(
+            return decodeURI(
                 [
                     new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : ""),
                     customQueryParameter.toString()
@@ -181,7 +180,5 @@ export function appendCustomQueryParameters(originalUrl: string, customQueryPara
         }
     } catch (error) {
         throw new Error(`Error apppending custom query parameters: ${error}`);
-    } finally {
-        return resultURL;
     }
 }
