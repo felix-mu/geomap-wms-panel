@@ -91,7 +91,7 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
             wmtsOptions = optionsFromCapabilities(wmtsCapabilities, {"layer": selectedWmtsLayer.identifier, "crossOrigin": "anonymous"});
           } catch (error) {
             // continue;
-            throw new Error(`Error resolving wmts options from wmts capabilities: ${error}`)
+            throw new Error(`Error setting up wmts options for wmts: ${error}`)
           }
 
           // if (!wmtsOptions) {
@@ -102,7 +102,7 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
             try {
               wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsItem.url, {...wmtsOptions});
             } catch (error) {
-
+				throw new Error(`Error updating wmts options with custom query parameters: ${error}`)
             }
             const wmtsSource = new WMTS(wmtsOptions!);
             layers.push(
