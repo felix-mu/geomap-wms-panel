@@ -45,9 +45,9 @@ Object.defineProperty(window, 'fetch', {
         // let res = new Response("test");
         // Moking response object: https://developer.mozilla.org/en-US/docs/Web/API/Response
         let response = {
-            text: () => {
-                return new Promise<any>((resolve, reject) => {
-                    https.get(req, (res) => {                        
+            text: async () => {
+                const data = await new Promise<any>((resolve, reject) => {
+                    https.get(req, (res) => {
                         res.setEncoding('utf8');
                         let rawData = '';
                         res.on('data', (chunk) => { rawData += chunk; });
@@ -55,16 +55,14 @@ Object.defineProperty(window, 'fetch', {
                             try {
                                 // const parsedData = JSON.parse(rawData);
                                 // console.log(parsedData);
-
                                 resolve(rawData);
                             } catch (e) {
                                 console.error((e as any).message);
                             }
                         });
                     });
-                }).then((data) => {
-                    return data;
-                })
+                });
+                return data;
             }
         };
         return response;

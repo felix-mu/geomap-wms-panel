@@ -4,7 +4,7 @@ import Map from 'ol/Map';
 import { config, } from '@grafana/runtime';
 import ImageLayer from 'ol/layer/Image';
 import ImageWMS from 'ol/source/ImageWMS';
-import { getFirstDirectChildNodeByLocalName, getAllDirectChildNodesByLocalName, getWMSLayers, getProjection, getWMSCapabilitiesFromService } from 'mapServiceHandlers/wms';
+import { getFirstDirectChildNodeByLocalName, getAllDirectChildNodesByLocalName, getWMSLayers, getProjection, getWMSCapabilitiesFromService, createQueryParameterDictionary } from 'mapServiceHandlers/wms';
 import LayerGroup from 'ol/layer/Group';
 
 export const xmlCapabilities = `<?xml version="1.0" ?>
@@ -752,4 +752,22 @@ describe("Integration test wms base layer", () => {
 
   });
 
+});
+
+describe("Image WMS creation", () => {
+  test("Add custom query parameters to Image WMS", () => {
+    const url = "https://wms.org?MAP=/tmp/qgis/project0"
+    const wmsSource = new ImageWMS({
+            url: url as string,
+            params: {"LAYERS": ["layerA", "layerB"].join(','), ...createQueryParameterDictionary(url)},
+            ratio: 1,
+            crossOrigin: 'anonymous', // https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
+            attributions: "",
+            projection: ""
+          });
+          
+    expect(wmsSource.getParams()).toEqual(
+      {"LAYERS": ["layerA", "layerB"].join(','), ...createQueryParameterDictionary(url)}
+    );
+  });
 });

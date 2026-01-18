@@ -1,6 +1,8 @@
 import WMTSCapabilities from 'ol/format/WMTSCapabilities.js';
 import { getEPSGLookup, register } from 'ol/proj/proj4';
+import { get } from 'ol/proj';
 import proj4 from "proj4";
+import { Options } from 'ol/source/WMTS';
 
 export async function getWMTSCapabilitiesFromService(wmtsGetCapabilitiesUrl: string): Promise<any> {
 
@@ -84,22 +86,98 @@ export function getWMTSLayers(wmtsCapabilities: any): Array<{ value: any; label:
             }
           );
     });
-        
+    
     return layers;
-  }
+}
 
 export async function registerCRSInProj4(wmtsCapabilities: any) {
-    (wmtsCapabilities.Contents.TileMatrixSet as Array<any>).forEach((el) => {
-        try {
-            const epsgCode: string = el.SupportedCRS.split(":").slice(-1);
-            const epgsLookUp = getEPSGLookup()(parseInt(epsgCode));
-            epgsLookUp.then((proj4String: string) => {
-                proj4.defs(el.SupportedCRS, proj4String);
-                register(proj4);
-            });
-        } catch (error) {
-            throw new Error(`Error registering supported WMTS CRS: ${error}`);
-        }
+    await Promise.all(
+         (wmtsCapabilities.Contents.TileMatrixSet as any[]).map(async (el) => {
+                try {
+                    // Skip if CRS is already registered
+                    if (get(el.SupportedCRS)) {
+                        return;
+                    }
 
-    })
+                    const epsgCode: string = el.SupportedCRS.split(":").slice(-1);
+                    // const epsgLookUp = getEPSGLookup()(parseInt(epsgCode));
+                    // epsgLookUp.then((proj4String: string) => {
+                    //     proj4.defs(el.SupportedCRS, proj4String);
+                    //     register(proj4);
+                    // });
+                    const proj4String = await getEPSGLookup()(parseInt(epsgCode, 10));
+                    proj4.defs(el.SupportedCRS, proj4String);
+                    register(proj4);
+                } catch (error) {
+                    throw new Error(`Error registering supported WMTS CRS: ${error}`);
+                }
+            })
+    );
+}
+
+// Add custom parameters
+export function addCustomParametersToWMTSOptionsURLs(wmtsURL: string, wmtsOptions: Options): Options {
+    const url = new URL(wmtsURL);
+    const urlSearchParams = removeQueryParameters(url.searchParams);
+
+    if(wmtsOptions.url) {
+        const url_tmp = appendCustomQueryParameters(wmtsOptions.url, urlSearchParams);
+        wmtsOptions = {...wmtsOptions, "url": decodeURI(url_tmp)};
+    }
+
+    if(wmtsOptions.urls) {
+        const urls_tmp = wmtsOptions.urls.map((url_i) => {
+            const url_tmp = appendCustomQueryParameters(url_i, urlSearchParams);
+            return url_tmp;
+        });
+        wmtsOptions = {...wmtsOptions, "urls": urls_tmp};
+    }
+
+    return wmtsOptions;
+}
+
+export function removeQueryParameters(urlSearchParams: URLSearchParams,
+    parameterNames: string[] = [
+        "request",
+        "version",
+        "service"
+    ],
+    ignoreCase = true
+    ): URLSearchParams {
+    for (const key of [...urlSearchParams.keys()]) {
+        const key_tmp = ignoreCase ? key.toLowerCase() : key;
+        parameterNames.forEach((param) => {
+            const param_tmp = ignoreCase ? param.toLowerCase() : param;
+
+            if (key_tmp === param_tmp) {
+                urlSearchParams.delete(key);
+            }
+        });
+    }
+    
+    return urlSearchParams;
+}
+
+// TODO: add unit tests
+export function appendCustomQueryParameters(originalUrl: string, customQueryParameter: URLSearchParams): string {
+    try {
+        if ([...new URL(originalUrl).searchParams.keys()].length > 0) {
+            return decodeURI(
+                [
+                    new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : "")
+                    + "?" + new URL(originalUrl).searchParams.toString(), 
+                    customQueryParameter.toString()
+                ].filter(e => e.length > 0).join("&")
+            );
+        } else {
+            return decodeURI(
+                [
+                    new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : ""),
+                    customQueryParameter.toString()
+                ].filter(e => e.length > 0).join("?")
+            );
+        }
+    } catch (error) {
+        throw new Error(`Error apppending custom query parameters: ${error}`);
+    }
 }

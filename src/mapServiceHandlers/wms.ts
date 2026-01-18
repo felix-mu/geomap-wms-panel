@@ -25,11 +25,19 @@ export function getFirstDirectChildNodeByLocalName(childNodes: NodeListOf<ChildN
     const projDef = await response.text();
     return projDef;
   }
+
+  export function buildGetCapabilitiesURL(url: string): URL {
+    const wmsCapabilitesURL = new URL(url);
+    wmsCapabilitesURL.search = ["?service=WMS&request=GetCapabilities",  wmsCapabilitesURL.searchParams.toString()]
+    .filter((el) => el.length > 0)
+    .join("&");
+
+    return wmsCapabilitesURL;
+  }
   
   export async function getWMSCapabilitiesFromService(url: string): Promise<Node> {
     // console.log(url);
-    const wmsCapabilitesURL = new URL(url);
-    wmsCapabilitesURL.search = "?service=WMS&request=GetCapabilities";
+    const wmsCapabilitesURL = buildGetCapabilitiesURL(url);
     // console.log(url);
   
       const responseCapabilities = await fetch(wmsCapabilitesURL);
@@ -147,4 +155,36 @@ export function getWMSGetLegendURL(wmsCapaNode: Node, layerName: string): string
     }
   
   return undefined;
+}
+
+export function createQueryParameterDictionary(url: string): Record<string, string> {
+  let qpObj: Record<string, string> = {};
+  new URL(url).searchParams.forEach((value, key) => {
+    qpObj[key] = value ?? "";
+  });
+
+  return qpObj;
+}
+
+export function appendCustomQueryParameters(originalUrl: string, customQueryParameter: URLSearchParams): string {
+    try {
+        if ([...new URL(originalUrl).searchParams.keys()].length > 0) {
+            return decodeURI(
+                [
+                    new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : "")
+                    + "?" + new URL(originalUrl).searchParams.toString(), 
+                    customQueryParameter.toString()
+                ].filter(e => e.length > 0).join("&")
+            );
+        } else {
+            return decodeURI(
+                [
+                    new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : ""),
+                    customQueryParameter.toString()
+                ].filter(e => e.length > 0).join("?")
+            );
+        }
+    } catch (error) {
+        throw new Error(`Error apppending custom query parameters: ${error}`);
+    }
 }

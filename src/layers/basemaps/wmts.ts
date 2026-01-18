@@ -8,9 +8,10 @@ import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 // import { MultipleWMSEditor } from 'editor/MultipleWMSEditor';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
-import { getWMTSCapabilitiesFromService,/*, getProjection, buildWMSGetLegendURL*/ 
-getWMTSLegendURLForLayer,
-registerCRSInProj4} from 'mapServiceHandlers/wmts';
+import { addCustomParametersToWMTSOptionsURLs, getWMTSCapabilitiesFromService,/*, getProjection, buildWMSGetLegendURL*/ 
+getWMTSLegendURLForLayer, appendCustomQueryParameters,
+registerCRSInProj4,
+removeQueryParameters} from 'mapServiceHandlers/wmts';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
 import TileLayer from 'ol/layer/Tile';
 import { WMTS } from 'ol/source';
@@ -86,18 +87,18 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
           // This will fail if the panel is opened in edit mode for the first time
           try {
             wmtsCapabilities = await getWMTSCapabilitiesFromService(wmtsItem.url as string);
-            registerCRSInProj4(wmtsCapabilities);
+            await registerCRSInProj4(wmtsCapabilities);
             wmtsOptions = optionsFromCapabilities(wmtsCapabilities, {"layer": selectedWmtsLayer.identifier, "crossOrigin": "anonymous"});
           } catch (error) {
-            // continue;
-            throw new Error(`Error resolving wmts options from wmts capabilities: ${error}`)
+            throw new Error(`Error setting up wmts options for wmts: ${error}`)
           }
 
-          // if (!wmtsOptions) {
-          //   continue;
-          // }
-
           if (wmtsOptions) {
+            try {
+              wmtsOptions = addCustomParametersToWMTSOptionsURLs(wmtsItem.url, {...wmtsOptions});
+            } catch (error) {
+				      throw new Error(`Error updating wmts options with custom query parameters: ${error}`)
+            }
             const wmtsSource = new WMTS(wmtsOptions!);
             layers.push(
               new TileLayer({
@@ -109,9 +110,14 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
             if (wmtsItem.showLegend){
               let wmtsLegendURL;
               try {
+                // Append custom query parameters to legend urls
                 wmtsLegendURL = getWMTSLegendURLForLayer(wmtsCapabilities, selectedWmtsLayer.identifier);
+                wmtsLegendURL = appendCustomQueryParameters(
+                    wmtsLegendURL, 
+                    removeQueryParameters(new URL(wmtsItem.url).searchParams)
+                );
               } catch (error) {
-                wmtsLegendURL = "";
+                wmtsLegendURL = wmtsLegendURL ?? "";
               }
               legendItems.push(
                 {

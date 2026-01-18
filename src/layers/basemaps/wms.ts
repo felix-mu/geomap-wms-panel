@@ -10,7 +10,7 @@ import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 import { MultipleWMSEditor } from 'editor/MultipleWMSEditor';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
-import { getWMSCapabilitiesFromService, getProjection, getWMSGetLegendURL } from 'mapServiceHandlers/wms';
+import { getWMSCapabilitiesFromService, getProjection, getWMSGetLegendURL, appendCustomQueryParameters } from 'mapServiceHandlers/wms';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
 
 // import {
@@ -90,7 +90,7 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
             params: {"LAYERS": selectedWmsLayers.map(el => el.name).join(',')},
             ratio: 1,
             crossOrigin: 'anonymous', // https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image
-            attributions: wmsItem.attribution ? wmsItem.attribution : "", // Testing purposes
+            attributions: wmsItem.attribution ? wmsItem.attribution : "",
             projection: epsgCode
           });
           layers.push(
@@ -102,12 +102,26 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
 
           if (wmsItem.showLegend){
             const wmsURL = wmsSource.getUrl();
-            selectedWmsLayers.forEach((value) => legendItems.push(
+            selectedWmsLayers.forEach((value) => {
+              let wmsLegendURL;
+              try {
+                // Append custom query parameters to legend urls
+                wmsLegendURL = getWMSGetLegendURL(xmlNodeWMS!, value.name);
+                wmsLegendURL = appendCustomQueryParameters(
+                    wmsLegendURL ?? "", 
+                    new URL(wmsURL!).searchParams
+                  );
+              } catch (error) {
+                wmsLegendURL = wmsLegendURL ?? "";
+              }
+              legendItems.push(
                 {
                   label: value.title,
-                  url: wmsURL ? getWMSGetLegendURL(xmlNodeWMS!, value.name) ?? "" : "" // wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value.name}`
+                  // Append custom query parameters to legend urls
+                  url: wmsLegendURL
                 }
               )
+            }
             );
           }
         }

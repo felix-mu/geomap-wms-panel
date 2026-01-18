@@ -100,7 +100,7 @@ export const FitMapViewEditor = ({ /*labelWidth, */value, onChange, context }: P
         ...value,
         allLayers: dataScope === String(DataScopeValues.all),
         lastOnly: dataScope === String(DataScopeValues.last),
-        layer: layers[0].value,
+        ...(layers.length > 0 ? {layer: layers[0].value} : {}),
       });
     } else {
       onChange({
