@@ -102,16 +102,26 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
 
           if (wmsItem.showLegend){
             const wmsURL = wmsSource.getUrl();
-            selectedWmsLayers.forEach((value) => legendItems.push(
+            selectedWmsLayers.forEach((value) => {
+              let wmsLegendURL;
+              try {
+                // Append custom query parameters to legend urls
+                wmsLegendURL = getWMSGetLegendURL(xmlNodeWMS!, value.name);
+                wmsLegendURL = appendCustomQueryParameters(
+                    wmsLegendURL ?? "", 
+                    new URL(wmsURL!).searchParams
+                  );
+              } catch (error) {
+                wmsLegendURL = wmsLegendURL ?? "";
+              }
+              legendItems.push(
                 {
                   label: value.title,
                   // Append custom query parameters to legend urls
-                  url: wmsURL ? appendCustomQueryParameters(
-                    getWMSGetLegendURL(xmlNodeWMS!, value.name) ?? "",
-                    new URL(wmsURL).searchParams
-                  ) : "" // wmsURL +`?service=WMS&request=GetLegendGraphic&format=image%2Fpng&layer=${value.name}`
+                  url: wmsLegendURL
                 }
               )
+            }
             );
           }
         }

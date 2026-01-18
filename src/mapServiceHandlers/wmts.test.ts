@@ -1,5 +1,5 @@
 import {expect, jest, test} from '@jest/globals';
-import { addCustomParametersToWMTSOptionsURLs, getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer, registerCRSInProj4, removeQueryParameters } from "./wmts";
+import { addCustomParametersToWMTSOptionsURLs, appendCustomQueryParameters, getWMTSCapabilitiesFromService, getWMTSLayers, getWMTSLegendURLForLayer, registerCRSInProj4, removeQueryParameters } from "./wmts";
 import WMTSCapabilities from 'ol/format/WMTSCapabilities';
 import { get } from 'ol/proj';
 import { Options } from 'ol/source/WMTS';
@@ -962,5 +962,32 @@ describe("tests for removeQueryParameters",() => {
             "c": "3"
         });
         expect([...removeQueryParameters(emptySearchParams, parameterNames)].length).toBe(1);
+    });
+});
+
+describe("tests for appendCustomQueryParameters", () => {
+    test("invalid URL should throw error", () => {
+        const invalidOriginalURL = "";
+        expect.assertions(1);
+        try {
+            appendCustomQueryParameters(invalidOriginalURL, new URLSearchParams());
+        } catch (error) {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("URL without query parameters and no custom query parameters should return the original URL un-modified", () => {
+        const originalURL = "https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png";
+        expect(appendCustomQueryParameters(originalURL, new URLSearchParams())).toBe(originalURL);
+    });
+
+    test("URL with query parameters and no custom query parameters should return the original URL with the custom parameters appended", () => {
+        const originalURL = "https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png";
+        expect(appendCustomQueryParameters(originalURL, new URLSearchParams({"a": "1"}))).toBe(originalURL + "?a=1");
+    });
+
+    test("URL with query parameters and custom query parameters should return the original URL with the custom parameters appended to the original query parameters", () => {
+        const originalURL = "https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png?B=1";
+        expect(appendCustomQueryParameters(originalURL, new URLSearchParams({"a": "1"}))).toBe(originalURL + "&a=1");
     });
 });

@@ -167,13 +167,24 @@ export function createQueryParameterDictionary(url: string): Record<string, stri
 }
 
 export function appendCustomQueryParameters(originalUrl: string, customQueryParameter: URLSearchParams): string {
-  try {
-    if ([...new URL(originalUrl).searchParams.keys()].length > 0) {
-        return decodeURI([new URL(originalUrl).toString(), customQueryParameter.toString()].filter(e => e.length > 0).join("&"));
-    } else {
-        return decodeURI([new URL(originalUrl).toString(), customQueryParameter.toString()].filter(e => e.length > 0).join("?"));
+    try {
+        if ([...new URL(originalUrl).searchParams.keys()].length > 0) {
+            return decodeURI(
+                [
+                    new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : "")
+                    + "?" + new URL(originalUrl).searchParams.toString(), 
+                    customQueryParameter.toString()
+                ].filter(e => e.length > 0).join("&")
+            );
+        } else {
+            return decodeURI(
+                [
+                    new URL(originalUrl).origin + (new URL(originalUrl).pathname.length > 1 ? new URL(originalUrl).pathname : ""),
+                    customQueryParameter.toString()
+                ].filter(e => e.length > 0).join("?")
+            );
+        }
+    } catch (error) {
+        throw new Error(`Error apppending custom query parameters: ${error}`);
     }
-  } catch (error) {
-    return "";
-  }  
 }

@@ -89,11 +89,11 @@ describe("Append custom query parameters", () => {
         const customSearchParams = new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png").searchParams;
         const appendedURL = appendCustomQueryParameters(url, customSearchParams);
 
-        expect(appendedURL).toBe(url);
+        expect(appendedURL).toBe(url + "=");
     });
 
     test("original URL with query parameters and custom query parameter", () => {
-        const url = decodeURI(new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png?a=1&b").toString());
+        const url = decodeURI(new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png?a=1&b=").toString());
         const customSearchParams = new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png?c=test&custom=jdjdjd").searchParams;
         const appendedURL = appendCustomQueryParameters(url, customSearchParams);
 
@@ -102,8 +102,11 @@ describe("Append custom query parameters", () => {
 
     test("invalid original URL with query parameters and custom query parameter", () => {
         const customSearchParams = new URL("https://example.org/wmts_topplus_open/tile/1.0.0/web/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png?c=test&custom=jdjdjd").searchParams;
-        const appendedURL = appendCustomQueryParameters(":?a=1&b", customSearchParams);
-
-        expect(appendedURL.length).toBe(0);
+        expect.assertions(1);
+        try {
+            appendCustomQueryParameters(":?a=1&b", customSearchParams);
+        } catch (error) {
+            expect(error).toBeTruthy();
+        }
     });
 });
