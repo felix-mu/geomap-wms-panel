@@ -3,7 +3,7 @@ import { SelectableValue } from "@grafana/data";
 import { ComboboxOption, Field, Input, Label, MultiCombobox, Slider, Switch, /*useStyles2*/ } from "@grafana/ui";
 import { WMSConfig } from "layers/basemaps/wms";
 import { getWMSCapabilitiesFromService, getWMSLayers } from "mapServiceHandlers/wms";
-import React, { useId, useRef, useState } from "react";
+import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 
 // References
 // https://github.com/grafana/grafana/blob/9772ed65269f31f846d6daec42f3673903a5171e/packages/grafana-ui/src/components/Select/Select.mdx#L6
@@ -44,7 +44,11 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache, hideShowLegendTog
   const [options, setOptions] = useState<Array<SelectableValue<string>>>([]);  // SelectableValue
   const [selection, setSelection] = useState<Array<SelectableValue<string>>>([]);
 
-  const updateLayerSelectionOptions = () => {
+  const updateLayerSelectionOptions = useCallback((url: string) => {
+    if (!url) {
+      return;
+    }
+
     function handleLayers(layers: Array<SelectableValue<string>>) {
       setOptions(layers);
 
@@ -77,42 +81,15 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache, hideShowLegendTog
         handleLayers(layers);
       }).catch(err => {});
     }
-  };
-  // Update the select options when the url changes
-  // useEffect(() => {
-  //   function handleLayers(layers: Array<SelectableValue<string>>) {
-  //     setOptions(layers);
-
-  //     // If layers are provided because of a repeating entry in edit mode while editing or after refresh
-  //     // set the selection to show the user the current layer selection
-  //     if (wms && wms.layers) {
-  //       let selection_tmp: Array<SelectableValue<string>> = [];
-        
-  //       // Generate selection from the available options by comparing the value keys with the layer names of the config
-  //       wms.layers.forEach(
-  //         (el) => {
-  //           selection_tmp = selection_tmp.concat(
-  //             // User layers since options are update in next render and therefore might be empty
-  //             layers.filter((currentValue) => {
-  //               return currentValue.value === el.name;
-  //             })
-  //           );
-  //         }
-  //       );
-  //       setSelection(selection_tmp);
-  //     } 
-  //   }
-    
-  //   if (cache.current[url]) {
-  //     handleLayers(cache.current[url]);
-  //   } else {
-  //     getWMSCapabilitiesFromService(url).then(async (node) => {
-  //       let layers = getWMSLayers(node);
-  //       cache.current[url] = layers;
-  //       handleLayers(layers);
-  //     }).catch(err => {});
-  //   }
-  // }, [url, wms, cache]);
+  }, [wms, cache]);
+  
+  // Update the select options
+  useEffect(() => {
+    if (!wms?.url) {
+      return;
+    }
+    updateLayerSelectionOptions(wms.url);
+  }, [wms?.url, updateLayerSelectionOptions]);
 
   // <label className={styles.svg}>My select</label>
   // https://github.com/grafana/grafana/blob/ef5d71711a523efc65da089d45083e28201b58ab/packages/grafana-ui/src/components/Forms/Label.tsx
@@ -136,7 +113,7 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache, hideShowLegendTog
               //   return;
               // }
               // onChange({url: url, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: wms.opacity, showLegend: wms.showLegend});
-              updateLayerSelectionOptions();
+              updateLayerSelectionOptions(url);
             }}></Input>
       <Label description={'Select the layers to be displayed in base map'}>
         Layers
