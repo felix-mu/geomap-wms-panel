@@ -1,4 +1,4 @@
-import React, { useRef, useState, useId, useContext } from 'react';
+import React, { useRef, useState, useId, useContext, useEffect } from 'react';
 import { StandardEditorProps, SelectableValue } from '@grafana/data';
 import {
   Combobox,
@@ -55,7 +55,7 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
     });
   };
 
-  const updateLayerSelectionOptions = () => {
+  const updateLayerSelectionOptions = (url: string) => {
     if (!url) {
       new Promise(() => {
         setOptions([]);
@@ -82,32 +82,9 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
       });
   };
 
-  // useEffect(() => {
-  //   if (!url) {
-  //     new Promise(() => {
-  //       setOptions([]);
-  //       setSelection(null);
-  //     });
-  //     return;
-  //   }
-
-  //   if (cacheRef.current[url]) {
-  //     new Promise(() => {
-  //       setOptions(cacheRef.current[url]);
-  //     });
-  //     return;
-  //   }
-
-  //   getWMTSCapabilitiesFromService(url)
-  //     .then((node) => {
-  //       const layers = getWMTSLayers(node);
-  //       cacheRef.current[url] = layers;
-  //       setOptions(layers);
-  //     })
-  //     .catch(() => {
-  //       setOptions([]);
-  //     });
-  // }, [url]);
+  useEffect(() => {
+        updateLayerSelectionOptions(value.url);
+  }, [value.url]);
 
   return (
     <div aria-label="wmts-basemap-editor">
@@ -119,7 +96,7 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
         value={url}
         aria-label="wmts-url-input"
         onChange={(e) => setUrl(e.currentTarget.value)}
-        onBlur={updateLayerSelectionOptions}
+        onBlur={() => updateLayerSelectionOptions(url)}
       />
 
       {/* Layers */}
