@@ -10,7 +10,7 @@ export async function getWMTSCapabilitiesFromService(wmtsGetCapabilitiesUrl: str
     try {
         requestUrl = new URL(wmtsGetCapabilitiesUrl);
     } catch (exception) {
-        throw Error("wmtsGetCapabilitiesUrl is not a valid URL");
+        throw new Error("wmtsGetCapabilitiesUrl is not a valid URL");
     }
 
     const response: Response = await fetch(requestUrl);
@@ -23,18 +23,18 @@ export async function getWMTSCapabilitiesFromService(wmtsGetCapabilitiesUrl: str
 
 export function getWMTSLegendURLForLayer(wmtsCapabilities: any/*: {Contents: {Layer: Array<any>}}*/, layerIdentifier: string): string {
     if (!wmtsCapabilities) {
-        throw Error("wmtsCapabilites is undefined or null");
+        throw new Error("wmtsCapabilites is undefined or null");
     }
     if (!wmtsCapabilities.Contents) {
-        throw Error("wmtsCapabilites.Contents is undefined or null");
+        throw new Error("wmtsCapabilites.Contents is undefined or null");
     }
 
     if (!wmtsCapabilities.Contents.Layer) {
-        throw Error("wmtsCapabilites.Contents.Layer is undefined or null");
+        throw new Error("wmtsCapabilites.Contents.Layer is undefined or null");
     }
 
     if (wmtsCapabilities.Contents.Layer.length === 0) {
-        throw Error("wmtsCapabilites.Contents.Layer.length is 0 and does not contain any elements");
+        throw new Error("wmtsCapabilites.Contents.Layer.length is 0 and does not contain any elements");
     }
 
     // Get style object for respective layer identifier
@@ -44,7 +44,7 @@ export function getWMTSLegendURLForLayer(wmtsCapabilities: any/*: {Contents: {La
     });
 
     if (!layer) {
-        throw Error("layerIdentifier cannot be found");
+        throw new Error("layerIdentifier cannot be found");
     }
 
     // Check if there is a style marked to be default
@@ -56,24 +56,24 @@ export function getWMTSLegendURLForLayer(wmtsCapabilities: any/*: {Contents: {La
 
         return (layer.Style as any[])[0].LegendURL[0].href; // By default return the first legend url
     } catch (exception) {
-        throw Error("Style element does not contain any legend Urls")
+        throw new Error("Style element does not contain any legend Urls")
     }
 }
 
 export function getWMTSLayers(wmtsCapabilities: any): Array<{ value: any; label: any; }> {
     if (!wmtsCapabilities) {
-        throw Error("wmtsCapabilites is undefined or null");
+        throw new Error("wmtsCapabilites is undefined or null");
     }
     if (!wmtsCapabilities.Contents) {
-        throw Error("wmtsCapabilites.Contents is undefined or null");
+        throw new Error("wmtsCapabilites.Contents is undefined or null");
     }
 
     if (!wmtsCapabilities.Contents.Layer) {
-        throw Error("wmtsCapabilites.Contents.Layer is undefined or null");
+        throw new Error("wmtsCapabilites.Contents.Layer is undefined or null");
     }
 
     if (wmtsCapabilities.Contents.Layer.length === 0) {
-        throw Error("wmtsCapabilites.Contents.Layer.length is 0 and does not contain any elements");
+        throw new Error("wmtsCapabilites.Contents.Layer.length is 0 and does not contain any elements");
     }
     const layerArray: any[] = wmtsCapabilities.Contents.Layer;
     let layers: Array<{ value: any; label: any; }> = [];

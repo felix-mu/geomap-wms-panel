@@ -3,7 +3,7 @@ import { SelectableValue } from "@grafana/data";
 import { ComboboxOption, Field, Input, Label, MultiCombobox, Slider, Switch, /*useStyles2*/ } from "@grafana/ui";
 import { WMSConfig } from "layers/basemaps/wms";
 import { getWMSCapabilitiesFromService, getWMSLayers } from "mapServiceHandlers/wms";
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 
 // References
 // https://github.com/grafana/grafana/blob/9772ed65269f31f846d6daec42f3673903a5171e/packages/grafana-ui/src/components/Select/Select.mdx#L6
@@ -44,9 +44,11 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache, hideShowLegendTog
   const [options, setOptions] = useState<Array<SelectableValue<string>>>([]);  // SelectableValue
   const [selection, setSelection] = useState<Array<SelectableValue<string>>>([]);
 
+  const updateLayerSelectionOptions = useCallback((url: string) => {
+    if (!url) {
+      return;
+    }
 
-  // Update the select options when the url changes
-  useEffect(() => {
     function handleLayers(layers: Array<SelectableValue<string>>) {
       setOptions(layers);
 
@@ -69,7 +71,7 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache, hideShowLegendTog
         setSelection(selection_tmp);
       } 
     }
-    
+  
     if (cache.current[url]) {
       handleLayers(cache.current[url]);
     } else {
@@ -79,7 +81,15 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache, hideShowLegendTog
         handleLayers(layers);
       }).catch(err => {});
     }
-  }, [url, wms, cache]);
+  }, [wms, cache]);
+  
+  // Update the select options
+  useEffect(() => {
+    if (!wms?.url) {
+      return;
+    }
+    updateLayerSelectionOptions(wms.url);
+  }, [wms?.url, updateLayerSelectionOptions]);
 
   // <label className={styles.svg}>My select</label>
   // https://github.com/grafana/grafana/blob/ef5d71711a523efc65da089d45083e28201b58ab/packages/grafana-ui/src/components/Forms/Label.tsx
@@ -92,17 +102,18 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache, hideShowLegendTog
           onChange={e => {
             setURL(e.currentTarget.value);
             // url.current = e.currentTarget.value;
-            if (wms) {
-              wms.layers.splice(-1);
-            }
+            // if (wms) {
+            //   wms.layers.splice(-1);
+            // }
             setOptions([]);
             setSelection([]);
             }} 
           onBlur={(e) => {
-              if (url === wms.url) {
-                return;
-              }
-              onChange({url: url, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: wms.opacity, showLegend: wms.showLegend});
+              // if (url === wms.url) {
+              //   return;
+              // }
+              // onChange({url: url, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: wms.opacity, showLegend: wms.showLegend});
+              updateLayerSelectionOptions(url);
             }}></Input>
       <Label description={'Select the layers to be displayed in base map'}>
         Layers
