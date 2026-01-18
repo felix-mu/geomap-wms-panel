@@ -9,6 +9,7 @@ import { LayerEditor } from './LayerEditor';
 import _ from 'lodash';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { css } from '@emotion/css';
+import { ReducedMultipleWMSEditorContext, ReducedWMTSEditorContext } from './reducedEditorContext';
 
 const reorder = (list: ExtendMapLayerOptions[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
@@ -92,35 +93,39 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
                               tooltip={"Drag layer"} variant="secondary"></IconButton>
                         </div>
                           {/* <CollapsableSection label={v.name ? v.name + ' layer' : 'unnamed layer'} isOpen={false}> */}
-                          <ControlledCollapse label={v.name ? v.name + ' layer' : 'unnamed layer'} isOpen={false}>
-                            <LayerEditor
-                              options={v ? v : undefined}
-                              data={context.data}
-                              onChange={(cfg) => {
-                                let newData: ExtendMapLayerOptions[] = value ? _.cloneDeep(value) : [];
-                                // newData[index] = cfg;
-                                // cfg.opacity = cfg.opacity === undefined ? 1.0 : cfg.opacity;
-                                newData.splice(index, 1, cfg);
-                                onChange(newData);
-                              }}
-                              filter={dataLayerFilter}
-                              showNameField={true}
-                            />
-                            <div className="data-layer-remove">
-                              <ToolbarButton
-                                icon="trash-alt"
-                                tooltip="delete"
-                                variant="destructive"
-                                key="Delete"
-                                onClick={(e) => {
-                                  onDeleteLayer(index);
+                        <ControlledCollapse label={v.name ? v.name + ' layer' : 'unnamed layer'} isOpen={false}>
+                          <ReducedMultipleWMSEditorContext.Provider value={{hideShowLegendToggle: false, hideAttributionsInput: true}}>
+                            <ReducedWMTSEditorContext.Provider value={{hideShowLegendToggle: false, hideAttributionsInput: true}}>
+                              <LayerEditor
+                                options={v ? v : undefined}
+                                data={context.data}
+                                onChange={(cfg) => {
+                                  let newData: ExtendMapLayerOptions[] = value ? _.cloneDeep(value) : [];
+                                  // newData[index] = cfg;
+                                  // cfg.opacity = cfg.opacity === undefined ? 1.0 : cfg.opacity;
+                                  newData.splice(index, 1, cfg);
+                                  onChange(newData);
                                 }}
-                              >
-                                Delete
-                              </ToolbarButton>
-                            </div>
-                          {/* </CollapsableSection> */}
-                          </ControlledCollapse>
+                                filter={dataLayerFilter}
+                                showNameField={true}
+                              />
+                              <div className="data-layer-remove">
+                                <ToolbarButton
+                                  icon="trash-alt"
+                                  tooltip="delete"
+                                  variant="destructive"
+                                  key="Delete"
+                                  onClick={(e) => {
+                                    onDeleteLayer(index);
+                                  }}
+                                >
+                                  Delete
+                                </ToolbarButton>
+                              </div>
+                            {/* </CollapsableSection> */}
+                            </ReducedWMTSEditorContext.Provider>
+                          </ReducedMultipleWMSEditorContext.Provider>
+                        </ControlledCollapse>
                         {/* </HorizontalGroup> */}
                       </div>
                     )}

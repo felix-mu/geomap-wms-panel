@@ -1,7 +1,6 @@
 import { css } from "@emotion/css";
 import { GrafanaTheme2 } from "@grafana/data";
 import { config } from "@grafana/runtime";
-import { LegendItem } from "layers/basemaps/wms";
 // import { BusEventBase } from "@grafana/data";
 import Control from "ol/control/Control";
 // import BaseLayer from "ol/layer/Base";
@@ -13,11 +12,17 @@ import { ScrollContainer } from "@grafana/ui";
 // import ReactDOM from 'react-dom';
 import React from "react";
 import { Map } from "ol";
-import { createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 
 // class PanelOptionsChangedEvent extends BusEventBase {
 //     static type = 'panels-options-changed';
 //   }
+
+export type LegendItem = {
+  label: string,
+  url: string,
+  id?: string
+}
 
 export class WMSLegend extends Control {
     static CONTROL_NAME =  "WMSLegend";
@@ -30,6 +35,7 @@ export class WMSLegend extends Control {
     // private legendContainerCache: HTMLDivElement;
     private legendURLs: LegendItem[];
     private theme: GrafanaTheme2;
+    private root: Root;
 
     static removeWMSLegendControlFromMap(map: Map) {
         for(let i = 0; i < map.getControls().getLength(); ++i) {
@@ -41,7 +47,21 @@ export class WMSLegend extends Control {
             } catch (error) {
               continue;
             }
-          }
+        }
+    }
+
+    // TODO: add unit tests
+    static getWMSLegendControlFromMap(map: Map): WMSLegend | undefined {
+        for(let i = 0; i < map.getControls().getLength(); ++i) {
+            try {
+              if ((map.getControls().getArray()[i] as WMSLegend).getControlName() === WMSLegend.CONTROL_NAME) {
+                return map.getControls().getArray()[i] as WMSLegend;
+              }
+            } catch (error) {
+              continue;
+            }
+        }
+        return undefined;
     }
 
     constructor(legendURLs: LegendItem[], /*baseLayer: BaseLayer, props: any,*/ opt_options?: any) {
@@ -92,6 +112,7 @@ export class WMSLegend extends Control {
         legendContainer.style.backgroundColor = this.theme.colors.background.primary;
 
         this.legendContainer = legendContainer;
+        this.root = createRoot(legendContainer);
 
         this.legendURLs = legendURLs;
 
@@ -111,7 +132,8 @@ export class WMSLegend extends Control {
                 this.element.style.resize = "";
                 this.element.style.paddingBottom = "";
                 // this.element.style.background = config.theme2.colors.background.primary; // "rgba(255,255,255, 0.4)";
-
+                
+                this.root.unmount();
                 this.element.removeChild(this.legendContainer);
             } else {
                 button.getElementsByTagName('i')[0].remove();
@@ -127,8 +149,8 @@ export class WMSLegend extends Control {
                 if(this.legendContainer.getElementsByTagName("div").length === 0) {
                     // this.legendContainer.append(...this.buildLegend(this.legendURLs));
                     // ReactDOM.render(this.buildLegend(this.legendURLs), legendContainer);
-                    const root = createRoot(legendContainer);
-                    root.render(this.buildLegend(this.legendURLs));
+                    this.root = createRoot(this.legendContainer);
+                    this.root.render(this.buildLegend(this.legendURLs));
                 }
 
                 this.element.appendChild(this.legendContainer);
@@ -163,6 +185,21 @@ export class WMSLegend extends Control {
 
     getElement(): HTMLElement {
         return this.element;
+    }
+
+    // TODO: add unit tests
+    addLegendItem(item: LegendItem) {
+        this.legendURLs.push(item);
+    }
+
+    // TODO: add unit tests
+    addLegendItems(items: LegendItem[]) {
+        this.legendURLs = this.legendURLs.concat(items);
+    }
+
+    // TODO: add unit tests
+    removeLegendItemsByLayerIdentifier() {
+
     }
 
     // buildLegend(layer: BaseLayer): HTMLDivElement[] {

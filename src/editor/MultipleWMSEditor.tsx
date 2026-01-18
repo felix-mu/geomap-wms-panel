@@ -1,18 +1,31 @@
-import { SelectableValue, StandardEditorProps } from "@grafana/data";
+import { /*RegistryItem,*/ SelectableValue, /*StandardEditorContext,*/ StandardEditorProps } from "@grafana/data";
 import { WMSConfig } from "layers/basemaps/wms";
 import { CustomWMSBasemapEditor } from "./CustomWMSBasemapEditor";
 import { Button, ControlledCollapse } from "@grafana/ui";
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { css } from "@emotion/css";
 import { v4 as uuidv4 } from 'uuid';
+import { ReducedMultipleWMSEditorContext } from "./reducedEditorContext";
 
 export interface MultipleWMSConfig extends WMSConfig {
     id: string;
 }
 
 type Props = StandardEditorProps<MultipleWMSConfig[]>;
+// type Props = {
+//     value: MultipleWMSConfig[];
+//     onChange: (value?: MultipleWMSConfig[]) => void;
+//     context: StandardEditorContext<any, any>;
+//     id?: string;
+//     item: RegistryItem & {
+//         settings?: any;
+//     };
+//     isBaseLayerEditor?: boolean
+// }
 
 export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => { // onChange: https://grafana.com/developers/plugin-tools/how-to-guides/panel-plugins/custom-panel-option-editors
+    const { hideShowLegendToggle, hideAttributionsInput } = useContext(ReducedMultipleWMSEditorContext);
+
     const cacheRef = useRef<{ [url: string]: Array<SelectableValue<string>> }>({});
 
     function updateWMSEditor(wmsEntity: WMSConfig, index: number) {
@@ -40,7 +53,12 @@ export const MultipleWMSEditor = ({ item, value, onChange, context }: Props) => 
         return (
             <div key={el.id}>
                 <ControlledCollapse label={`WMS #${index}`} isOpen={true} /*collapsible={true}*/>
-                    <CustomWMSBasemapEditor cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} wms={el}/>
+                    <CustomWMSBasemapEditor
+                    cache={cacheRef} onChange={(wmsConfig: WMSConfig) => {updateWMSEditor(wmsConfig, index)}} 
+                    wms={el}
+                    hideShowLegendToggle={hideShowLegendToggle}
+                    hideAttributionInput={hideAttributionsInput}
+                    />
                     <Button aria-label={`wms remove button`} style={{marginTop: "6px"}} size="sm" variant="destructive" icon="minus" type="button" onClick={() => {
                         if (value.length === 1) {
                             onChange([]);

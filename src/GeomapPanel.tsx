@@ -312,7 +312,7 @@ export class GeomapPanel extends Component<Props, State> {
   /**
    * Called when the panel options change
    */
-  optionsChanged(prevOptions: GeomapPanelOptions, currentOptions: GeomapPanelOptions): boolean {
+  async optionsChanged(prevOptions: GeomapPanelOptions, currentOptions: GeomapPanelOptions): Promise<boolean> {
     let layersChanged = false;
 
     if (currentOptions.view !== prevOptions.view) {
@@ -320,16 +320,30 @@ export class GeomapPanel extends Component<Props, State> {
     }
 
     if (currentOptions.controls !== prevOptions.controls) {
-      this.initControls(currentOptions.controls ?? { showZoom: true, showAttribution: true, showLayercontrol: true });
+      await this.initControls(currentOptions.controls ?? { showZoom: true, showAttribution: true, showLayercontrol: true });
     }
 
+    // The showLegend property introduces dependencies between basemap layers and map layers of type wms and wmts since
+    // they use the same WMSLegend instance. This means if any of the showLegend properties changes basemap and map layers need to 
+    // update
+    let initLayersHasRun = false;
+    let initBaseMapLayersHasRun = false;
     if (currentOptions.basemap !== prevOptions.basemap) {
-      this.initBasemap(currentOptions.basemap);
+      await this.initBasemap(currentOptions.basemap);
       layersChanged = true;
+
+      initBaseMapLayersHasRun = true;
+
+      await this.initLayers(currentOptions.layers ?? []);
+      initLayersHasRun = true;
     }
 
-    if (currentOptions.layers !== prevOptions.layers) {
-      this.initLayers(currentOptions.layers ?? []); // async
+    if (currentOptions.layers !== prevOptions.layers && !initLayersHasRun) {
+      if (!initBaseMapLayersHasRun) {
+        await this.initBasemap(currentOptions.basemap);
+      }
+      
+      await this.initLayers(currentOptions.layers ?? []); // async
       layersChanged = true;
     }
 
@@ -546,7 +560,9 @@ export class GeomapPanel extends Component<Props, State> {
         continue; // TODO -- panel warning?
       }
 
-      const handler = await item.create(this.map!, overlay, config.theme2);
+      const handler = await item.create(this.map!,
+        {...overlay, ...(item.isBaseMap ? {basemapUsedAsMapLayer: true} : {})}, // add flag for base layers which are used as map layers
+        config.theme2);
       // If it is a basemap create group with title to make it visible in the legend: https://github.com/walkermatt/ol-layerswitcher/blob/main/examples/layerswitcher.js#L10
       // const layer = item.isBaseMap ? new Group({layers: [handler.init()], title: overlay.name, combine: true,} as GroupLayerOptions) : handler.init();
       let layer = handler.init();

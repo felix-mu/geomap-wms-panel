@@ -14,6 +14,7 @@ import { ExtendMapLayerOptions } from "extension";
 import { css } from "@emotion/css";
 // import { ExtendMapLayerOptions } from "extension";
 // import { ExtendMapLayerOptions } from "extension";
+import { ReducedMultipleWMSEditorContext, ReducedWMTSEditorContext } from "./reducedEditorContext";
 
 
 // type Props = StandardEditorProps<number, Settings>;
@@ -32,9 +33,13 @@ export const OverviewMapEditor = ({ item, value, onChange, context }: Props) => 
             { value.enabled && 
                 <>
                     <CollapsableSection className={getStyles().basemapEditor} label={"Overview map configuration"} isOpen={false}>
-                        <BaseLayerEditor value={value}
-                        onChange={onChange as (value?: ExtendMapLayerOptions<any> | undefined) => void} 
-                        context={context} item={item as unknown as StandardEditorsRegistryItem<ExtendMapLayerOptions<any>, any>}/>
+                        <ReducedMultipleWMSEditorContext.Provider value={{hideShowLegendToggle: true, hideAttributionsInput: true}}>
+                            <ReducedWMTSEditorContext.Provider value={{hideShowLegendToggle: true, hideAttributionsInput: true}}>
+                                <BaseLayerEditor value={value}
+                                onChange={onChange as (value?: ExtendMapLayerOptions<any> | undefined) => void} 
+                                context={context} item={item as unknown as StandardEditorsRegistryItem<ExtendMapLayerOptions<any>, any>}/>
+                            </ReducedWMTSEditorContext.Provider>
+                        </ReducedMultipleWMSEditorContext.Provider>
                     </CollapsableSection>
                     <hr className={getStyles().divider}/>
                 </>

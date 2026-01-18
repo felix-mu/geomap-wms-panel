@@ -3,8 +3,7 @@
  */
 
 // import { LegendItem } from "layers/basemaps/wms";
-import { LegendItem } from "layers/basemaps/wms";
-import { WMSLegend } from "./WMSLegend";
+import { LegendItem, WMSLegend } from "./WMSLegend";
 import { cleanup, render, screen} from '@testing-library/react';
 import { Map } from "ol";
 import React, { act } from "react";

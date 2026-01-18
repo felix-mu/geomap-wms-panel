@@ -12,7 +12,7 @@ import { addCustomParametersToWMTSOptionsURLs, getWMTSCapabilitiesFromService,/*
 getWMTSLegendURLForLayer, appendCustomQueryParameters,
 registerCRSInProj4,
 removeQueryParameters} from 'mapServiceHandlers/wmts';
-import { WMSLegend } from 'mapcontrols/WMSLegend';
+import { LegendItem, WMSLegend } from 'mapcontrols/WMSLegend';
 import TileLayer from 'ol/layer/Tile';
 import { WMTS } from 'ol/source';
 import { Options, optionsFromCapabilities } from 'ol/source/WMTS';
@@ -33,18 +33,13 @@ type WMTSTuple = {
   identifier: string
 }
 
-export type LegendItem = {
-  label: string,
-  url: string
-}
-
 export interface WMTSConfig {
     // [x: string]: {};
     url: string,
     layer: WMTSTuple,
     opacity: number,
     attribution: string,
-    showLegend: boolean
+    showLegend: boolean,
 }
 
 export interface WMTSBaselayerConfig {
@@ -64,8 +59,11 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
    * @param options
    */
   create: async (map: Map, options: ExtendMapLayerOptions<WMTSBaselayerConfig>) => {
-    // Remove previous legend control if it exists
-    // WMTSLegend.removeWMTSLegendControlFromMap(map);
+    // Remove previous legend control if it exists and the layer is used as basemap
+    // If the layer is used as map layer do not remove the legend but append the legend entries
+    if (!options.basemapUsedAsMapLayer) {
+      WMSLegend.removeWMSLegendControlFromMap(map);
+    }
 
     let layers: BaseLayer[] = [];
     let legendItems: LegendItem[] = [];
@@ -99,11 +97,11 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
             } catch (error) {
 				      throw new Error(`Error updating wmts options with custom query parameters: ${error}`)
             }
-            const wmtsSource = new WMTS(wmtsOptions!);
+            const wmtsSource = new WMTS({...wmtsOptions!, attributions: wmtsItem.attribution ?? ""});
             layers.push(
               new TileLayer({
                 source: wmtsSource,
-                opacity: wmtsItem.opacity ?? 1.0
+                opacity: wmtsItem.opacity ?? 1.0,
               })
             );
   
@@ -132,7 +130,15 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
     }
 
     if (legendItems.length > 0) {
-      map.addControl(new WMSLegend(legendItems));
+      if (!options.basemapUsedAsMapLayer || !WMSLegend.getWMSLegendControlFromMap(map!)) {  // If the basemap layer does not provide a WMSLegend a new one has to be created
+        map.addControl(new WMSLegend(legendItems));
+      } else {
+        // Append legend items if baselayer is used as map layer
+        WMSLegend.getWMSLegendControlFromMap(map!)?.addLegendItems(legendItems);
+        // INFO: There is no need to remove the items from the WMS legend when the toggle for a baselayer used as map layer is 
+        // deactivated because the options change is propgated to the top level and also the basemap layers are re-initialized
+        // so the previous WMS legend is removed and a new (empty) one is created that is filled with the new configuration
+      }
     }
 
     return ({

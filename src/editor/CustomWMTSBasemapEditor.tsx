@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useId } from 'react';
+import React, { useEffect, useRef, useState, useId, useContext } from 'react';
 import { StandardEditorProps, SelectableValue } from '@grafana/data';
 import {
   Combobox,
@@ -15,10 +15,13 @@ import {
   getWMTSCapabilitiesFromService,
   getWMTSLayers,
 } from 'mapServiceHandlers/wmts';
+import { ReducedWMTSEditorContext } from './reducedEditorContext';
 
 type Props = StandardEditorProps<WMTSConfig>;
 
 export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
+  const { hideShowLegendToggle, hideAttributionsInput } = useContext(ReducedWMTSEditorContext);
+
   const [url, setUrl] = useState<string>(value?.url ?? '');
   const [attribution, setAttribution] = useState<string>(value?.attribution ?? '');
   const [opacity, setOpacity] = useState<number>(value?.opacity ?? 1);
@@ -129,34 +132,40 @@ export const CustomWMTSBasemapEditor = ({ value, onChange }: Props) => {
       </Field>
 
       {/* Show legend */}
-      <Field label="Show legend" description="Show this basemap in the legend">
-        <Switch
-          value={showLegend}
-          onChange={(e) => {
-            setShowLegend(e.currentTarget.checked);
-            onChange({
-              url: url,
-              layer: {
-                title: selection!.label ?? '',
-                identifier: selection!.value ?? '',
-              },
-              attribution: attribution,
-              opacity: opacity,
-              showLegend: e.currentTarget.checked
-            });
-          }}
-        />
-      </Field>
+      {
+        !hideShowLegendToggle && 
+        <Field label="Show legend" description="Show this basemap in the legend">
+          <Switch
+            value={showLegend}
+            onChange={(e) => {
+              setShowLegend(e.currentTarget.checked);
+              onChange({
+                url: url,
+                layer: {
+                  title: selection!.label ?? '',
+                  identifier: selection!.value ?? '',
+                },
+                attribution: attribution,
+                opacity: opacity,
+                showLegend: e.currentTarget.checked
+              });
+            }}
+          />
+        </Field>
+      }
 
       {/* Attribution */}
-      <Field label="Attribution (optional)">
-        <Input
-          value={attribution}
-          aria-label="wmts-attribution-input"
-          onChange={(e) => setAttribution(e.currentTarget.value)}
-          onBlur={emitChange}
-        />
-      </Field>
+      {
+        !hideAttributionsInput && 
+        <Field label="Attribution (optional)">
+          <Input
+            value={attribution}
+            aria-label="wmts-attribution-input"
+            onChange={(e) => setAttribution(e.currentTarget.value)}
+            onBlur={emitChange}
+          />
+        </Field>
+      }
     </div>
   );
 };

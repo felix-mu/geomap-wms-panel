@@ -51,6 +51,7 @@ export interface ExtendMapLayerOptions<TConfig = any> {
   timeField?: string;
   visible?: boolean;
   enabledForDataLinks?: boolean;
+  basemapUsedAsMapLayer?: boolean;
 }
 
 export interface ExtendMapLayerRegistryItem<TConfig = ExtendMapLayerOptions> extends RegistryItemWithOptions {

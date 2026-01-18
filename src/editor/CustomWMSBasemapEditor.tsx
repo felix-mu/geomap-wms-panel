@@ -25,14 +25,16 @@ type Props = {
   wms: WMSConfig,
   cache: {
     current: { [url: string]: Array<SelectableValue<string>> }
-  }
+  },
+  hideShowLegendToggle?: boolean,
+  hideAttributionInput?: boolean
 };
 
 // export const CustomWMSBasemapLayersEditor = ({ item, value, onChange }: Props/*StandardEditorProps<string>*/) => {
 
   // const options: Array<SelectableValue<string>> = [];
 
-export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
+export const CustomWMSBasemapEditor = ({ onChange, wms, cache, hideShowLegendToggle = false, hideAttributionInput = false}: Props) => {
   const [url, setURL] = useState<string>(wms === undefined || 
     wms.url === undefined ? "" : wms.url);
   const [attribution, setAttribution] = useState<string>(wms === undefined || 
@@ -114,17 +116,23 @@ export const CustomWMSBasemapEditor = ({ onChange, wms, cache }: Props) => {
           onChange({ url: url, layers: selection.map((e) => ({ title: e.label!, name: e.value! })), attribution: attribution, opacity: val, showLegend: wms.showLegend });
         } } onChange={(val) => { opacityRef.current = val; } } inputId={useId()}></Slider>
       </Field>
-      <Field label="Show legend" description="Toggle to show layers in legend" aria-label="wms layer legend toggle switch">
+      {
+        !hideShowLegendToggle && 
+        <Field label="Show legend" description="Toggle to show layers in legend" aria-label="wms layer legend toggle switch">
           <Switch value={(wms.showLegend || false)} onChange={(e) => {
             onChange({url: url, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: wms.opacity, showLegend: !wms.showLegend})
           }
           }/>
         </Field>
-      <Field label="Attribution (optional)" /*description="This information is very important, so you really need to fill it in"*/>
-        <Input value={attribution} aria-label="attribution input" onChange={e => {
-          setAttribution(e.currentTarget.value);
-        }} onBlur={() => onChange({url: url, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: opacityRef.current, showLegend: wms.showLegend})}></Input>
-      </Field>
+      }
+      {
+        !hideAttributionInput && 
+        <Field label="Attribution (optional)" /*description="This information is very important, so you really need to fill it in"*/>
+          <Input value={attribution} aria-label="attribution input" onChange={e => {
+            setAttribution(e.currentTarget.value);
+          }} onBlur={() => onChange({url: url, layers: selection.map((e) => ({title: e.label!, name: e.value!})), attribution: attribution, opacity: opacityRef.current, showLegend: wms.showLegend})}></Input>
+        </Field>
+      }
     </div>
         )
 };
