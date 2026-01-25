@@ -202,7 +202,7 @@ This repository refers to the following version of its original: https://github.
 - Grafana >= 10.0.2 as Docker container with [bind mounts to host filesystem](https://grafana.com/docs/grafana/latest/setup-grafana/installation/docker/#use-bind-mounts) mounting following container directory _/var/lib/grafana/plugins_
 - node v20.3.1
 - npm 10.5.0
-- Linux-based OS Windows with WSL
+- Linux-based OS / WSL (Windows)
 <!-- - Docker (Desktop) -->
 <!-- - Minikube
 - Helm -->
