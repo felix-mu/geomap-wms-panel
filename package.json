@@ -74,7 +74,7 @@
     "sass": "1.97.3",
     "sass-loader": "13.3.1",
     "style-loader": "3.3.3",
-    "swc-loader": "^0.2.3",
+    "swc-loader": "^0.2.7",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "tslib": "2.2.0",
