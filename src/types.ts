@@ -50,6 +50,7 @@ export interface MapViewConfig {
   shared?: boolean;
   zoom?: number;
   ignoreDashboardRefresh?: boolean;
+  mapViewExtent?: Array<number>;
 }
 
 export const defaultView: MapViewConfig = {
