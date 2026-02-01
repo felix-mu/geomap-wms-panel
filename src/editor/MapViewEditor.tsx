@@ -1,6 +1,6 @@
 import React, { FC, useMemo, useCallback } from 'react';
 import { StandardEditorProps, SelectableValue } from '@grafana/data';
-import { Button, Combobox, InlineField, InlineFieldRow, ComboboxOption, Stack } from '@grafana/ui';
+import { Button, Combobox, InlineField, InlineFieldRow, ComboboxOption, Stack, Field, Switch } from '@grafana/ui';
 import { GeomapPanelOptions, MapViewConfig } from '../types';
 import { centerPointRegistry, MapCenterID } from '../view';
 import { NumberInput } from '../dimensions/editors/NumberInput';
@@ -118,6 +118,16 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
       {value?.id === MapCenterID.Fit && (
         <FitMapViewEditor value={value} onChange={onChange} context={context} />
       )}
+      <Field label="Ignore dashboard refresh" description="Toggle to ignore map view updates on dashboard refresh events" aria-label="map view editor ignore dashboard refresh switch">
+        <Switch value={value?.ignoreDashboardRefresh ?? false} onChange={(e) => {
+          onChange(
+            {...value,
+              ignoreDashboardRefresh: e.currentTarget.checked
+            }
+          )
+        }
+        }/>
+      </Field>
     </>
   );
 };
