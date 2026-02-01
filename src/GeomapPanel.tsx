@@ -353,13 +353,16 @@ export class GeomapPanel extends Component<Props, State> {
   /**
    * Called when PanelData changes (query results etc)
    */
-  dataChanged(data: PanelData) {
+  dataChanged(data: PanelData, initial=false) { // if called from an initialization function such as initLayers the initial 
+                                                // parameter is set to true to call initMapView and set initial map view
     for (const state of this.layers) {
       if (state.handler.update) {
         state.handler.update(data);
       }
     }
-    if (this.props.options.view.id && this.map) {
+    if (this.props.options.view.id && this.map
+      && (!this.props.options.view.ignoreDashboardRefresh || initial)
+    ) {
       const view = this.initMapView(this.props.options.view);
 
       if (this.map && view) {
@@ -591,7 +594,7 @@ export class GeomapPanel extends Component<Props, State> {
     this.setState({ bottomLeft: legends });
 
     // Update data after init layers
-    this.dataChanged(this.props.data);
+    this.dataChanged(this.props.data, true);
   }
 
   initMapView(config: MapViewConfig): View {
