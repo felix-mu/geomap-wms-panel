@@ -26,17 +26,17 @@ export function parseMapViewExtent(numberArrayString: string): number[] {
 export function getCurrentMapExtent(): number[] {
     const map = lastGeomapPanelInstance?.map;
 
-    return map?.getView().calculateExtent(map.getSize()) as number[];
+    return map.getView().calculateExtent(map.getSize()) as number[];
 }
 
 export function ExtentMapViewEditor({value, onChange}: {value: MapViewConfig, onChange: (value?: MapViewConfig | undefined) => void}) {
-    const [extentString, setExtentString] = useState("");
+    const [extentString, setExtentString] = useState(value?.mapViewExtent ? value.mapViewExtent.toString() : "");
     return (
         <>
             <Label description="A sequence of numbers representing an extent in Spherical Mercator projection (EPSG:3857): minx, miny, maxx, maxy.">
                 Map view extent
             </Label>
-            <Input value={extentString.length > 0 ? extentString : value?.mapViewExtent?.toString()}
+            <Input data-testid="map view editor extent map view editor input" value={extentString}
                 onChange={(e) => setExtentString(e.currentTarget.value)}
                 onBlur={(e) => {
                     let extent: number[];
