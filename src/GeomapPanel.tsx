@@ -60,7 +60,7 @@ import { CustomOverviewMapWrapper } from 'mapcontrols/CustomOverviewMapWrapper';
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
 import { olStyles } from './styles/ol/olStyles';
 import { olExtStyles } from 'styles/ol/olExtStyles';
-import { bootstrapsIcons } from 'styles/bootstrap/bootstrapsIcons';
+import { bootstrapIcons } from 'styles/bootstrap/bootstrapIcons';
 import { fontmaki } from 'styles/fontmaki/fontmaki';
 import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
 import { getLayersExtent } from 'utils/getLayersExtent';
@@ -806,7 +806,7 @@ export class GeomapPanel extends Component<Props, State> {
 
     return (
       <>
-        <div className={cx(fontmaki, fontmaki2, bootstrapsIcons, olStyles, olExtStyles, this.globalCSS)} style={{height: "100%"}}>
+        <div className={cx(fontmaki, fontmaki2, bootstrapIcons, olStyles, olExtStyles, this.globalCSS)} style={{height: "100%"}}>
           <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
             <div className={styles.map} ref={this.initMapRef}></div>
             <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />

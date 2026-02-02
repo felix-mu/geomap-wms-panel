@@ -9,10 +9,16 @@ export function parseMapViewExtent(numberArrayString: string): number[] {
     const coordinates = numberArrayString.split(",");
     
     if (coordinates.length != 4) {
-        throw new Error("Extent bounding box needs 4 coordinates.");
+        throw new Error(`Extent bounding box needs 4 coordinates: ${coordinates}`);
     }
 
-    const extent: number[] = coordinates.map((coor) => parseFloat(coor));
+    const extent: number[] = coordinates.map((coor) => {
+        const c = parseFloat(coor);
+        if (isNaN(c)) {
+            throw new Error(`Could not parse extent coordinate as number: ${c}`);
+        }
+        return c;
+    });
 
     return extent;
 }
