@@ -602,7 +602,7 @@ export class GeomapPanel extends Component<Props, State> {
       center: [0, 0],
       zoom: 1,
       showFullExtent: true, // alows zooming so the full range is visiable
-      extent: config.mapViewExtent && config.mapViewExtent.length == 4 ? config.mapViewExtent : undefined
+      extent: config.mapViewExtent && config.mapViewExtent.length === 4 ? config.mapViewExtent : undefined
     });
 
     // With shared views, all panels use the same view instance

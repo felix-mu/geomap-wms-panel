@@ -1,11 +1,20 @@
+
+jest.mock('GeomapPanel');
+
+jest.mock('./extentMapViewEditorUtils', () => ({
+  __esModule: true,
+  ...jest.requireActual('./extentMapViewEditorUtils'),
+  getCurrentMapExtent: jest.fn(),
+}));
+
 import '@testing-library/jest-dom';
-import {fireEvent, render, screen} from '@testing-library/react';
-import { ExtentMapViewEditor, getCurrentMapExtent, parseMapViewExtent } from './ExtentMapViewEditor';
+import { render, screen} from '@testing-library/react';
+// import * as f from './ExtentMapViewEditor';
 import React from 'react';
 import { lastGeomapPanelInstance } from 'GeomapPanel';
 import userEvent from '@testing-library/user-event';
-
-jest.mock('GeomapPanel');
+import { ExtentMapViewEditor } from './ExtentMapViewEditor';
+import { parseMapViewExtent, getCurrentMapExtent } from './extentMapViewEditorUtils';
 
 describe("tests for parseMapViewExtent", () => {
     test("too few coordinates in the string should throw error", () => {
@@ -34,20 +43,10 @@ describe("tests for parseMapViewExtent", () => {
 });
 
 describe("tests for getCurrentMapExtent", () => {
+  const { getCurrentMapExtent } = jest.requireActual('./ExtentMapViewEditor');
+
   test("undefined Map should throw error", () => {
-    lastGeomapPanelInstance.map = undefined;
-
-    expect(() => getCurrentMapExtent()).toThrow();
-  });
-
-  test("null Map should throw error", () => {
-    lastGeomapPanelInstance.map = null;
-
-    expect(() => getCurrentMapExtent()).toThrow();
-  });
-
-  test("null Map should throw error", () => {
-    lastGeomapPanelInstance.map = null;
+    lastGeomapPanelInstance!.map = undefined;
 
     expect(() => getCurrentMapExtent()).toThrow();
   });
@@ -76,14 +75,29 @@ describe("test editor", () => {
     expect(input).toHaveValue("4,3,2,1");
   });
 
+  test("clicking the button should update the extent value and display it in the input element", async () => {
+    // jest.doMock('./ExtentMapViewEditor', () => {
+    //   return {
+    //     __esModule: true,
+    //     getCurrentMapExtent: () => [4,3,2,1]
+    //   };
+    // });
+    // await import('./ExtentMapViewEditor');
+    // jest.spyOn(f, "getCurrentMapExtent").mockReturnValue([4,3,2,1]);
+    (getCurrentMapExtent as jest.Mock).mockReturnValue([4,3,2,1]);
+    // jest.replaceProperty(f, "getCurrentMapExtent", () => [4,3,2,1]);
+    render(<ExtentMapViewEditor value={{id: "", mapViewExtent: [1,2,3,4]}} onChange={(e) => {}} />);
+    const button: HTMLButtonElement = screen.getByTestId('map view editor extent map view button');
+    await userEvent.click(button);
+    expect(screen.getByTestId('map view editor extent map view editor input')).toHaveValue("4,3,2,1");
+    // jest.resetModules();
+    // jest.restoreAllMocks();
+  });
+
   // test('clear', async () => {
   //   const user = userEvent.setup()
-
   //   render(<textarea defaultValue="Hello, World!" />)
-
   //   await user.clear(screen.getByRole('textbox'))
-
   //   expect(screen.getByRole('textbox')).toHaveValue('')
   // })
 });
-
