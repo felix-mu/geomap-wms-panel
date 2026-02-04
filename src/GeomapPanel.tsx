@@ -148,6 +148,11 @@ export class GeomapPanel extends Component<Props, State> {
           return;
         }
 
+        // Only continue if the data select event comes from this panel
+        if ((event as any).panelOrigin != this) {
+          return;
+        }
+
         let dataFrame: DataFrame = event.payload.data!;
         let rowIndex: number = event.payload.rowIndex!;
 
@@ -448,7 +453,7 @@ export class GeomapPanel extends Component<Props, State> {
     this.pointerMoveListener(evt);
 
     // Push data select event
-    this.props.eventBus.publish({ ...this.hoverEvent, type: "data-select" });
+    this.props.eventBus.publish({ ...this.hoverEvent, panelOrigin: this, type: "data-select" });
   }
 
 
