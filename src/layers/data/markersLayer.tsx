@@ -11,9 +11,9 @@ import Feature from 'ol/Feature';
 import { Geometry, Point } from 'ol/geom';
 import FontSymbol from 'ol-ext/style/FontSymbol';
 import Shadow from 'ol-ext/style/Shadow';
-import 'ol-ext/style/FontAwesomeDef.js';
-import 'ol-ext/style/FontMaki2Def.js';
-import 'ol-ext/style/FontMakiDef.js';
+import 'ol-ext/style/FontAwesomeDef.js'; // only executes the script
+import 'ol-ext/style/FontMaki2Def.js'; // only executes the script
+import 'ol-ext/style/FontMakiDef.js'; // only executes the script
 import { Cluster } from 'ol/source.js';
 import * as layer from 'ol/layer';
 import * as source from 'ol/source';

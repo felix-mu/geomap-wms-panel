@@ -3,7 +3,7 @@ import { css } from "@emotion/css";
 import iconWoff2 from './fonts/bootstrap-icons.woff2';
 import iconWoff from './fonts/bootstrap-icons.woff';
 
-export const bootstrapsIcons = css`
+export const bootstrapIcons = css`
 /*!
  * Bootstrap Icons v1.13.1 (https://icons.getbootstrap.com/)
  * Copyright 2019-2024 The Bootstrap Authors

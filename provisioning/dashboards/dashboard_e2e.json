@@ -18,9 +18,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 54,
+  "id": 2,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "datasource": {
@@ -34,8 +33,8 @@
           },
           "links": [
             {
-              "title": "",
-              "url": "http://localhost:3000/d/bdjtpgo45296ob/dashboard-e2e?var-datalink_test=${__data.fields.name}"
+              "title": "Click",
+              "url": "/d/adfx6j5/dashboard-e2e?var-datalink_test=${__data.fields.name}"
             }
           ],
           "mappings": [],
@@ -44,7 +43,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "red",
@@ -69,7 +68,11 @@
         },
         "controls": {
           "mouseWheelZoom": true,
+          "overviewMap": {
+            "enabled": false
+          },
           "showAttribution": true,
+          "showDataExtentZoom": true,
           "showDebug": false,
           "showLayercontrol": true,
           "showScale": false,
@@ -126,6 +129,7 @@
           "zoom": 12.55
         }
       },
+      "pluginVersion": "2.0.1",
       "targets": [
         {
           "csvContent": "\"geom\",\"id\",\"name\"\r\n\"{\"\"type\"\":\"\"Feature\"\",\"\"properties\"\":{},\"\"geometry\"\":{\"\"type\"\":\"\"Polygon\"\",\"\"coordinates\"\":[[[11.528,48.157],[11.525,48.101],[11.611,48.098],[11.613,48.155],[11.613,48.155],[11.528,48.157]]]}}\",1,\"Polygon feature\"",
@@ -149,9 +153,9 @@
       "type": "felixrelleum-geomapwms-panel"
     },
     {
-      "datasource": {
-        "type": "grafana-testdata-datasource",
-        "uid": "uid-test-data-123"
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -169,14 +173,14 @@
         "content": "# ${datalink_test}\n",
         "mode": "markdown"
       },
-      "pluginVersion": "10.4.2",
+      "pluginVersion": "12.2.1",
       "title": "Datalink test",
       "type": "text"
     },
     {
-      "datasource": {
-        "type": "grafana-testdata-datasource",
-        "uid": "uid-test-data-123"
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
       },
       "gridPos": {
         "h": 5,
@@ -194,28 +198,972 @@
         "content": "# ${geomap_wms_spatial_filter_geometry}\n",
         "mode": "markdown"
       },
-      "pluginVersion": "10.4.2",
+      "pluginVersion": "12.2.1",
       "title": "Spatial filter geometry",
       "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "uid-test-data-123"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "links": [
+            {
+              "title": "click",
+              "url": "http://localhost:3000/d/adfx6j5/dashboard-e2e?var-datalink_test=${__field.name}"
+            }
+          ],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 5,
+      "options": {
+        "basemap": {
+          "config": {
+            "wmsBaselayer": [
+              {
+                "attribution": "test",
+                "id": "53d11ff4-8d4d-4a84-a5b0-5eaff3d9bf43",
+                "layers": [
+                  {
+                    "name": "web",
+                    "title": "TopPlusOpen"
+                  }
+                ],
+                "opacity": 1,
+                "showLegend": true,
+                "url": "https://sgx.geodatenzentrum.de/wms_topplus_open"
+              },
+              {
+                "attribution": "hshshsh",
+                "id": "949ebecf-fb1a-4208-a0e1-060da60aa830",
+                "layers": [
+                  {
+                    "name": "web_light_grau",
+                    "title": "TopPlusOpen Light Grau"
+                  }
+                ],
+                "opacity": 0.5,
+                "showLegend": false,
+                "url": "https://sgx.geodatenzentrum.de/wms_topplus_open"
+              }
+            ]
+          },
+          "enabledForDataLinks": true,
+          "opacity": 1,
+          "type": "wms",
+          "visible": true
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "overviewMap": {
+            "enabled": false
+          },
+          "showAttribution": true,
+          "showDataExtentZoom": true,
+          "showDebug": false,
+          "showLayercontrol": true,
+          "showScale": false,
+          "showSpatialFilter": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "cluster": false,
+              "clusterDistance": 20,
+              "clusterMinDistance": 0,
+              "clusterValue": "size",
+              "color": {
+                "fixed": "dark-green"
+              },
+              "enableGradient": false,
+              "enableShadow": false,
+              "fillOpacity": 0.4,
+              "geoJsonStrokeSize": {
+                "fixed": 5,
+                "max": 10,
+                "min": 1
+              },
+              "iconSize": 9,
+              "pinShape": "marker",
+              "shape": "circle",
+              "showLegend": true,
+              "showPin": false,
+              "size": {
+                "fixed": 5,
+                "max": 15,
+                "min": 2
+              }
+            },
+            "displayProperties": [
+              "type",
+              "name"
+            ],
+            "enabledForDataLinks": true,
+            "location": {
+              "geojson": "geometry",
+              "latitude": "Y",
+              "longitude": "X",
+              "mode": "geojson"
+            },
+            "name": "Test data",
+            "query": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "type": "markers",
+            "visible": true
+          },
+          {
+            "config": {
+              "cluster": false,
+              "clusterDistance": 20,
+              "clusterMinDistance": 0,
+              "clusterValue": "size",
+              "color": {
+                "fixed": "light-red"
+              },
+              "enableGradient": false,
+              "enableShadow": false,
+              "fillOpacity": 0.4,
+              "geoJsonStrokeSize": {
+                "fixed": 5,
+                "max": 10,
+                "min": 1
+              },
+              "iconSize": 9,
+              "pinShape": "marker",
+              "shape": "circle",
+              "showLegend": true,
+              "showPin": false,
+              "size": {
+                "fixed": 5,
+                "max": 15,
+                "min": 2
+              }
+            },
+            "displayProperties": [],
+            "enabledForDataLinks": true,
+            "location": {
+              "geojson": "geometry",
+              "mode": "geojson"
+            },
+            "name": "test",
+            "query": {
+              "id": "byRefId",
+              "options": "B"
+            },
+            "type": "markers",
+            "visible": true
+          },
+          {
+            "config": {
+              "wmsBaselayer": [
+                {
+                  "attribution": "",
+                  "id": "5f75bc90-6b2a-437c-b4d0-32b74d763bb3",
+                  "layers": [
+                    {
+                      "name": "web",
+                      "title": "TopPlusOpen"
+                    }
+                  ],
+                  "opacity": 0.5,
+                  "showLegend": false,
+                  "url": "https://sgx.geodatenzentrum.de/wms_topplus_open"
+                }
+              ]
+            },
+            "enabledForDataLinks": true,
+            "location": {
+              "mode": "auto"
+            },
+            "name": "https://sgx.geodatenzentrum.de/wms_topplus_open",
+            "opacity": 1,
+            "type": "wms",
+            "visible": false
+          }
+        ],
+        "view": {
+          "id": "fit",
+          "ignoreDashboardRefresh": true,
+          "lat": 48.149025,
+          "layer": "test",
+          "lon": 11.6,
+          "mapViewExtent": [
+            1256524.7723694502,
+            6121472.217679561,
+            1326087.4140344968,
+            6141894.277617923
+          ],
+          "padding": 20,
+          "zoom": 15
+        }
+      },
+      "pluginVersion": "2.0.1",
+      "targets": [
+        {
+          "csvContent": "\"geom\",\"id\",\"name\"\r\n\"{\"\"type\"\":\"\"Feature\"\",\"\"properties\"\":{},\"\"geometry\"\":{\"\"type\"\":\"\"Polygon\"\",\"\"coordinates\"\":[[[11.528,48.157],[11.525,48.101],[11.611,48.098],[11.613,48.155],[11.613,48.155],[11.528,48.157]]]}}\",1,\"Polygon feature\"",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "uid-test-data-123"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "csvContent": "\"geomB\",\"idB\",\"nameB\"\r\n\"{\"\"type\"\":\"\"Feature\"\",\"\"properties\"\":{},\"\"geometry\"\":{\"\"type\"\":\"\"Polygon\"\",\"\"coordinates\"\":[[[11.6,48.2],[11.6,48.2],[11.7,48.098],[11.613,48.155],[11.613,48.155],[11.5,48.1]]]}}\",2,\"Polygon feature\"",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "uid-test-data-123"
+          },
+          "refId": "B",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "Geomap WMS Panel - WMS",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "source": "geom"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "delimiter": ",",
+            "source": "geomB"
+          }
+        }
+      ],
+      "type": "felixrelleum-geomapwms-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "uid-test-data-123"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 7,
+      "options": {
+        "basemap": {
+          "config": {
+            "wmsBaselayer": [
+              {
+                "attribution": "",
+                "id": "53d11ff4-8d4d-4a84-a5b0-5eaff3d9bf43",
+                "layers": [
+                  {
+                    "name": "web",
+                    "title": "TopPlusOpen"
+                  }
+                ],
+                "opacity": 1,
+                "showLegend": true,
+                "url": "https://sgx.geodatenzentrum.de/wms_topplus_open?custom=/test/path/file.js"
+              }
+            ]
+          },
+          "enabledForDataLinks": true,
+          "opacity": 1,
+          "type": "wms",
+          "visible": true
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "overviewMap": {
+            "enabled": false
+          },
+          "showAttribution": true,
+          "showDataExtentZoom": true,
+          "showDebug": false,
+          "showLayercontrol": true,
+          "showScale": false,
+          "showSpatialFilter": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "cluster": false,
+              "clusterDistance": 20,
+              "clusterMinDistance": 0,
+              "clusterValue": "size",
+              "color": {
+                "fixed": "dark-green"
+              },
+              "enableGradient": false,
+              "enableShadow": false,
+              "fillOpacity": 0.4,
+              "geoJsonStrokeSize": {
+                "fixed": 5,
+                "max": 10,
+                "min": 1
+              },
+              "iconSize": 9,
+              "pinShape": "marker",
+              "shape": "circle",
+              "showLegend": true,
+              "showPin": false,
+              "size": {
+                "fixed": 5,
+                "max": 15,
+                "min": 2
+              }
+            },
+            "displayProperties": [
+              "type",
+              "name"
+            ],
+            "enabledForDataLinks": true,
+            "location": {
+              "geojson": "geometry",
+              "latitude": "Y",
+              "longitude": "X",
+              "mode": "geojson"
+            },
+            "name": "Test data",
+            "query": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "type": "markers",
+            "visible": true
+          },
+          {
+            "config": {
+              "cluster": false,
+              "clusterDistance": 20,
+              "clusterMinDistance": 0,
+              "clusterValue": "size",
+              "color": {
+                "fixed": "light-red"
+              },
+              "enableGradient": false,
+              "enableShadow": false,
+              "fillOpacity": 0.4,
+              "geoJsonStrokeSize": {
+                "fixed": 5,
+                "max": 10,
+                "min": 1
+              },
+              "iconSize": 9,
+              "pinShape": "marker",
+              "shape": "circle",
+              "showLegend": true,
+              "showPin": false,
+              "size": {
+                "fixed": 5,
+                "max": 15,
+                "min": 2
+              }
+            },
+            "displayProperties": [],
+            "enabledForDataLinks": true,
+            "location": {
+              "geojson": "geometry",
+              "mode": "geojson"
+            },
+            "name": "test",
+            "query": {
+              "id": "byRefId",
+              "options": "B"
+            },
+            "type": "markers",
+            "visible": true
+          },
+          {
+            "config": {
+              "cluster": false,
+              "clusterDistance": 20,
+              "clusterMinDistance": 0,
+              "clusterValue": "size",
+              "color": {
+                "fixed": "dark-green"
+              },
+              "enableGradient": false,
+              "enableShadow": false,
+              "fillOpacity": 0.4,
+              "geoJsonStrokeSize": {
+                "fixed": 5,
+                "max": 10,
+                "min": 1
+              },
+              "iconSize": 9,
+              "pinShape": "marker",
+              "shape": "circle",
+              "showLegend": true,
+              "showPin": false,
+              "size": {
+                "fixed": 5,
+                "max": 15,
+                "min": 2
+              }
+            },
+            "location": {
+              "mode": "auto"
+            },
+            "type": "markers"
+          }
+        ],
+        "view": {
+          "id": "fit",
+          "lat": 48.149025,
+          "layer": "test",
+          "lon": 11.6,
+          "padding": 20,
+          "zoom": 15
+        }
+      },
+      "pluginVersion": "2.0.1",
+      "targets": [
+        {
+          "csvContent": "\"geom\",\"id\",\"name\"\r\n\"{\"\"type\"\":\"\"Feature\"\",\"\"properties\"\":{},\"\"geometry\"\":{\"\"type\"\":\"\"Polygon\"\",\"\"coordinates\"\":[[[11.528,48.157],[11.525,48.101],[11.611,48.098],[11.613,48.155],[11.613,48.155],[11.528,48.157]]]}}\",1,\"Polygon feature\"",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "uid-test-data-123"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "csvContent": "\"geomB\",\"idB\",\"nameB\"\r\n\"{\"\"type\"\":\"\"Feature\"\",\"\"properties\"\":{},\"\"geometry\"\":{\"\"type\"\":\"\"Polygon\"\",\"\"coordinates\"\":[[[11.6,48.2],[11.6,48.2],[11.7,48.098],[11.613,48.155],[11.613,48.155],[11.5,48.1]]]}}\",2,\"Polygon feature\"",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "uid-test-data-123"
+          },
+          "refId": "B",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "Geomap WMS Panel - WMS w custom query parameter",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "source": "geom"
+          }
+        },
+        {
+          "id": "extractFields",
+          "options": {
+            "delimiter": ",",
+            "source": "geomB"
+          }
+        }
+      ],
+      "type": "felixrelleum-geomapwms-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "uid-test-data-123"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 4,
+      "options": {
+        "basemap": {
+          "config": {
+            "wmsBaselayer": [
+              {
+                "attribution": "",
+                "id": "f8fb929f-c93e-4c5d-9aa9-848e9476f575",
+                "layers": [
+                  {
+                    "name": "web_light",
+                    "title": "TopPlusOpen Light"
+                  }
+                ],
+                "opacity": 0.7,
+                "showLegend": true,
+                "url": "https://sgx.geodatenzentrum.de/wms_topplus_open"
+              }
+            ],
+            "wmtsBaselayer": {
+              "attribution": "test",
+              "layer": {
+                "identifier": "web",
+                "title": "TopPlusOpen"
+              },
+              "opacity": 0.8,
+              "showLegend": true,
+              "url": "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml"
+            }
+          },
+          "enabledForDataLinks": true,
+          "opacity": 1,
+          "type": "wmts",
+          "visible": true
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "overviewMap": {
+            "config": {
+              "wmsBaselayer": [
+                {
+                  "attribution": "",
+                  "id": "14eed401-6b52-4366-90be-2e873adda080",
+                  "layers": [],
+                  "opacity": 1,
+                  "showLegend": false,
+                  "url": ""
+                }
+              ],
+              "wmtsBaselayer": {
+                "attribution": "",
+                "layer": {
+                  "identifier": "web_light",
+                  "title": "TopPlusOpen Light"
+                },
+                "opacity": 1,
+                "showLegend": false,
+                "url": "https://sgx.geodatenzentrum.de/wmts_topplus_open/1.0.0/WMTSCapabilities.xml"
+              }
+            },
+            "enabled": true,
+            "enabledForDataLinks": true,
+            "opacity": 0.8,
+            "type": "wmts",
+            "visible": true
+          },
+          "showAttribution": true,
+          "showDataExtentZoom": true,
+          "showDebug": false,
+          "showLayercontrol": true,
+          "showScale": true,
+          "showSpatialFilter": true,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "cluster": false,
+              "clusterDistance": 20,
+              "clusterMinDistance": 0,
+              "clusterValue": "size",
+              "color": {
+                "fixed": "dark-green"
+              },
+              "enableGradient": false,
+              "enableShadow": false,
+              "fillOpacity": 0.4,
+              "geoJsonStrokeSize": {
+                "fixed": 5,
+                "max": 10,
+                "min": 1
+              },
+              "iconSize": 15,
+              "pinShape": "bubble",
+              "selectIcon": "fa-wifi",
+              "shape": "circle",
+              "showLegend": true,
+              "showPin": true,
+              "size": {
+                "fixed": 5,
+                "max": 15,
+                "min": 2
+              }
+            },
+            "displayProperties": [
+              "lat",
+              "id",
+              "name"
+            ],
+            "enabledForDataLinks": true,
+            "location": {
+              "geojson": "geometry",
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "Test data",
+            "query": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "type": "markers",
+            "visible": true
+          },
+          {
+            "config": {
+              "showLabels": true,
+              "theme": "auto"
+            },
+            "enabledForDataLinks": true,
+            "location": {
+              "mode": "auto"
+            },
+            "name": "test",
+            "opacity": 0.8,
+            "type": "carto",
+            "visible": false
+          },
+          {
+            "config": {
+              "blur": 44,
+              "radius": 35,
+              "weight": {
+                "fixed": 1,
+                "max": 1,
+                "min": 0
+              }
+            },
+            "enabledForDataLinks": true,
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "heatmap",
+            "query": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "type": "heatmap",
+            "visible": false
+          }
+        ],
+        "view": {
+          "id": "auto",
+          "lat": 33,
+          "lon": 120,
+          "zoom": 4
+        }
+      },
+      "pluginVersion": "2.0.1",
+      "targets": [
+        {
+          "csvContent": "\"lat\",\"lon\",\"id\",\"name\"\r\n48.1,11.1,1,\"Point feature\"\r\n48.15,11.15,2,\"Point feature\"",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "uid-test-data-123"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "Geomap WMS Panel - WMTS",
+      "type": "felixrelleum-geomapwms-panel"
+    },
+    {
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "uid-test-data-123"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "id": 6,
+      "options": {
+        "basemap": {
+          "config": {
+            "wmsBaselayer": [
+              {
+                "attribution": "",
+                "id": "f8fb929f-c93e-4c5d-9aa9-848e9476f575",
+                "layers": [
+                  {
+                    "name": "web_light",
+                    "title": "TopPlusOpen Light"
+                  }
+                ],
+                "opacity": 0.7,
+                "showLegend": true,
+                "url": "https://sgx.geodatenzentrum.de/wms_topplus_open"
+              }
+            ],
+            "wmtsBaselayer": {
+              "attribution": "",
+              "layer": {
+                "identifier": "de_basemapde_web_raster_grau",
+                "title": "basemap.de Web Raster Grau"
+              },
+              "opacity": 0.8,
+              "showLegend": true,
+              "url": "https://sgx.geodatenzentrum.de/wmts_basemapde?request=GetCapabilities&service=WMTS&custom=/test/path/file.js"
+            }
+          },
+          "enabledForDataLinks": true,
+          "opacity": 1,
+          "type": "wmts",
+          "visible": true
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "overviewMap": {
+            "config": {},
+            "enabled": true,
+            "enabledForDataLinks": true,
+            "opacity": 0.8,
+            "type": "osm-standard",
+            "visible": true
+          },
+          "showAttribution": true,
+          "showDataExtentZoom": true,
+          "showDebug": false,
+          "showLayercontrol": true,
+          "showScale": true,
+          "showSpatialFilter": true,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "cluster": false,
+              "clusterDistance": 20,
+              "clusterMinDistance": 0,
+              "clusterValue": "size",
+              "color": {
+                "fixed": "dark-green"
+              },
+              "enableGradient": false,
+              "enableShadow": false,
+              "fillOpacity": 0.4,
+              "geoJsonStrokeSize": {
+                "fixed": 5,
+                "max": 10,
+                "min": 1
+              },
+              "iconSize": 15,
+              "pinShape": "bubble",
+              "selectIcon": "fa-wifi",
+              "shape": "circle",
+              "showLegend": true,
+              "showPin": true,
+              "size": {
+                "fixed": 5,
+                "max": 15,
+                "min": 2
+              }
+            },
+            "displayProperties": [
+              "lat",
+              "id",
+              "name"
+            ],
+            "enabledForDataLinks": true,
+            "location": {
+              "geojson": "geometry",
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "Test data",
+            "query": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "type": "markers",
+            "visible": true
+          },
+          {
+            "config": {
+              "showLabels": true,
+              "theme": "auto"
+            },
+            "enabledForDataLinks": true,
+            "location": {
+              "mode": "auto"
+            },
+            "name": "test",
+            "opacity": 0.8,
+            "type": "carto",
+            "visible": false
+          },
+          {
+            "config": {
+              "blur": 44,
+              "radius": 35,
+              "weight": {
+                "fixed": 1,
+                "max": 1,
+                "min": 0
+              }
+            },
+            "enabledForDataLinks": true,
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "heatmap",
+            "query": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "type": "heatmap",
+            "visible": false
+          }
+        ],
+        "view": {
+          "id": "auto",
+          "lat": 33,
+          "lon": 120,
+          "zoom": 4
+        }
+      },
+      "pluginVersion": "2.0.1",
+      "targets": [
+        {
+          "csvContent": "\"lat\",\"lon\",\"id\",\"name\"\r\n48.1,11.1,1,\"Point feature\"\r\n48.15,11.15,2,\"Point feature\"",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "uid-test-data-123"
+          },
+          "refId": "A",
+          "scenarioId": "csv_content"
+        }
+      ],
+      "title": "Geomap WMS Panel WMTS w custom parameter",
+      "type": "felixrelleum-geomapwms-panel"
     }
   ],
+  "preload": false,
   "refresh": "",
-  "schemaVersion": 39,
+  "schemaVersion": 42,
   "tags": [],
   "templating": {
     "list": [
       {
+        "current": {
+          "text": "POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))",
+          "value": "POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))"
+        },
         "hide": 2,
         "name": "geomap_wms_spatial_filter_geometry",
+        "options": [
+          {
+            "selected": true,
+            "text": "POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))",
+            "value": "POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))"
+          }
+        ],
         "query": "POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))",
-        "skipUrlSync": false,
         "type": "textbox"
       },
       {
-        "hide": 2,
+        "current": {
+          "text": "dummy",
+          "value": "dummy"
+        },
         "name": "datalink_test",
-        "query": "constant",
-        "skipUrlSync": false,
+        "options": [
+          {
+            "selected": true,
+            "text": "dummy",
+            "value": "dummy"
+          }
+        ],
+        "query": "dummy",
         "type": "textbox"
       }
     ]
@@ -227,7 +1175,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "dashboard_e2e",
-  "uid": "bdjtpgo45296ob",
-  "version": 5,
-  "weekStart": ""
+  "uid": "adfx6j5",
+  "version": 79
 }

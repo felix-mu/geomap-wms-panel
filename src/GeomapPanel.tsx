@@ -60,7 +60,7 @@ import { CustomOverviewMapWrapper } from 'mapcontrols/CustomOverviewMapWrapper';
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
 import { olStyles } from './styles/ol/olStyles';
 import { olExtStyles } from 'styles/ol/olExtStyles';
-import { bootstrapsIcons } from 'styles/bootstrap/bootstrapsIcons';
+import { bootstrapIcons } from 'styles/bootstrap/bootstrapIcons';
 import { fontmaki } from 'styles/fontmaki/fontmaki';
 import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
 import { getLayersExtent } from 'utils/getLayersExtent';
@@ -145,6 +145,12 @@ export class GeomapPanel extends Component<Props, State> {
     this.subs.add(
       this.props.eventBus.getStream(DataSelectEvent).subscribe((event) => {
         if (event.payload.data === undefined) {
+          return;
+        }
+
+        // Only continue if the data select event comes from this panel
+        // eslint-disable-next-line
+        if ((event as any).panelOrigin != this) { // check for reference equality (https://javascript.info/object-copy#comparison-by-reference)
           return;
         }
 
@@ -448,7 +454,7 @@ export class GeomapPanel extends Component<Props, State> {
     this.pointerMoveListener(evt);
 
     // Push data select event
-    this.props.eventBus.publish({ ...this.hoverEvent, type: "data-select" });
+    this.props.eventBus.publish({ ...this.hoverEvent, panelOrigin: this, type: "data-select" });
   }
 
 
@@ -602,6 +608,7 @@ export class GeomapPanel extends Component<Props, State> {
       center: [0, 0],
       zoom: 1,
       showFullExtent: true, // alows zooming so the full range is visiable
+      extent: config.mapViewExtent && config.mapViewExtent.length === 4 ? config.mapViewExtent : undefined
     });
 
     // With shared views, all panels use the same view instance
@@ -805,7 +812,7 @@ export class GeomapPanel extends Component<Props, State> {
 
     return (
       <>
-        <div className={cx(fontmaki, fontmaki2, bootstrapsIcons, olStyles, olExtStyles, this.globalCSS)} style={{height: "100%"}}>
+        <div className={cx(fontmaki, fontmaki2, bootstrapIcons, olStyles, olExtStyles, this.globalCSS)} style={{height: "100%"}}>
           <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
             <div className={styles.map} ref={this.initMapRef}></div>
             <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />

@@ -7,6 +7,7 @@ import { NumberInput } from '../dimensions/editors/NumberInput';
 import { lastGeomapPanelInstance } from '../GeomapPanel';
 import { toLonLat } from 'ol/proj';
 import { FitMapViewEditor } from './FitMapViewEditor';
+import { ExtentMapViewEditor } from './ExtentMapViewEditor';
 
 export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPanelOptions>> = ({
   value,
@@ -128,6 +129,7 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
         }
         }/>
       </Field>
+      <ExtentMapViewEditor value={value} onChange={onChange}></ExtentMapViewEditor>
     </>
   );
 };
