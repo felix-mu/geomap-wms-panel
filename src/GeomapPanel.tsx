@@ -149,7 +149,8 @@ export class GeomapPanel extends Component<Props, State> {
         }
 
         // Only continue if the data select event comes from this panel
-        if ((event as any).panelOrigin != this) {
+        // eslint-disable-next-line
+        if ((event as any).panelOrigin != this) { // check for reference equality (https://javascript.info/object-copy#comparison-by-reference)
           return;
         }
 
