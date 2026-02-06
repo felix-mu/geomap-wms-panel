@@ -113,7 +113,7 @@
   },
   "overrides": {
     "ol": "10.7.0",
-    "jspdf": "4.0.0",
+    "jspdf": "4.1.0",
     "uplot": "1.6.31",
     "@remix-run/router": "1.23.2",
     "react-router": "6.30.2",
