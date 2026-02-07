@@ -38,7 +38,7 @@ export class DataHoverView extends PureComponent<Props> {
           ))}
           {propsToShow.map((f: Field<any>, i: number | undefined) => (
             <div key={`${i}/${rowIndex}`} className={this.style.row}>
-              <span>{getFieldDisplayName(f, data)}: </span>
+              <span style={{whiteSpace: "pre"}}>{getFieldDisplayName(f, data)}: </span>
               <span>{fmt(f, rowIndex)}</span>
             </div>
           ))}
@@ -104,7 +104,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
     padding: 0px;
     div {
       font-weight: ${theme.typography.fontWeightMedium};
-      padding: ${theme.spacing(0.25, 2)};
+      // padding: ${theme.spacing(0.25, 2)};
     }
   `,
   row: css`

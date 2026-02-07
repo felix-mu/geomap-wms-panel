@@ -865,6 +865,6 @@ const styles = {
     height: "100%",
   }),
   viz: css({
-    borderRadius: "10px",
+    borderRadius: "2px",
   }),
 };
