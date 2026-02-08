@@ -3,7 +3,8 @@ import { DataHoverView } from "./DataHoverView";
 import React, { memo } from 'react';
 import { ClipboardButton, useTheme2, VizTooltipContainer } from "@grafana/ui";
 import { css } from "@emotion/css";
-import { computeTooltipStyle, convertMapViewExtent2LonLat, MapViewExtentLatLon } from "./tootltipUtils";
+import { computeTooltipStyle, convertMapViewExtent2LonLat, MapViewExtentLonLat } from "./tootltipUtils";
+import { Size } from "ol/size";
 
 type Props = {
     tooltipData: {
@@ -14,12 +15,13 @@ type Props = {
         extent: number[];
         projection: string;
     }
+    mapSize: Size | undefined
 };
 
-export const Tooltip = memo(function Tooltip({tooltipData, mapExtent}: Props) {
+export const Tooltip = memo(function Tooltip({tooltipData, mapExtent, mapSize}: Props) {
     const theme = useTheme2();
 
-    if (!tooltipData.ttip || !tooltipData.ttip.data || !mapExtent
+    if (!tooltipData.ttip || !tooltipData.ttip.data || !mapExtent || !mapSize || mapSize.length !== 2
         || mapExtent.extent.length !== 4
         || mapExtent.projection.length === 0
         || !tooltipData.ttip.point || !tooltipData.ttip.point.lat || !tooltipData.ttip.point.lon
@@ -28,7 +30,7 @@ export const Tooltip = memo(function Tooltip({tooltipData, mapExtent}: Props) {
     }
     const datahoverview = (<DataHoverView {...tooltipData.ttip} />);
 
-    let extentLonLat: MapViewExtentLatLon;
+    let extentLonLat: MapViewExtentLonLat;
     try {
           extentLonLat = convertMapViewExtent2LonLat(mapExtent.extent, mapExtent.projection);
     } catch (error) {
@@ -37,7 +39,8 @@ export const Tooltip = memo(function Tooltip({tooltipData, mapExtent}: Props) {
 
     let vizTooltipStyle = computeTooltipStyle(
         (tooltipData.ttip.point as unknown) as { lon: number; lat: number; },
-        extentLonLat
+        extentLonLat,
+        mapSize
     );
 
     if (tooltipData.fixedFlag) {
@@ -94,7 +97,7 @@ export const Tooltip = memo(function Tooltip({tooltipData, mapExtent}: Props) {
 });
 
 const styles = {
-      viz: css({
-    borderRadius: "2px",
+    viz: css({
+        borderRadius: "2px",
   }),
 };

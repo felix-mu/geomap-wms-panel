@@ -856,7 +856,7 @@ export class GeomapPanel extends Component<Props, State> {
             <Tooltip tooltipData={{ttip: ttip, fixedFlag: this.tooltipFixed}} mapExtent={{
             extent: this.map?.getView().calculateExtent(this.map?.getSize()) as number[] ?? [], 
             projection: this.map?.getView().getProjection().getCode() ?? ""
-            }}></Tooltip>
+            }} mapSize={this.map?.getSize()}></Tooltip>
           </div>
           {/* <Tooltip ttip={ttip} mapExtent={{
             extent: this.map?.getView().calculateExtent(this.map?.getSize()) as number[] ?? [], 
