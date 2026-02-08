@@ -3,7 +3,7 @@ import { DataHoverView } from "./DataHoverView";
 import React, { memo } from 'react';
 import { ClipboardButton, useTheme2, VizTooltipContainer } from "@grafana/ui";
 import { css } from "@emotion/css";
-import { computeTooltipStyle, convertMapViewExtent2LonLat, MapViewExtentLonLat } from "./tootltipUtils";
+import { computeTooltipStyle, convertMapViewExtent2LonLat, copy2ClipBoardDataAsJSON, MapViewExtentLonLat } from "./tootltipUtils";
 import { Size } from "ol/size";
 
 type Props = {
@@ -47,8 +47,9 @@ export const Tooltip = memo(function Tooltip({tooltipData, mapExtent, mapSize}: 
         vizTooltipStyle = {
             ...vizTooltipStyle,
             borderStyle: "solid",
-            borderWidth: "1px",
-            borderColor: theme.colors.border.medium
+            borderWidth: "2px",
+            // borderRadius: theme.shape.radius.sm,
+            borderColor: theme.colors.border.strong
         }
     }
 
@@ -62,7 +63,7 @@ export const Tooltip = memo(function Tooltip({tooltipData, mapExtent, mapSize}: 
             allowPointerEvents
             >
             {datahoverview}
-            {tooltipData.fixedFlag && (
+            {(tooltipData.fixedFlag && (tooltipData.ttip?.propsToShow ?? []).length > 0) && (
                     // <div>
                     //     <i className="bi bi-copy"></i>
                     // </div>
@@ -79,8 +80,8 @@ export const Tooltip = memo(function Tooltip({tooltipData, mapExtent, mapSize}: 
                     //         },
                     //     );
                     // }}></IconButton>
-                    // TODO:
-                    <ClipboardButton icon="copy" variant="secondary" size="sm" getText={() => "shareUrl"} fullWidth={true}>
+                    <ClipboardButton icon="copy" variant="secondary" size="sm"
+                    getText={() => copy2ClipBoardDataAsJSON(tooltipData.ttip!)} fullWidth={true}>
                         Copy data
                     </ClipboardButton>
                 )

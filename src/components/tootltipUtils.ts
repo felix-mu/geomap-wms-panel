@@ -1,3 +1,5 @@
+import { getFieldDisplayName } from "@grafana/data";
+import { GeomapHoverPayload } from "event";
 import { Extent } from "ol/extent";
 import { toLonLat } from "ol/proj";
 import { Size } from "ol/size";
@@ -43,6 +45,7 @@ export function computeTooltipStyle(clickPointLonLat: {lon: number, lat: number}
     const y = relativeVerticalClickPoint >= 0.5 ? 
     {top: `${(1.0 - relativeVerticalClickPoint) * 100.0}%`, maxHeight: `${relativeVerticalClickPoint * mapSize[1]}px`} : 
     {bottom: `${relativeVerticalClickPoint * 100.0}%`, maxHeight: `${(1.0 - relativeVerticalClickPoint) * mapSize[1]}px`};
+
     const x = relativeHorizontalClickPoint >= 0.5 ? 
     {right: `${(1.0 - relativeHorizontalClickPoint) * 100.0}%`, maxWidth: `${relativeHorizontalClickPoint * mapSize[0]}px`} : 
         {left: `${relativeHorizontalClickPoint * 100.0}%`, maxWidth: `${(1.0 - relativeHorizontalClickPoint) * mapSize[0]}px`};
@@ -56,4 +59,23 @@ export function computeTooltipStyle(clickPointLonLat: {lon: number, lat: number}
             overflow: "auto",
         }
     );
+}
+
+export function copy2ClipBoardDataAsJSON(hoverEventPayload: GeomapHoverPayload): string {
+    const { data, rowIndex, propsToShow } = hoverEventPayload;
+
+    let dataObject: any = {};
+
+    (propsToShow ?? []).map((field) => {
+        const fieldName = getFieldDisplayName(field, data);
+        let fieldValue: any;
+        try {
+            fieldValue = data?.fields.find((f) => f.name === fieldName)?.values[rowIndex!];
+        } catch (error) {
+            fieldValue = null;
+        }
+        dataObject[fieldName] = fieldValue;
+    });
+
+    return JSON.stringify(dataObject);
 }
