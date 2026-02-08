@@ -43,12 +43,11 @@ import { centerPointRegistry, MapCenterID } from './view';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import { Coordinate } from 'ol/coordinate';
 import { css, cx } from '@emotion/css';
-import { PanelContext, PanelContextRoot, Portal ,/* stylesFactory, useStyles2, */ VizTooltipContainer } from '@grafana/ui';
+import { PanelContext, PanelContextRoot, /* stylesFactory, useStyles2, */ } from '@grafana/ui';
 import { GeomapOverlay, OverlayProps } from './GeomapOverlay';
 import { DebugOverlay } from './components/DebugOverlay';
 import { getGlobalStyles } from './globalStyles';
 import { GeomapHoverFeature, GeomapHoverPayload } from './event';
-import { DataHoverView } from './components/DataHoverView';
 import { ExtendMapLayerOptions } from './extension';
 import SpatialFilterControl from './mapcontrols/SpatialFilter';
 import { testIds } from 'e2eTestIds';
@@ -64,6 +63,7 @@ import { bootstrapIcons } from 'styles/bootstrap/bootstrapIcons';
 import { fontmaki } from 'styles/fontmaki/fontmaki';
 import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
 import { getLayersExtent } from 'utils/getLayersExtent';
+import { Tooltip } from 'components/Tooltip';
 // import LayerGroup from 'ol/layer/Group';
 
 export interface MapLayerState {
@@ -120,6 +120,9 @@ export class GeomapPanel extends Component<Props, State> {
   readonly hoverEvent = new DataHoverEvent(this.hoverPayload);
   private subs = new Subscription();
   mapDiv?: HTMLDivElement;
+  private pointerMoveListenerEnabled = true;
+  private dataHoverTimeout: ReturnType<typeof setTimeout> | undefined;
+  private tooltipFixed = false;
 
   constructor(props: Props/*, state: State*/) {
     super(props);
@@ -162,7 +165,7 @@ export class GeomapPanel extends Component<Props, State> {
           return;
         }
 
-        // Get options for data layer with refIf of dataframes and check if the data layer is configured for datalinks
+        // Get options for data layer with refId of dataframes and check if the data layer is configured for datalinks
         const dataLayer = this.props.options.layers.find((el) => {
           try {
             return el.query!.options === dataFrame.refId;
@@ -431,6 +434,14 @@ export class GeomapPanel extends Component<Props, State> {
   };
 
   singleClickListener = (evt: MapBrowserEvent) => {
+    // Enable pointerMoveListener to mouseover over feature
+    if (this.pointerMoveListenerEnabled === false) {
+      this.pointerMoveListenerEnabled = true;
+      clearTimeout(this.dataHoverTimeout);
+      this.clearTooltip();
+      this.tooltipFixed = true;
+    }
+    
     // console.log("Fired single click event");
     evt.preventDefault();
     evt.stopPropagation();
@@ -459,9 +470,14 @@ export class GeomapPanel extends Component<Props, State> {
 
 
   pointerMoveListener = (evt: MapBrowserEvent) => {
-    if (!this.map) {
+    if (!this.map || !this.pointerMoveListenerEnabled) {
       return;
     }
+
+    // Clear timeout function that possibly was startet before
+    clearTimeout(this.dataHoverTimeout);
+    this.tooltipFixed = false;
+
     const mouse = evt.originalEvent as any;
     const pixel = this.map.getEventPixel(mouse);
     const hover = toLonLat(this.map.getCoordinateFromPixel(pixel));
@@ -524,6 +540,21 @@ export class GeomapPanel extends Component<Props, State> {
       } else {
         this.clearTooltip();
       }
+    } else {
+      // The pointermove event is triggered as long as the pointer is moving on the feature
+      // so also start the timeout when the tooltip data stays the same since otherwise during the movement over the feature the
+      // time out function is cleared on the next event trigger
+      this.dataHoverTimeout = setTimeout(() => {
+        // Set flag to disable pointerMoveListener
+        this.pointerMoveListenerEnabled = false;
+        this.tooltipFixed = true;
+
+        this.setState(this.state);
+
+        if (this.map) {
+          this.map.getTargetElement().style.cursor = "";
+        }
+      }, 2000);
     }
   };
 
@@ -813,23 +844,26 @@ export class GeomapPanel extends Component<Props, State> {
     return (
       <>
         <div className={cx(fontmaki, fontmaki2, bootstrapIcons, olStyles, olExtStyles, this.globalCSS)} style={{height: "100%"}}>
-          <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={this.clearTooltip}>
+          <div className={styles.wrap} data-testid={testIds.geomapPanel.container} onMouseLeave={() => {
+            // Reset any tooltip related properties
+            this.clearTooltip();
+            clearTimeout(this.dataHoverTimeout);
+            this.tooltipFixed = true;
+            this.pointerMoveListenerEnabled = true;
+            }}>
             <div className={styles.map} ref={this.initMapRef}></div>
             <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />
+            <Tooltip tooltipData={{ttip: ttip, fixedFlag: this.tooltipFixed}} mapExtent={{
+            extent: this.map?.getView().calculateExtent(this.map?.getSize()) as number[] ?? [], 
+            projection: this.map?.getView().getProjection().getCode() ?? ""
+            }}></Tooltip>
           </div>
+          {/* <Tooltip ttip={ttip} mapExtent={{
+            extent: this.map?.getView().calculateExtent(this.map?.getSize()) as number[] ?? [], 
+            projection: this.map?.getView().getProjection().getCode() ?? ""
+            }}></Tooltip> */}
         </div>
-          {ttip && ttip.data && (
-            <Portal>
-              <VizTooltipContainer
-                className={styles.viz}
-                position={{ x: ttip.pageX, y: ttip.pageY }}
-                offset={{ x: 10, y: 10 }}
-                allowPointerEvents
-              >
-                <DataHoverView {...ttip} />
-              </VizTooltipContainer>
-            </Portal>
-          )}
+          {}
       </>
     );
   }
@@ -863,8 +897,5 @@ const styles = {
     zIndex: "0",
     width: "100%",
     height: "100%",
-  }),
-  viz: css({
-    borderRadius: "2px",
   }),
 };

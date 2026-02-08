@@ -52,6 +52,5 @@ export function getThresholdItems(fieldConfig: FieldConfig, theme: GrafanaTheme2
     });
   }
 
-
   return items;
 }
