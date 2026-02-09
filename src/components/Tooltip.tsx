@@ -3,7 +3,7 @@ import { DataHoverView } from "./DataHoverView";
 import React, { memo } from 'react';
 import { ClipboardButton, useTheme2, VizTooltipContainer } from "@grafana/ui";
 import { css } from "@emotion/css";
-import { computeTooltipStyle, convertMapViewExtent2LonLat, copy2ClipBoardDataAsJSON, MapViewExtentLonLat } from "./tootltipUtils";
+import { computeTooltipStyle, convertMapViewExtent2LonLat, copy2ClipBoardDataAsJSON, MapViewExtentLonLat, TooltipStyle } from "./tootltipUtils";
 import { Size } from "ol/size";
 
 type Props = {
@@ -37,11 +37,16 @@ export const Tooltip = memo(function Tooltip({tooltipData, mapExtent, mapSize}: 
         return null;
     }
 
-    let vizTooltipStyle = computeTooltipStyle(
-        (tooltipData.ttip.point as unknown) as { lon: number; lat: number; },
-        extentLonLat,
-        mapSize
-    );
+    let vizTooltipStyle: TooltipStyle;
+    try {
+        vizTooltipStyle = computeTooltipStyle(
+            (tooltipData.ttip.point as unknown) as { lon: number; lat: number; },
+            extentLonLat,
+            mapSize
+        );
+    } catch (error) {
+        return null;
+    }
 
     if (tooltipData.fixedFlag) {
         vizTooltipStyle = {

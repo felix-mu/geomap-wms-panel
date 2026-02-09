@@ -66,11 +66,11 @@ export function copy2ClipBoardDataAsJSON(hoverEventPayload: GeomapHoverPayload):
 
     let dataObject: any = {};
 
-    (propsToShow ?? []).map((field) => {
+    (propsToShow ?? []).forEach((field) => {
         const fieldName = getFieldDisplayName(field, data);
         let fieldValue: any;
         try {
-            fieldValue = data?.fields.find((f) => f.name === fieldName)?.values[rowIndex!];
+            fieldValue = data?.fields.find((f) => f.name === field.name)?.values[rowIndex!] ?? null;
         } catch (error) {
             fieldValue = null;
         }
