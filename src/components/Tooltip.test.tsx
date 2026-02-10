@@ -209,7 +209,7 @@ describe("tests for copy2ClipBoardDataAsJSON", () => {
                     name: "test2",
                     type: FieldType.number,
                     config: {
-                        "displayName": "test display name"
+                        "displayName": "test2 display name"
                     },
                     values: []
                 }
