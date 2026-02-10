@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react';
 // import { stylesFactory } from '@grafana/ui';
 import { /*DataFrame,*/ Field, formattedValueToString, getFieldDisplayName, GrafanaTheme2 } from '@grafana/data';
 import { css } from '@emotion/css';
-import { config } from '../config';
 import { GeomapHoverPayload } from 'event';
+import { config } from '@grafana/runtime';
 
 // export interface Props {
 //   data?: DataFrame; // source data

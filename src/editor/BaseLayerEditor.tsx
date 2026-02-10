@@ -1,16 +1,13 @@
 import React, { FC } from 'react';
-import { StandardEditorProps, PluginState } from '@grafana/data';
+import { config } from '@grafana/runtime';
 import { GeomapPanelOptions } from '../types';
 import { LayerEditor } from './LayerEditor';
-import { config, hasAlphaPanels } from '../config';
 import { ExtendMapLayerRegistryItem, ExtendMapLayerOptions } from 'extension';
+import { StandardEditorProps } from '@grafana/data';
 
 function baseMapFilter(layer: ExtendMapLayerRegistryItem): boolean {
   if (!layer.isBaseMap) {
     return false;
-  }
-  if (layer.state === PluginState.alpha) {
-    return hasAlphaPanels;
   }
   return true;
 }

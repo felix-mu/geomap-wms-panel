@@ -8,7 +8,7 @@ import {
   reduceField,
 } from '@grafana/data';
 import { css } from '@emotion/css';
-import { config } from '../../config';
+import { config } from '@grafana/runtime';
 import { DimensionSupplier } from '../../dimensions';
 import { getThresholdItems } from './utils';
 

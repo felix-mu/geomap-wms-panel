@@ -1,10 +1,9 @@
 import React from 'react';
-import { GrafanaTheme2, PluginState, StandardEditorProps } from '@grafana/data';
+import { GrafanaTheme2, StandardEditorProps } from '@grafana/data';
 import { /*CollapsableSection,*/ ControlledCollapse, /*HorizontalGroup,*/ IconButton, ToolbarButton, useStyles2, /*useTheme2*/ } from '@grafana/ui';
 import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
 import { GeomapPanelOptions } from 'types';
 import { defaultMarkersConfig } from '../layers/data/markersLayer';
-import { hasAlphaPanels } from 'config';
 import { LayerEditor } from './LayerEditor';
 import _ from 'lodash';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
@@ -20,10 +19,6 @@ const reorder = (list: ExtendMapLayerOptions[], startIndex: number, endIndex: nu
 };
 
 function dataLayerFilter(layer: ExtendMapLayerRegistryItem): boolean {
-  if (layer.state === PluginState.alpha) {
-    return hasAlphaPanels;
-  }
-
   if (layer.id === "default") {
     return false;
   }

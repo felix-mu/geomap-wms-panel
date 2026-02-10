@@ -1,7 +1,7 @@
 import { Registry, GrafanaTheme2 } from '@grafana/data';
 import Map from 'ol/Map';
 import { carto } from './basemaps/carto';
-import { config } from '../config';
+import { config } from '@grafana/runtime';
 import { basemapLayers } from './basemaps';
 import { dataLayers } from './data';
 import { ExtendMapLayerRegistryItem, ExtendMapLayerOptions } from '../extension';
