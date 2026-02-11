@@ -104,7 +104,7 @@ export const DataLayersEditor: React.FC<StandardEditorProps<ExtendMapLayerOption
                                 filter={dataLayerFilter}
                                 showNameField={true}
                               />
-                              <div className="data-layer-remove">
+                              <div style={{paddingTop: "8px"}} className="data-layer-remove">
                                 <ToolbarButton
                                   icon="trash-alt"
                                   tooltip="delete"

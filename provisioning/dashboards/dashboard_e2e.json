@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 7,
   "links": [],
   "panels": [
     {
@@ -904,6 +904,33 @@
             },
             "type": "heatmap",
             "visible": false
+          },
+          {
+            "config": {
+              "border": 2,
+              "color": "rgb(200, 200, 200)",
+              "crop": true,
+              "kind": "anchored",
+              "radius": 20,
+              "shadow": true,
+              "src": "imgB"
+            },
+            "displayProperties": [
+              "nameB"
+            ],
+            "enabledForDataLinks": true,
+            "location": {
+              "latitude": "latB",
+              "longitude": "lonB",
+              "mode": "coords"
+            },
+            "name": "photolayer",
+            "query": {
+              "id": "byRefId",
+              "options": "B"
+            },
+            "type": "photos",
+            "visible": true
           }
         ],
         "view": {
@@ -921,7 +948,18 @@
             "type": "grafana-testdata-datasource",
             "uid": "uid-test-data-123"
           },
+          "hide": false,
           "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "csvContent": "\"latB\",\"lonB\",\"idB\",\"nameB\",\"imgB\"\r\n48.15,11.5,1,\"Point feature\",\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACL0lEQVQ4jcXSyUuUAQCG8Rc16tBBoQ5l4Oc1iG4SHTv2F2SlGUEZCRoSKQaWAybmlmYjDZobjZppuaSOaZkojpaaBOIhl9Rc0BYdxzHH7+ngZEqH6tQLv+tzeqX/vj6rwrrz/Qs6smRtuyO7I1X2hltKe3pTkZL8/hjoscq+PFMPzO3QnHOktjJB1ZUJarVfk6MsTo7CGFkfXFKsJP+tQK9VDrd7GNYSd9ro/C0Kc2RHqVZS0Fak666m3UtvGG44jLNgD4MVBm/LDZwlBt1FBp02g1cFBm35Bo5cg6Zsg6obgdgu66ukAL3OFvOjDQyUBLK+OolpzoE5D+bcNrM+C5jmDB7XmGmLFpKC9TJTTAwUMtJ4AswR2Kjfps7nmc8LvGtVeL9/+BkIVVuGGGm/yqQzDjZ6YL3cp2ybUlgvAW8NXs9jpoefmHkX5JRkqDVd9Fcc48vofVivhrV7PnmbVnPAlQZLKbCciWfRxrvmJDMjQg8lHVRLmnAWBrOy0AJuyyZXMizGw2w0TJ+HqSiYOgez8bg/FdOQedxMOSWLpP1qui268sTG2hB8i4XZizARAeNnYfwMjJ3eNBoOH2PwLLRiTzxE3EmFSwpSY6oYKvfDu/oeVvrA1fvLsnMH09XP56k+bNEiLFRHJe1VvUWD7ZmiK1d0ZIm2dNGSKp5bRF2yqEkSVdfFo3hRGiuKroiMSBVLCpG0W5ICJB2QZEgK/UshkvZtv3SApF3/yF+SfgD/FPXPcVmLgAAAAABJRU5ErkJggg==\"\r\n48.15,11.2,2,\"Point feature\",\"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Grafana_icon.svg/640px-Grafana_icon.svg.png\"",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "uid-test-data-123"
+          },
+          "hide": false,
+          "refId": "B",
           "scenarioId": "csv_content"
         }
       ],
@@ -948,8 +986,36 @@
                 "value": 0
               },
               {
-                "color": "red",
-                "value": 80
+                "color": "#E24D42",
+                "value": 1
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 2
+              },
+              {
+                "color": "#1F78C1",
+                "value": 4
+              },
+              {
+                "color": "#EF843C",
+                "value": 5
+              },
+              {
+                "color": "#BA43A9",
+                "value": 7
+              },
+              {
+                "color": "#705DA0",
+                "value": 9
+              },
+              {
+                "color": "#508642",
+                "value": 11
+              },
+              {
+                "color": "#CCA300",
+                "value": 14
               }
             ]
           }
@@ -957,7 +1023,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
         "y": 32
@@ -1023,6 +1089,7 @@
               "clusterMinDistance": 0,
               "clusterValue": "size",
               "color": {
+                "field": "id",
                 "fixed": "dark-green"
               },
               "enableGradient": false,
@@ -1102,6 +1169,46 @@
             },
             "type": "heatmap",
             "visible": false
+          },
+          {
+            "config": {
+              "cluster": false,
+              "clusterDistance": 20,
+              "clusterMinDistance": 0,
+              "clusterValue": "size",
+              "color": {
+                "fixed": "dark-green"
+              },
+              "enableGradient": false,
+              "enableShadow": false,
+              "fillOpacity": 0.4,
+              "geoJsonStrokeSize": {
+                "fixed": 5,
+                "max": 10,
+                "min": 1
+              },
+              "iconSize": 9,
+              "pinShape": "marker",
+              "shape": "circle",
+              "showLegend": true,
+              "showPin": false,
+              "size": {
+                "fixed": 5,
+                "max": 15,
+                "min": 2
+              }
+            },
+            "enabledForDataLinks": true,
+            "location": {
+              "mode": "auto"
+            },
+            "name": "test 2",
+            "query": {
+              "id": "byRefId",
+              "options": "B"
+            },
+            "type": "markers",
+            "visible": true
           }
         ],
         "view": {
@@ -1114,12 +1221,21 @@
       "pluginVersion": "2.0.1",
       "targets": [
         {
-          "csvContent": "\"lat\",\"lon\",\"id\",\"name\"\r\n48.1,11.1,1,\"Point feature\"\r\n48.15,11.15,2,\"Point feature\"",
+          "csvContent": "\"lat\",\"lon\",\"id\",\"name\"\r\n48.1,11.13,1,\"Point featurebbbbbbbb bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"\r\n48.15,11.15,2,\"Point feature\"\r\n48.1,11.145,3,\"Point feature\"\r\n48.15,11.15,4,\"Point feature\"\r\n48.1,11.178,5,\"Point feature\"\r\n48.15,11.15,6,\"Point feature\"\r\n",
           "datasource": {
             "type": "grafana-testdata-datasource",
             "uid": "uid-test-data-123"
           },
           "refId": "A",
+          "scenarioId": "csv_content"
+        },
+        {
+          "csvContent": "\"lat\",\"lon\",\"id\",\"name\"\r\n48.1124,11.186,7,\"Point feature\"\r\n48.2,11.1545,8,\"Point feature\"\r\n48.165,11.1599,9,\"Point feature\"\r\n48.14,11.145,10,\"Point feature\"\r\n48.12,11.135,11,\"Point feature\"\r\n48.13,11.175,12,\"Point feature\"\r\n48.16,11.17,13,\"Point feature\"",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "uid-test-data-123"
+          },
+          "refId": "B",
           "scenarioId": "csv_content"
         }
       ],
@@ -1176,5 +1292,5 @@
   "timezone": "",
   "title": "dashboard_e2e",
   "uid": "adfx6j5",
-  "version": 79
+  "version": 24
 }
