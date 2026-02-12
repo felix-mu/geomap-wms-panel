@@ -851,7 +851,7 @@ export class GeomapPanel extends Component<Props, State> {
             this.tooltipFixed = true;
             this.pointerMoveListenerEnabled = true;
             }}>
-            <div className={styles.map} ref={this.initMapRef}></div>
+            <div className={styles.map} ref={this.initMapRef as (instance: HTMLDivElement | null) => void}></div>
             <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />
             <Tooltip tooltipData={{ttip: ttip, fixedFlag: this.tooltipFixed}} mapExtent={{
             extent: this.map?.getView().calculateExtent(this.map?.getSize()) as number[] ?? [], 

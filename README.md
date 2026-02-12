@@ -1,3 +1,15 @@
+> [!IMPORTANT]
+> From now on the panel builds from this repository and future releases are only compatible with Grafana versions `>= 12.3.0`. This is due to the migration actions needed to move from React 18 to React 19, which introduces some breaking changes.
+> More information about the Grafana migration to React 19 can be found here: https://grafana.com/blog/react-19-is-coming-to-grafana-what-plugin-developers-need-to-know/
+>
+> List of current plugin releases and the Grafana compatibilities:
+> |Plugin version | Grafana version dependency |
+> |---|---|
+> |1.0.0| >=9.1.6 <12.3.0 |
+> |2.0.0| >=9.1.6 <12.3.0 |
+> |2.0.1| >=9.1.6 <12.3.0 |
+> |2.0.2| >=9.1.6 <12.3.0 |
+
 > [!WARNING]  
 > Since **Grafana >= 11.3.x** the location of the map tooltip breaks due to https://github.com/grafana/grafana/pull/89921, which makes the `<body>` the scrollable element (https://github.com/grafana/grafana/issues/89894). This had the effect of breaking the computation of tooltips on the map canvas (https://github.com/grafana/grafana/pull/94827).
 > 
@@ -6,6 +18,7 @@
 > **Available fixes:**
 > - Fix for v1.x: The Geomap WMS Panel plugin `v1.0.2` is now available in the official Grafana Plugin Catalog: https://grafana.com/grafana/plugins/felixrelleum-geomapwms-panel/
 > - Fix for v2.x: The Geomap WMS Panel plugin `v2.0.2` is now available in the official Grafana Plugin Catalog: https://grafana.com/grafana/plugins/felixrelleum-geomapwms-panel/
+
 <br>
 <h1>
 <img src="src/img/geomap-wms-logo.svg" width="150px"/>
