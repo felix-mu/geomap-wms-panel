@@ -13,9 +13,14 @@ import path from 'path';
 import ReplaceInFileWebpackPlugin from 'replace-in-file-webpack-plugin';
 // import { Configuration, DefinePlugin } from 'webpack';
 import webpack, { type Configuration } from 'webpack';
+import { externals } from '../bundler/externals.ts';
 
 import { getPackageJson, getPluginJson, hasReadme, getEntries } from './utils.ts';
 import { SOURCE_DIR, DIST_DIR } from './constants.ts';
+
+export type Env = {
+  [key: string]: true | string | Env;
+};
 
 const pluginJson = getPluginJson();
 
@@ -34,43 +39,7 @@ const config = async (env): Promise<Configuration> => ({
 
   entry: await getEntries(),
 
-  externals: [
-    'lodash',
-    'jquery',
-    'moment',
-    'slate',
-    'emotion',
-    '@emotion/react',
-    '@emotion/css',
-    'prismjs',
-    'slate-plain-serializer',
-    '@grafana/slate-react',
-    'react',
-    'react-dom',
-    'react-redux',
-    'redux',
-    'rxjs',
-    'react-router',
-    'react-router-dom',
-    'd3',
-    'angular',
-    '@grafana/ui',
-    '@grafana/runtime',
-    '@grafana/data',
-
-    // Mark legacy SDK imports as external if their name starts with the "grafana/" prefix
-    ({ request }, callback) => {
-      const prefix = 'grafana/';
-      const hasPrefix = (request) => request.indexOf(prefix) === 0;
-      const stripPrefix = (request) => request.substr(prefix.length);
-
-      if (hasPrefix(request)) {
-        return callback(undefined, stripPrefix(request));
-      }
-
-      callback();
-    },
-  ],
+  externals,
 
   mode: env.production ? 'production' : 'development',
 
