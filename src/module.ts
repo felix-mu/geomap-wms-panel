@@ -7,6 +7,10 @@ import { defaultView, GeomapPanelOptions } from './types';
 import { /*mapPanelChangedHandler*/ migrationHandler } from './migrations';
 import { DEFAULT_BASEMAP_CONFIG } from './layers/registry';
 import { OverviewMapEditor } from 'editor/OverviewMapEditor';
+import { initPluginTranslations } from '@grafana/i18n';
+import pluginJson from 'plugin.json';
+
+await initPluginTranslations(pluginJson.id);
 
 export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
   .setNoPadding()

@@ -7,12 +7,12 @@ import Control from "ol/control/Control";
 // import LayerGroup from "ol/layer/Group";
 // import { ImageWMS } from "ol/source";
 import * as olCss from "ol/css";
-import { ScrollContainer } from "@grafana/ui";
+// import { ScrollContainer } from "@grafana/ui";
 // import { Scrollbars } from 'react-custom-scrollbars-2';
 // import ReactDOM from 'react-dom';
-import React from "react";
+// import React from "react";
 import { Map } from "ol";
-import { createRoot, Root } from "react-dom/client";
+// import { createRoot, Root } from "react-dom/client";
 
 // class PanelOptionsChangedEvent extends BusEventBase {
 //     static type = 'panels-options-changed';
@@ -35,7 +35,7 @@ export class WMSLegend extends Control {
     // private legendContainerCache: HTMLDivElement;
     private legendURLs: LegendItem[];
     private theme: GrafanaTheme2;
-    private root: Root;
+    // private root: Root;
 
     static removeWMSLegendControlFromMap(map: Map) {
         for(let i = 0; i < map.getControls().getLength(); ++i) {
@@ -112,7 +112,7 @@ export class WMSLegend extends Control {
         legendContainer.style.backgroundColor = this.theme.colors.background.primary;
 
         this.legendContainer = legendContainer;
-        this.root = createRoot(legendContainer);
+        // this.root = createRoot(legendContainer);
 
         this.legendURLs = legendURLs;
 
@@ -133,7 +133,7 @@ export class WMSLegend extends Control {
                 this.element.style.paddingBottom = "";
                 // this.element.style.background = config.theme2.colors.background.primary; // "rgba(255,255,255, 0.4)";
                 
-                this.root.unmount();
+                // this.root.unmount();
                 this.element.removeChild(this.legendContainer);
             } else {
                 button.getElementsByTagName('i')[0].remove();
@@ -148,9 +148,9 @@ export class WMSLegend extends Control {
                 
                 if(this.legendContainer.getElementsByTagName("div").length === 0) {
                     // this.legendContainer.append(...this.buildLegend(this.legendURLs));
-                    // ReactDOM.render(this.buildLegend(this.legendURLs), legendContainer);
-                    this.root = createRoot(this.legendContainer);
-                    this.root.render(this.buildLegend(this.legendURLs));
+                    this.legendContainer.appendChild(this.buildLegend(this.legendURLs));
+                    // this.root = createRoot(this.legendContainer);
+                    // this.root.render(this.buildLegend(this.legendURLs));
                 }
 
                 this.element.appendChild(this.legendContainer);
@@ -202,97 +202,83 @@ export class WMSLegend extends Control {
 
     }
 
-    // buildLegend(layer: BaseLayer): HTMLDivElement[] {
-    //     let legendItems: HTMLDivElement[] = [];
-    //     for (let l of layer.getLayersArray()) {
-    //         if (l instanceof LayerGroup) {
-    //             legendItems.push(...this.buildLegend(l));
-    //         } else {
-    //             try {
-    //                 const legendURL = (l.getSource()! as ImageWMS).getLegendUrl();
+    buildLegend(legendURLs: LegendItem[]): HTMLDivElement {
+        // let legendItems: HTMLDivElement[] = [];
+        let index = 0;
+        const legendDivElement = document.createElement("div");
+        legendDivElement.style.overflowY = "scroll";
+        legendDivElement.style.height = "100%";
+        legendDivElement.style.scrollbarWidth = "thin";
+        // legendDivElement.addEventListener("mouseover", (e: Event) => {
+        //     e.stopImmediatePropagation();
+        //     e.stopPropagation();
+        //     e.preventDefault();
+        // });
 
-    //                 if (legendURL === undefined) {
-    //                     continue;
-    //                 }
-    //                 let imageContainer = document.createElement("div");
-    //                 let image = document.createElement("img");
-    //                 image.src = legendURL;
-    //                 image.className = styles.legendImage;
+        for (let l of legendURLs) {
+            let imageContainer = document.createElement("div");
+            imageContainer.style.display = "block";
+            imageContainer.ariaLabel = `wms legend image container ${index}`;
+            // imageContainer.setAttribute("aria-label", `wms legend image container ${index}`);
+            imageContainer.style.borderBottom = `${this.theme.colors.border.strong} 1px solid`;
+            imageContainer.style.paddingBottom = "4px";
+            imageContainer.style.display = "block";
+            imageContainer.style.marginRight = "12px";
+            imageContainer.style.marginBottom = index === legendURLs.length - 1 ? "12px" : "auto";
 
-    //                 imageContainer.appendChild(image);
+            let image = document.createElement("img");
+            image.id = l.url;
+            image.src = l.url;
+            image.className = getStyles(this.theme).legendImg;
 
-    //                 legendItems.push(
-    //                     imageContainer
-    //                 );
-    //             } catch (error) {
-                    
-    //             }
-    //         }
-    //     }
-    //     return legendItems;
-    // }
+            let label = document.createElement("label");
+            label.innerText = l.label;
+            label.htmlFor = l.url;
+            label.style.display = "block";
+            label.style.color = this.theme.colors.text.maxContrast;
 
-    // buildLegend(legendURLs: LegendItem[]): HTMLDivElement[] {
-    //     let legendItems: HTMLDivElement[] = [];
-    //     let index = 0;
-    //     for (let l of legendURLs) {
-    //         let imageContainer = document.createElement("div");
-    //         imageContainer.style.display = "block";
-    //         imageContainer.ariaLabel = `wms legend image container ${index}`;
-    //         // imageContainer.setAttribute("aria-label", `wms legend image container ${index}`);
+            // let divider = document.createElement("hr");
+            // divider.className = getStyles(this.theme).grafanaDivider; // divider
 
-    //         let image = document.createElement("img");
-    //         image.id = l.url;
-    //         image.src = l.url;
-    //         // image.className = styles.legendImage;
+            imageContainer.appendChild(label);
+            imageContainer.appendChild(image);
+            // imageContainer.appendChild(divider);
 
-    //         let label = document.createElement("label");
-    //         label.innerText = /*"Layer: " + */l.label;
-    //         label.htmlFor = l.url;
-    //         label.style.display = "block";
-    //         label.style.color = this.theme.colors.text.maxContrast;
+            // legendItems.push(
+            //     imageContainer
+            // );
 
-    //         let divider = document.createElement("hr");
-    //         divider.className = getStyles(this.theme).grafanaDivider; // divider
+            legendDivElement.appendChild(imageContainer);
 
-    //         imageContainer.appendChild(label);
-    //         imageContainer.appendChild(image);
-    //         imageContainer.appendChild(divider);
+            ++index;
+            }
 
-    //         legendItems.push(
-    //             imageContainer
-    //             // image
-    //         );
-
-    //         ++index;
-
-    //         }
-    //     return legendItems;
-    // }
-
-    buildLegend(legendURLs: LegendItem[]): React.JSX.Element {
-        return (
-            <ScrollContainer>
-                {legendURLs.length > 0 && legendURLs.map((legendItem, index) => {
-                    return (
-                        <div key={legendItem.url} style={{
-                                borderBottom: `${this.theme.colors.border.strong} 1px solid`,
-                                paddingBottom: "4px",
-                                display: "block", 
-                                marginRight: "12px", 
-                                marginBottom: index === legendURLs.length - 1 ? "12px" : "auto"
-                            }} aria-label={`wms legend image container ${index}`}>
-                            <label style={{display: "block", color: this.theme.colors.text.maxContrast}}
-                                htmlFor={legendItem.url}>{legendItem.label}</label>
-                            <img id={legendItem.url} src={legendItem.url} className={getStyles(this.theme).legendImg}></img>
-                            {/* <hr className={getStyles(this.theme).grafanaDivider}></hr> */}
-                        </div>
-                    );
-                })
-                }
-            </ScrollContainer>
-        );
+        return legendDivElement;
     }
+
+    // buildLegend(legendURLs: LegendItem[]): React.JSX.Element {
+    //     return (
+    //         <ScrollContainer>
+    //             {legendURLs.length > 0 && legendURLs.map((legendItem, index) => {
+    //                 return (
+    //                     <div key={legendItem.url} style={{
+    //                             borderBottom: `${this.theme.colors.border.strong} 1px solid`,
+    //                             paddingBottom: "4px",
+    //                             display: "block", 
+    //                             marginRight: "12px", 
+    //                             marginBottom: index === legendURLs.length - 1 ? "12px" : "auto"
+    //                         }} aria-label={`wms legend image container ${index}`}>
+    //                         <label style={{display: "block", color: this.theme.colors.text.maxContrast}}
+    //                             htmlFor={legendItem.url}>{legendItem.label}</label>
+    //                         <img id={legendItem.url} src={legendItem.url} className={getStyles(this.theme).legendImg}></img>
+    //                         {/* <hr className={getStyles(this.theme).grafanaDivider}></hr> */}
+    //                     </div>
+    //                 );
+    //             })
+    //             }
+    //         </ScrollContainer>
+    //     );
+    // }
 
 }
 

@@ -2,28 +2,33 @@
  * @jest-environment jsdom
  */
 
-// import { LegendItem } from "layers/basemaps/wms";
-import { LegendItem, WMSLegend } from "./WMSLegend";
-import { cleanup, render, screen} from '@testing-library/react';
+import { WMSLegend, LegendItem } from "./WMSLegend";
+import { cleanup } from '@testing-library/react';
 import { Map } from "ol";
-import React, { act } from "react";
+import { act } from "react";
+// import {
+//   getByLabelText,
+//   getByText,
+//   getByTestId,
+//   queryByTestId,
+//   waitFor,
+// } from '@testing-library/dom';
+// import '@testing-library/jest-dom';
 
 afterEach(cleanup);
 
 describe("Build legend method", () => {
     test("empty legends url array should return empty div array", async () => {
         const wmsLegend: WMSLegend = new WMSLegend([]);
-        const wmsLegendContainer: React.JSX.Element = wmsLegend.buildLegend([]);
-        render(wmsLegendContainer);
-        expect(screen.queryAllByLabelText (/^wms legend image container/i)).toHaveLength(0);
+        const wmsLegendContainer: HTMLDivElement = wmsLegend.buildLegend([]);
+        expect(wmsLegendContainer.querySelectorAll("[aria-label*='wms legend image container']")).toHaveLength(0);
     });
 
     test("legends url array should return same size", () => {
         const legendItems: LegendItem[] = [{label: "", url: ""}, {label: "", url: ""}];
         const wmsLegend: WMSLegend = new WMSLegend(legendItems);
-        const wmsLegendContainer: React.JSX.Element = wmsLegend.buildLegend(legendItems);
-        render(wmsLegendContainer);
-        expect(screen.queryAllByLabelText (/^wms legend image container/i)).toHaveLength(legendItems.length);
+        const wmsLegendContainer: HTMLDivElement = wmsLegend.buildLegend(legendItems);
+        expect(wmsLegendContainer.querySelectorAll("[aria-label*='wms legend image container']")).toHaveLength(legendItems.length);
     });
 });
 
