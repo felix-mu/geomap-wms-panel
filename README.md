@@ -9,6 +9,7 @@
 > |2.0.0| >=9.1.6 <12.3.0 |
 > |2.0.1| >=9.1.6 <12.3.0 |
 > |2.0.2| >=9.1.6 <12.3.0 |
+> |>2.0.2| >= 12.3.0|
 
 > [!WARNING]  
 > Since **Grafana >= 11.3.x** the location of the map tooltip breaks due to https://github.com/grafana/grafana/pull/89921, which makes the `<body>` the scrollable element (https://github.com/grafana/grafana/issues/89894). This had the effect of breaking the computation of tooltips on the map canvas (https://github.com/grafana/grafana/pull/94827).
