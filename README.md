@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> From now on the panel builds from this repository and future releases are only compatible with Grafana versions `>= 12.3.0`. This is due to the migration actions needed to move from React 18 to React 19, which introduces some breaking changes.
+> From now on the panel builds from this repository and future releases are only compatible with Grafana versions `>= 12.3.0`. This is due to the migration actions needed to align the plugin with React 19 requirements, which introduces some breaking changes.
 > More information about the Grafana migration to React 19 can be found here: https://grafana.com/blog/react-19-is-coming-to-grafana-what-plugin-developers-need-to-know/
 >
 > List of current plugin releases and the Grafana compatibilities:
