@@ -6,6 +6,7 @@ import {
   FrameGeometrySourceMode,
   PanelOptionsEditorBuilder,
 } from '@grafana/data';
+import { MinMaxZoomLevelProps } from 'editor/MinMaxZoomLevelEditor';
 import Map from 'ol/Map';
 
 export interface MatcherConfig<TOptions = any> {
@@ -52,6 +53,7 @@ export interface ExtendMapLayerOptions<TConfig = any> {
   visible?: boolean;
   enabledForDataLinks?: boolean;
   basemapUsedAsMapLayer?: boolean;
+  minMaxZoomLevel?: MinMaxZoomLevelProps;
 }
 
 export interface ExtendMapLayerRegistryItem<TConfig = ExtendMapLayerOptions> extends RegistryItemWithOptions {
