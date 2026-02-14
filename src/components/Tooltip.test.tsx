@@ -1,6 +1,7 @@
 import { GeomapHoverPayload } from "event";
-import { convertMapViewExtent2LonLat, copy2ClipBoardDataAsJSON } from "./tootltipUtils";
+import { computeTooltipStyle, convertMapViewExtent2LonLat, copy2ClipBoardDataAsJSON, MapViewExtentLonLat } from "./tootltipUtils";
 import { DataFrame, FieldType } from "@grafana/data";
+import { Size } from "ol/size";
 
 describe("tests for convertMapViewExtent2LonLat", () => {
     test("length < 4 of extent array should throw an error", () => {
@@ -218,5 +219,181 @@ describe("tests for copy2ClipBoardDataAsJSON", () => {
         };
 
         expect(copy2ClipBoardDataAsJSON((payload as any) as GeomapHoverPayload)).toEqual('{"test2 display name":null}');
+    });
+});
+
+describe("tets for computeTooltipStyle", () => {
+    const extent: MapViewExtentLonLat = {
+        minLonLat: {
+            lon: 0,
+            lat: 0
+        },
+        maxLonLat: {
+            lon: 2,
+            lat: 2
+        }
+    };
+    const mapSize: Size = [100, 100];
+
+    test("mousePoint on left lower edge", () => {
+        const mousePoint = {
+            lon: 0,
+            lat: 0
+        };
+        const style = computeTooltipStyle(mousePoint, extent, mapSize);
+
+        expect(style).toEqual({
+            bottom: "0%",
+            maxHeight: "100px",
+            left: "0%",
+            maxWidth: "100px",
+            position: "fixed",
+            scrollbarWidth: "thin",
+            overflow: "auto",
+        });
+    });
+
+    test("mousePoint on left upper edge", () => {
+        const mousePoint = {
+            lon: 0,
+            lat: 2
+        };
+        const style = computeTooltipStyle(mousePoint, extent, mapSize);
+
+        expect(style).toEqual({
+            top: "0%",
+            maxHeight: "100px",
+            left: "0%",
+            maxWidth: "100px",
+            position: "fixed",
+            scrollbarWidth: "thin",
+            overflow: "auto",
+        });
+    });
+
+    test("mousePoint on right lower edge", () => {
+        const mousePoint = {
+            lon: 2,
+            lat: 0
+        };
+        const style = computeTooltipStyle(mousePoint, extent, mapSize);
+
+        expect(style).toEqual({
+            bottom: "0%",
+            maxHeight: "100px",
+            right: "0%",
+            maxWidth: "100px",
+            position: "fixed",
+            scrollbarWidth: "thin",
+            overflow: "auto",
+        });
+    });
+
+    test("mousePoint on right upper edge", () => {
+        const mousePoint = {
+            lon: 2,
+            lat: 2
+        };
+        const style = computeTooltipStyle(mousePoint, extent, mapSize);
+
+        expect(style).toEqual({
+            top: "0%",
+            maxHeight: "100px",
+            right: "0%",
+            maxWidth: "100px",
+            position: "fixed",
+            scrollbarWidth: "thin",
+            overflow: "auto",
+        });
+    });
+
+    test("mousePoint in the center", () => {
+        const mousePoint = {
+            lon: 1,
+            lat: 1
+        };
+        const style = computeTooltipStyle(mousePoint, extent, mapSize);
+
+        expect(style).toEqual({
+            top: "50%",
+            maxHeight: "50px",
+            right: "50%",
+            maxWidth: "50px",
+            position: "fixed",
+            scrollbarWidth: "thin",
+            overflow: "auto",
+        });
+    });
+
+    test("mousePoint in the lower center", () => {
+        const mousePoint = {
+            lon: 1,
+            lat: 0
+        };
+        const style = computeTooltipStyle(mousePoint, extent, mapSize);
+
+        expect(style).toEqual({
+            bottom: "0%",
+            maxHeight: "100px",
+            right: "50%",
+            maxWidth: "50px",
+            position: "fixed",
+            scrollbarWidth: "thin",
+            overflow: "auto",
+        });
+    });
+
+    test("mousePoint in the upper center", () => {
+        const mousePoint = {
+            lon: 1,
+            lat: 2
+        };
+        const style = computeTooltipStyle(mousePoint, extent, mapSize);
+
+        expect(style).toEqual({
+            top: "0%",
+            maxHeight: "100px",
+            right: "50%",
+            maxWidth: "50px",
+            position: "fixed",
+            scrollbarWidth: "thin",
+            overflow: "auto",
+        });
+    });
+
+    test("mousePoint in the left center", () => {
+        const mousePoint = {
+            lon: 0,
+            lat: 1
+        };
+        const style = computeTooltipStyle(mousePoint, extent, mapSize);
+
+        expect(style).toEqual({
+            top: "50%",
+            maxHeight: "50px",
+            left: "0%",
+            maxWidth: "100px",
+            position: "fixed",
+            scrollbarWidth: "thin",
+            overflow: "auto",
+        });
+    });
+
+    test("mousePoint in the right center", () => {
+        const mousePoint = {
+            lon: 2,
+            lat: 1
+        };
+        const style = computeTooltipStyle(mousePoint, extent, mapSize);
+
+        expect(style).toEqual({
+            top: "50%",
+            maxHeight: "50px",
+            right: "0%",
+            maxWidth: "100px",
+            position: "fixed",
+            scrollbarWidth: "thin",
+            overflow: "auto",
+        });
     });
 });

@@ -34,13 +34,13 @@ export function convertMapViewExtent2LonLat(extent: Extent | number[], extentPro
     });
 }
 
-export function computeTooltipStyle(clickPointLonLat: {lon: number, lat: number},
+export function computeTooltipStyle(mousePointLonLat: {lon: number, lat: number},
     extent: MapViewExtentLonLat, mapSize: Size): TooltipStyle {
     const horizontalDiff = extent.maxLonLat.lon - extent.minLonLat.lon;
     const verticalDiff = extent.maxLonLat.lat - extent.minLonLat.lat;
 
-    const relativeHorizontalClickPoint = (clickPointLonLat.lon - extent.minLonLat.lon) / horizontalDiff;
-    const relativeVerticalClickPoint = (clickPointLonLat.lat - extent.minLonLat.lat) / verticalDiff;
+    const relativeHorizontalClickPoint = (mousePointLonLat.lon - extent.minLonLat.lon) / horizontalDiff;
+    const relativeVerticalClickPoint = (mousePointLonLat.lat - extent.minLonLat.lat) / verticalDiff;
 
     const y = relativeVerticalClickPoint >= 0.5 ? 
     {top: `${(1.0 - relativeVerticalClickPoint) * 100.0}%`, maxHeight: `${relativeVerticalClickPoint * mapSize[1]}px`} : 
