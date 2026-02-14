@@ -89,7 +89,8 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
           layers.push(
             new ImageLayer({
               source: wmsSource,
-              opacity: wmsItem.opacity ?? 1.0
+              ...options,
+              opacity: wmsItem.opacity ?? 1.0,
             })
           );
 
