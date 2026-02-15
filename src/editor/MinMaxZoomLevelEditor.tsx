@@ -1,7 +1,8 @@
 // import { StandardEditorProps } from "@grafana/data";
 import { Button, InlineField, InlineFieldRow, Input, Label } from "@grafana/ui";
 import { ExtendMapLayerOptions } from "extension";
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import { getCurrentMapViewZoomLevel, getValidationMessage, isValidZoomLevel, isValidZoomLevelConfiguration } from "./minMaxZoomLevelEditorUtils";
 
 export type MinMaxZoomLevelProps = {
     minZoomLevel: number,
@@ -9,40 +10,77 @@ export type MinMaxZoomLevelProps = {
 }
 
 export function MinMaxZoomLevelEditor({value, onChange}: {value: ExtendMapLayerOptions, onChange: (options: ExtendMapLayerOptions<any>) => void}) {
-    const [minZoom, setMinZoom] = useState(value.minZoom ?? "");
-    const [maxZoom, setMaxZoom] = useState(value.maxZoom ?? "");
+    const [minZoom, setMinZoom] = useState(value.minZoom);
+    const [maxZoom, setMaxZoom] = useState(value.maxZoom);
+
+    const emitChanges = useCallback((minZoomLevel: number|undefined, maxZoomLevel: number|undefined) => {
+        try {
+            isValidZoomLevel(minZoomLevel);
+            isValidZoomLevel(maxZoomLevel);
+            isValidZoomLevelConfiguration(minZoomLevel, maxZoomLevel);
+
+            onChange({
+                ...value,
+                minZoom: minZoomLevel,
+                maxZoom: maxZoomLevel,
+            });
+            } catch (error) {
+                return;
+            }
+    }, [onChange, value]);
+
+    const minZoomLevelValidationMessage = useMemo(() => {
+        return getValidationMessage(() => {
+                    isValidZoomLevel(minZoom);
+                    isValidZoomLevelConfiguration(minZoom, maxZoom);
+                });
+    }, [minZoom, maxZoom]);
+
+    const maxZoomLevelValidationMessage = useMemo(() => {
+        return getValidationMessage(() => {
+                    isValidZoomLevel(maxZoom);
+                    isValidZoomLevelConfiguration(minZoom, maxZoom);
+                });
+    }, [minZoom, maxZoom]);
+
     return (
         <>
-            <Label description="If min or max zoom are set, the layer will only be visible at zoom levels greater than the minZoom and less than or equal to the maxZoom.">Layer min/max zoom level</Label>
+            <Label description="If min or max zoom are set, the layer will only be visible at zoom levels greater than the minZoom and less than or equal to the maxZoom. Note: zooming out decreases the zoom level number, zooming in increases the zoom level number.">Layer min/max zoom level</Label>
             <InlineFieldRow>
-                <InlineField label="Min zoom level" invalid={(minZoom >= maxZoom && minZoom !== "" && maxZoom !== "") || parseFloat(minZoom as string) < 0} 
-                error={(minZoom >= maxZoom && minZoom !== "" && maxZoom !== "") || parseFloat(minZoom as string) < 0 ? "min zoom level must be smaller than max zoom level and greather than zero": ""}>
+                <InlineField label="Min zoom level" invalid={minZoomLevelValidationMessage.length > 0} 
+                error={minZoomLevelValidationMessage}>
                     <Input value={minZoom} type="number" placeholder="min zoom level" onChange={
                         (e) => {
                             setMinZoom(parseFloat(e.currentTarget.value));
                         }
                     } onBlur={() => {
-                        if (minZoom >= maxZoom || parseFloat(minZoom as string) < 0) {
-                            return;
-                        }
+                        emitChanges(minZoom, maxZoom);
                     }}/>
                 </InlineField>
-                <Button size="sm" data-testid="minmaxzoomleveleditor min zoom level button" style={{marginBottom: "8px"}} variant="secondary">Set from current map view</Button>
+                <Button size="sm" data-testid="minmaxzoomleveleditor min zoom level button" style={{marginBottom: "8px"}} variant="secondary"
+                onClick={() => {
+                    const currentZoomLevel = getCurrentMapViewZoomLevel();
+                    setMinZoom(currentZoomLevel);
+                    emitChanges(currentZoomLevel, maxZoom);
+                }}>Set from current map view</Button>
             </InlineFieldRow>
             <InlineFieldRow>
-                <InlineField label="Max zoom level" invalid={(minZoom >= maxZoom && minZoom !== "" && maxZoom !== "") || parseFloat(maxZoom as string) < 0} 
-                error={(minZoom >= maxZoom && minZoom !== "" && maxZoom !== "") || parseFloat(maxZoom as string) < 0 ? "max zoom level must be greater than min zoom level and greater than zero": ""}>
+                <InlineField label="Max zoom level" invalid={maxZoomLevelValidationMessage.length > 0} 
+                error={maxZoomLevelValidationMessage}>
                     <Input value={maxZoom} type="number" placeholder="max zoom level" onChange={
                         (e) => {
                             setMaxZoom(parseFloat(e.currentTarget.value));
                         }
                     } onBlur={() => {
-                        if (minZoom >= maxZoom || parseFloat(minZoom as string) < 0) {
-                            return;
-                        }
+                        emitChanges(minZoom, maxZoom);
                     }}/>
                 </InlineField>
-                <Button size="sm" data-testid="minmaxzoomleveleditor max zoom level button" style={{marginBottom: "8px"}} variant="secondary">Set from current map view</Button>
+                <Button size="sm" data-testid="minmaxzoomleveleditor max zoom level button" style={{marginBottom: "8px"}} variant="secondary"
+                onClick={() => {
+                    const currentZoomLevel = getCurrentMapViewZoomLevel();
+                    setMaxZoom(currentZoomLevel);
+                    emitChanges(minZoom, currentZoomLevel);
+                }}>Set from current map view</Button>
             </InlineFieldRow>
         </>
     );
