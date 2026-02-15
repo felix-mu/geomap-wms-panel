@@ -101,7 +101,6 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
             layers.push(
               new TileLayer({
                 source: wmtsSource,
-                ...options,
                 opacity: wmtsItem.opacity ?? 1.0,
               })
             );
@@ -145,6 +144,7 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
     return ({
         init: () => {
           return new LayerGroup({
+            ...options,
             layers: [
               ...layers
             ]
