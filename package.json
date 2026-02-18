@@ -118,7 +118,7 @@
     "react-router": "6.30.2",
     "tmp": "0.2.4",
     "lodash": "4.17.23",
-    "fast-xml-parser": "5.3.4"
+    "fast-xml-parser": "5.3.6"
   },
   "config": {
     "commitizen": {
