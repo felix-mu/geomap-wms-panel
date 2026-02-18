@@ -49,7 +49,7 @@ export function MinMaxZoomLevelEditor({value, onChange}: {value: ExtendMapLayerO
             <InlineFieldRow>
                 <InlineField label="Min zoom level" invalid={minZoomLevelValidationMessage.length > 0} 
                 error={minZoomLevelValidationMessage}>
-                    <Input value={minZoom} type="number" placeholder="min zoom level" onChange={
+                    <Input data-testid="minmaxzoomleveleditor min zoom level input" value={minZoom} type="number" placeholder="min zoom level" onChange={
                         (e) => {
                             setMinZoom(parseFloat(e.currentTarget.value));
                         }
@@ -67,7 +67,7 @@ export function MinMaxZoomLevelEditor({value, onChange}: {value: ExtendMapLayerO
             <InlineFieldRow>
                 <InlineField label="Max zoom level" invalid={maxZoomLevelValidationMessage.length > 0} 
                 error={maxZoomLevelValidationMessage}>
-                    <Input value={maxZoom} type="number" placeholder="max zoom level" onChange={
+                    <Input data-testid="minmaxzoomleveleditor max zoom level input" value={maxZoom} type="number" placeholder="max zoom level" onChange={
                         (e) => {
                             setMaxZoom(parseFloat(e.currentTarget.value));
                         }
