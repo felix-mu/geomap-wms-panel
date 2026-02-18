@@ -89,7 +89,7 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
           layers.push(
             new ImageLayer({
               source: wmsSource,
-              opacity: wmsItem.opacity ?? 1.0
+              opacity: wmsItem.opacity ?? 1.0,
             })
           );
 
@@ -138,6 +138,7 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
         init: () => {
           // console.log(crsCode);          
           return new LayerGroup({
+            ...options,
             layers: [
               ...layers
             ],

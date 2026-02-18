@@ -616,6 +616,14 @@ export class GeomapPanel extends Component<Props, State> {
         layer.setVisible(false)
       }
 
+      // Set min/max zoom level
+      if (overlay.maxZoom) {
+        layer.setMaxZoom(overlay.maxZoom)
+      }
+      if (overlay.minZoom) {
+        layer.setMinZoom(overlay.minZoom)
+      }
+
       (layer as any).___handler = handler;
       this.map!.addLayer(layer);
       this.layers.push({

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Combobox, ComboboxOption, ScrollContainer } from '@grafana/ui';
+import { Combobox, ComboboxOption, Divider, ScrollContainer } from '@grafana/ui';
 import {
   DataFrame,
   PanelOptionsEditorBuilder,
@@ -16,6 +16,7 @@ import { fillOptionsPaneItems } from './PanelEditor/getVizualizationOptions';
 import { GazetteerPathEditor } from './GazetteerPathEditor';
 import { ExtendMapLayerRegistryItem, ExtendMapLayerOptions, ExtendFrameGeometrySourceMode } from '../extension';
 import { FrameSelectionEditor } from './FrameSelectionEditor';
+import { MinMaxZoomLevelEditor } from './MinMaxZoomLevelEditor';
 
 export interface LayerEditorProps<TConfig = any> {
   options?: ExtendMapLayerOptions<TConfig>;
@@ -309,8 +310,16 @@ export const LayerEditor: FC<LayerEditorProps> = ({ options, onChange, data, fil
           });
         }}
       />
-
       {layerOptions}
+      {isBaselayerEditor === false &&
+      (
+        <>
+          <Divider />
+          <MinMaxZoomLevelEditor value={options!} onChange={onChange}>
+          </MinMaxZoomLevelEditor>
+        </>
+      )
+      }
     </ScrollContainer>
   );
 };

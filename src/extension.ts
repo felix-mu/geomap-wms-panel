@@ -52,6 +52,8 @@ export interface ExtendMapLayerOptions<TConfig = any> {
   visible?: boolean;
   enabledForDataLinks?: boolean;
   basemapUsedAsMapLayer?: boolean;
+  minZoom?: number;
+  maxZoom?: number;
 }
 
 export interface ExtendMapLayerRegistryItem<TConfig = ExtendMapLayerOptions> extends RegistryItemWithOptions {

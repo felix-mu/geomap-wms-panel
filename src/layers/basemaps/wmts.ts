@@ -144,6 +144,7 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
     return ({
         init: () => {
           return new LayerGroup({
+            ...options,
             layers: [
               ...layers
             ]
