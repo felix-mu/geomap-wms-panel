@@ -51,7 +51,7 @@ export function MinMaxZoomLevelEditor({value, onChange}: {value: ExtendMapLayerO
                 error={minZoomLevelValidationMessage}>
                     <Input data-testid="minmaxzoomleveleditor min zoom level input" value={minZoom} type="number" placeholder="min zoom level" onChange={
                         (e) => {
-                            setMinZoom(parseFloat(e.currentTarget.value));
+                            setMinZoom(isNaN(parseFloat(e.currentTarget.value)) ? undefined : parseFloat(e.currentTarget.value));
                         }
                     } onBlur={() => {
                         emitChanges(minZoom, maxZoom);
@@ -69,7 +69,7 @@ export function MinMaxZoomLevelEditor({value, onChange}: {value: ExtendMapLayerO
                 error={maxZoomLevelValidationMessage}>
                     <Input data-testid="minmaxzoomleveleditor max zoom level input" value={maxZoom} type="number" placeholder="max zoom level" onChange={
                         (e) => {
-                            setMaxZoom(parseFloat(e.currentTarget.value));
+                            setMaxZoom(isNaN(parseFloat(e.currentTarget.value)) ? undefined : parseFloat(e.currentTarget.value));
                         }
                     } onBlur={() => {
                         emitChanges(minZoom, maxZoom);

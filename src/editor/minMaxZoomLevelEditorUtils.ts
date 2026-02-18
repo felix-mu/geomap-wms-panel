@@ -18,17 +18,17 @@ export function isValidZoomLevel(zoomLevel?: number): boolean {
 }
 
 export function isValidZoomLevelConfiguration(minZoom: number | undefined, maxZoom: number | undefined): boolean {
-    if (!minZoom && !maxZoom) {
+    if (minZoom === undefined && maxZoom === undefined) {
         return true;
     }
 
-    if ((!minZoom && maxZoom) || 
-        (!maxZoom && minZoom)
+    if ((minZoom === undefined && maxZoom !== undefined) || 
+        (maxZoom === undefined && minZoom !== undefined)
     ) {
         return true;
     }
 
-    if ((minZoom && maxZoom) && minZoom <= maxZoom) {
+    if ((minZoom !== undefined && maxZoom !== undefined) && minZoom <= maxZoom) {
         return true;
     }
 

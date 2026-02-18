@@ -55,7 +55,7 @@ describe("tests for isValidZoomLevelConfiguration", () => {
     });
 
     test("if both input parameters are defined and minZomm < maxZoom should return true", () => {
-        expect(isValidZoomLevelConfiguration(1, 2)).toBeTruthy();
+        expect(isValidZoomLevelConfiguration(0, 28)).toBeTruthy();
     });
 
     test("if both input parameters are defined and minZomm == maxZoom should return true", () => {
@@ -63,7 +63,7 @@ describe("tests for isValidZoomLevelConfiguration", () => {
     });
 
     test("if both input parameters are defined and minZomm > maxZoom should hrow an error", () => {
-        expect(() => isValidZoomLevelConfiguration(2, 1)).toThrow();
+        expect(() => isValidZoomLevelConfiguration(2, 0)).toThrow();
     });
 });
 
@@ -112,5 +112,125 @@ describe("tests for MinMaxZoomLevelEditor", () => {
             cleanup();
     });
 
-    // TODO:...
+    test("typing in the max zoom level into the max zoom level input should set the input value of the max zoom",
+        async () => {
+            const extendMapLayerOptions: ExtendMapLayerOptions<any> = {
+                type: ""
+            };
+            render(<MinMaxZoomLevelEditor value={extendMapLayerOptions} onChange={function(options: ExtendMapLayerOptions<any>): void { } } />);
+            const maxZoomInput = screen.getByTestId("minmaxzoomleveleditor max zoom level input");
+            await userEvent.type(maxZoomInput, `${MAX_ZOOM_LEVEL}`);
+            expect(maxZoomInput).toHaveValue(MAX_ZOOM_LEVEL);
+            cleanup();
+    });
+
+    test("typing in the min zoom level into the max zoom level input should set the input value of the max zoom",
+        async () => {
+            const extendMapLayerOptions: ExtendMapLayerOptions<any> = {
+                type: ""
+            };
+            render(<MinMaxZoomLevelEditor value={extendMapLayerOptions} onChange={function(options: ExtendMapLayerOptions<any>): void { } } />);
+            const maxZoomInput = screen.getByTestId("minmaxzoomleveleditor max zoom level input");
+            await userEvent.type(maxZoomInput, `${MIN_ZOOM_LEVEL}`);
+            expect(maxZoomInput).toHaveValue(MIN_ZOOM_LEVEL);
+            cleanup();
+    });
+
+    test("typing in the max zoom level into the min zoom level input should set the input value of the max zoom",
+        async () => {
+            const extendMapLayerOptions: ExtendMapLayerOptions<any> = {
+                type: ""
+            };
+            render(<MinMaxZoomLevelEditor value={extendMapLayerOptions} onChange={function(options: ExtendMapLayerOptions<any>): void { } } />);
+            const minZoomInput = screen.getByTestId("minmaxzoomleveleditor min zoom level input");
+            await userEvent.type(minZoomInput, `${MAX_ZOOM_LEVEL}`);
+            expect(minZoomInput).toHaveValue(MAX_ZOOM_LEVEL);
+            cleanup();
+    });
+
+    test("typing in the min zoom level into the min zoom level input should set the input value of the max zoom",
+        async () => {
+            const extendMapLayerOptions: ExtendMapLayerOptions<any> = {
+                type: ""
+            };
+            render(<MinMaxZoomLevelEditor value={extendMapLayerOptions} onChange={function(options: ExtendMapLayerOptions<any>): void { } } />);
+            const minZoomInput = screen.getByTestId("minmaxzoomleveleditor min zoom level input");
+            await userEvent.type(minZoomInput, `${MIN_ZOOM_LEVEL}`);
+            expect(minZoomInput).toHaveValue(MIN_ZOOM_LEVEL);
+            cleanup();
+    });
+
+    test("typing in min zoom level > max zoom level should display an error messages",
+        async () => {
+            const extendMapLayerOptions: ExtendMapLayerOptions<any> = {
+                type: ""
+            };
+            render(<MinMaxZoomLevelEditor value={extendMapLayerOptions} onChange={function(options: ExtendMapLayerOptions<any>): void { } } />);
+            const minZoomInput = screen.getByTestId("minmaxzoomleveleditor min zoom level input");
+            await userEvent.type(minZoomInput, "3");
+            const maxZoomInput = screen.getByTestId("minmaxzoomleveleditor max zoom level input");
+            await userEvent.type(maxZoomInput, "0");
+            expect(screen.queryAllByText("Error: maxZoom must be greater or equal to minZoom").length > 0).toBeTruthy();
+            cleanup();
+    });
+
+    test("typing in a zoom level into min zoom level input exceeding the allowed max zoom level should display an error message",
+        async () => {
+            const extendMapLayerOptions: ExtendMapLayerOptions<any> = {
+                type: ""
+            };
+            render(<MinMaxZoomLevelEditor value={extendMapLayerOptions} onChange={function(options: ExtendMapLayerOptions<any>): void { } } />);
+            const minZoomInput = screen.getByTestId("minmaxzoomleveleditor min zoom level input");
+            await userEvent.type(minZoomInput, "29");
+            expect(screen.queryAllByText(`Error: zoom level must be between ${MIN_ZOOM_LEVEL} and ${MAX_ZOOM_LEVEL}`).length > 0).toBeTruthy();
+            cleanup();
+    });
+
+    test("provided extendMapLayerOptions passed as props to MinMaxZoomLevelEditor should set the correct values",
+        async () => {
+            const extendMapLayerOptions: ExtendMapLayerOptions<any> = {
+                type: "",
+                minZoom: MIN_ZOOM_LEVEL,
+                maxZoom: MAX_ZOOM_LEVEL
+            };
+            render(<MinMaxZoomLevelEditor value={extendMapLayerOptions} onChange={function(options: ExtendMapLayerOptions<any>): void { } } />);
+            const minZoomInput = screen.getByTestId("minmaxzoomleveleditor min zoom level input");
+            const maxZoomInput = screen.getByTestId("minmaxzoomleveleditor max zoom level input");
+            expect(minZoomInput).toHaveValue(MIN_ZOOM_LEVEL);
+            expect(maxZoomInput).toHaveValue(MAX_ZOOM_LEVEL);
+            cleanup();
+    });
+
+    test("if not provided min/max zoom level in the extendMapLayerOptions and passed as props to MinMaxZoomLevelEditor should set the values as undefined",
+        async () => {
+            const extendMapLayerOptions: ExtendMapLayerOptions<any> = {
+                type: "",
+            };
+            render(<MinMaxZoomLevelEditor value={extendMapLayerOptions} onChange={function(options: ExtendMapLayerOptions<any>): void { } } />);
+            const minZoomInput = screen.getByTestId("minmaxzoomleveleditor min zoom level input");
+            const maxZoomInput = screen.getByTestId("minmaxzoomleveleditor max zoom level input");
+            expect(minZoomInput).toHaveValue(null);
+            expect(maxZoomInput).toHaveValue(null);
+            cleanup();
+    });
+
+    test("if provided min/max zoom level in the extenMapLayerOptions and passed as props to MinMaxZoomLevelEditor should set the values. After that the minZoomLevel input is cleared and the maxZoomLevel is set to 0. There should not be any error messages.",
+        async () => {
+            const extendMapLayerOptions: ExtendMapLayerOptions<any> = {
+                type: "",
+                minZoom: MIN_ZOOM_LEVEL,
+                maxZoom: MAX_ZOOM_LEVEL
+            };
+            render(<MinMaxZoomLevelEditor value={extendMapLayerOptions} onChange={function(options: ExtendMapLayerOptions<any>): void { } } />);
+            const minZoomInput = screen.getByTestId("minmaxzoomleveleditor min zoom level input");
+            const maxZoomInput = screen.getByTestId("minmaxzoomleveleditor max zoom level input");
+            // await userEvent.dblClick(minZoomInput);
+            await userEvent.clear(minZoomInput);
+            await userEvent.clear(maxZoomInput);
+            await userEvent.type(maxZoomInput, "0");
+            expect(minZoomInput).toHaveValue(null);
+            expect(maxZoomInput).toHaveValue(0);
+            expect(screen.queryAllByText(/error:/i)).toHaveLength(0);
+            cleanup();
+    });
 });
