@@ -74,7 +74,7 @@
     "prettier": "^3.8.1",
     "replace-in-file-webpack-plugin": "^1.0.6",
     "sass": "1.97.3",
-    "sass-loader": "13.3.1",
+    "sass-loader": "16.0.7",
     "style-loader": "3.3.3",
     "swc-loader": "^0.2.3",
     "ts-node": "^10.9.1",
@@ -82,7 +82,7 @@
     "tslib": "2.8.1",
     "typescript": "5.9.3",
     "webpack": "^5.96.1",
-    "webpack-cli": "^5.1.4",
+    "webpack-cli": "^6.0.1",
     "webpack-livereload-plugin": "^3.0.2"
   },
   "engines": {
@@ -112,7 +112,7 @@
   },
   "overrides": {
     "ol": "10.7.0",
-    "jspdf": "4.1.0",
+    "jspdf": "4.2.0",
     "uplot": "1.6.31",
     "@remix-run/router": "1.23.2",
     "react-router": "6.30.2",
