@@ -17,6 +17,7 @@ import TileLayer from 'ol/layer/Tile';
 import { WMTS } from 'ol/source';
 import { Options, optionsFromCapabilities } from 'ol/source/WMTS';
 import { CustomWMTSBasemapEditor } from 'editor/CustomWMTSBasemapEditor';
+import { lastGeomapPanelInstance } from 'GeomapPanel';
 
 // import {
   // RefreshEvent,
@@ -131,7 +132,7 @@ export const wmts: ExtendMapLayerRegistryItem<WMTSBaselayerConfig> = {
 
     if (legendItems.length > 0) {
       if (!options.basemapUsedAsMapLayer || !WMSLegend.getWMSLegendControlFromMap(map!)) {  // If the basemap layer does not provide a WMSLegend a new one has to be created
-        map.addControl(new WMSLegend(legendItems));
+        map.addControl(new WMSLegend(legendItems, {target: lastGeomapPanelInstance?.mapOverlay}));
       } else {
         // Append legend items if baselayer is used as map layer
         WMSLegend.getWMSLegendControlFromMap(map!)?.addLegendItems(legendItems);

@@ -120,6 +120,7 @@ export class GeomapPanel extends Component<Props, State> {
   readonly hoverEvent = new DataHoverEvent(this.hoverPayload);
   private subs = new Subscription();
   mapDiv?: HTMLDivElement;
+  mapOverlay?: HTMLDivElement;
   private pointerMoveListenerEnabled = true;
   private dataHoverTimeout: ReturnType<typeof setTimeout> | undefined;
   private tooltipFixed = false;
@@ -717,25 +718,42 @@ export class GeomapPanel extends Component<Props, State> {
   }
 
   async initControls(options: ControlsOptions) {
-    if (!this.map) {
+    if (!this.map || !this.mapOverlay) {
       return;
     }
+
     this.map.getControls().clear();
 
     if (options.showZoom) {
-      this.map.addControl(new Zoom());
+      const zoom = new Zoom({target: this.mapOverlay, className: cx('ol-zoom', styles.mapControl)});
+      // (zoom as any).element.style.pointerEvents = "auto";
+      this.map.addControl(zoom);
     }
 
     if (options.showScale) {
-      this.map.addControl(
-        new ScaleLine({
+      const scaleLine = new ScaleLine({
+          target: this.mapOverlay,
           units: options.scaleUnits,
           minWidth: 100,
-        })
+          className: cx('ol-scale-line', styles.mapControl)
+        });
+      // (scaleLine as any).element.style.pointerEvents = "auto";
+      this.map.addControl(
+        scaleLine
       );
     }
 
     if (options.showLayercontrol) {
+      const layerSwitcher = new CustomLayerSwitcher({
+          target: this.mapOverlay,
+          label: '',
+          collapseLabel: '›',
+          tipLabel: 'Select layers',
+          groupSelectStyle: 'none',
+          activationMode: 'click',
+          hiddenClassNameButton: "bi bi-layers"
+        });
+      // (layerSwitcher as any).element.style.pointerEvents = "auto";
       this.map.addControl(
         // new LayerSwitcher({
         //   label: '',
@@ -744,38 +762,39 @@ export class GeomapPanel extends Component<Props, State> {
         //   groupSelectStyle: 'none',
         //   activationMode: 'click',
         // })
-        new CustomLayerSwitcher({
-          label: '',
-          collapseLabel: '›',
-          tipLabel: 'Select layers',
-          groupSelectStyle: 'none',
-          activationMode: 'click',
-          hiddenClassNameButton: "bi bi-layers"
-        })
+        layerSwitcher
       );
     }
 
     // Add custom controls
     if (options.showSpatialFilter === true) {
+      const spatialFilter = new SpatialFilterControl(this.map, this.props, {target: this.mapOverlay});
+      // (spatialFilter as any).element.style.pointerEvents = "auto";
       this.map.addControl(
-        new SpatialFilterControl(this.map, this.props)
+        spatialFilter
         );
     }
 
     if (options.showDataExtentZoom === true) {
+      const dataExtentZoom = new DataExtentZoom({target: this.mapOverlay});
+      // (dataExtentZoom as any).element.style.pointerEvents = "auto";
       this.map.addControl(
-        new DataExtentZoom()
-        );
+        dataExtentZoom
+      );
     }
 
     if (options.overviewMap && options.overviewMap.enabled === true) {
       const item = geomapLayerRegistry.getIfExists(options.overviewMap.type);
       const handler = await item!.create(new Map({}), options.overviewMap as ExtendMapLayerOptions<any>, config.theme2);
       const layer = handler.init();
+      const overviewMap = new CustomOverviewMapWrapper({
+          target: this.mapOverlay,
+          layers: [layer],
+          className: cx('ol-custom-overviewmap', styles.mapControl)
+        }).getOverviewMap();
+      // (overviewMap as any).element.style.pointerEvents = "auto";
       this.map.addControl(
-        new CustomOverviewMapWrapper({
-          layers: [layer]
-        }).getOverviewMap()
+        overviewMap
       );
     }
 
@@ -810,13 +829,17 @@ export class GeomapPanel extends Component<Props, State> {
     this.mouseWheelZoom!.setActive(Boolean(options.mouseWheelZoom));
 
     if (options.showAttribution) {
-      this.map.addControl(new Attribution({
+      const attribution = new Attribution({
+        target: this.mapOverlay,
         collapsed: true, 
         collapsible: true ,
         label: '',
         expandClassName: 'bi bi-info-circle',
         // collapseClassName: ''
-      }));
+        className: cx('ol-attribution', styles.mapControl)
+      });
+      // (attribution as any).element.style.pointerEvents = "auto";
+      this.map.addControl(attribution);
     }
 
     // Update the react overlays
@@ -860,7 +883,9 @@ export class GeomapPanel extends Component<Props, State> {
             this.pointerMoveListenerEnabled = true;
             }}>
             <div className={styles.map} ref={this.initMapRef as (instance: HTMLDivElement | null) => void}></div>
-            <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />
+            <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} ref={((node: HTMLDivElement | undefined) => {
+              this.mapOverlay = node;
+            }) as (instance: HTMLDivElement | null) => void}></GeomapOverlay>
             <Tooltip tooltipData={{ttip: ttip, fixedFlag: this.tooltipFixed}} mapExtent={{
             extent: this.map?.getView().calculateExtent(this.map?.getSize()) as number[] ?? [], 
             projection: this.map?.getView().getProjection().getCode() ?? ""
@@ -906,4 +931,7 @@ const styles = {
     width: "100%",
     height: "100%",
   }),
+  mapControl: css({
+    pointerEvents: "auto"
+  })
 };

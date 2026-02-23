@@ -9,6 +9,7 @@ export class CustomLayerSwitcher extends LayerSwitcher {
     constructor(opts: CustomOptions) {
       const {shownClassNameButton, hiddenClassNameButton, ...opt_options} = opts;
       super({ ...opt_options });
+      this.element.style.pointerEvents = "auto";
 
       this.shownClassNameButton = shownClassNameButton ? shownClassNameButton : "";
       this.hiddenClassNameButton = hiddenClassNameButton ? hiddenClassNameButton : "";

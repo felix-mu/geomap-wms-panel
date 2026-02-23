@@ -12,6 +12,7 @@ import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { getWMSCapabilitiesFromService, getProjection, getWMSGetLegendURL, appendCustomQueryParameters } from 'mapServiceHandlers/wms';
 import { LegendItem, WMSLegend } from 'mapcontrols/WMSLegend';
+import { lastGeomapPanelInstance } from 'GeomapPanel';
 
 // import {
   // RefreshEvent,
@@ -123,7 +124,7 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
 
     if (legendItems.length > 0) {
       if (!options.basemapUsedAsMapLayer || !WMSLegend.getWMSLegendControlFromMap(map!)) {  // If the basemap layer does not provide a WMSLegend a new one has to be created
-        map.addControl(new WMSLegend(legendItems));
+        map.addControl(new WMSLegend(legendItems, {target: lastGeomapPanelInstance?.mapOverlay}));
       } else {
         // Append legend items if baselayer is used as map layer
         WMSLegend.getWMSLegendControlFromMap(map!)?.addLegendItems(legendItems);

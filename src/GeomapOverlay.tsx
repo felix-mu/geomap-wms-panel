@@ -8,13 +8,14 @@ export interface OverlayProps {
   topRight2?: React.ReactNode[];
   bottomLeft?: React.ReactNode[];
   blStyle?: CSSProperties;
+  ref?: (node: HTMLDivElement | null) => void;
 }
 
-export const GeomapOverlay = ({ topRight1, topRight2, bottomLeft, blStyle }: OverlayProps) => {
+export const GeomapOverlay = ({ topRight1, topRight2, bottomLeft, blStyle, ref }: OverlayProps) => {
   const topRight1Exists = (topRight1 && topRight1.length > 0) ?? false;
   const styles = useStyles2(getStyles(topRight1Exists));
   return (
-    <div className={styles.overlay}>
+    <div data-testid="geomap overlay" className={styles.overlay} ref={ref}>
       {Boolean(topRight1?.length) && <div className={styles.TR1}>{topRight1}</div>}
       {Boolean(topRight2?.length) && <div className={styles.TR2}>{topRight2}</div>}
       {Boolean(bottomLeft?.length) && (

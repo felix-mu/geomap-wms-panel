@@ -51,6 +51,7 @@ class SpatialFilterControl extends Control {
         element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE} ${olCss.CLASS_CONTROL}`;
         button.setAttribute("aria-label", "spatial filter tool button");
         element.style.top = "50%";
+        element.style.pointerEvents = "auto";
         // element.style.cursor = "pointer";
         element.appendChild(button);
     
@@ -123,7 +124,7 @@ class SpatialFilterControl extends Control {
             // let a = getAppEvents();
             // console.log(a);
             // (a as any).emitter.emit(new RefreshEvent());
-        }
+          }
         );
         
         this.drawInteraction.setActive(false);
