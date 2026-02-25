@@ -94,6 +94,7 @@ export class WMSLegend extends Control {
         // element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
         element.className = `${olCss.CLASS_CONTROL} ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
         element.style.top = "60%";
+        element.style.zIndex = "500";
         element.style.pointerEvents = "auto";
         // element.style.width = "30%";
         // element.style.height = "30%";
@@ -196,6 +197,11 @@ export class WMSLegend extends Control {
     // TODO: add unit tests
     addLegendItems(items: LegendItem[]) {
         this.legendURLs = this.legendURLs.concat(items);
+    }
+
+    // TODO: add unit tests
+    clearLegendItems() {
+        this.legendURLs = [];
     }
 
     // TODO: add unit tests

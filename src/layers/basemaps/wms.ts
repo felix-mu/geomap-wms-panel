@@ -12,7 +12,7 @@ import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { getWMSCapabilitiesFromService, getProjection, getWMSGetLegendURL, appendCustomQueryParameters } from 'mapServiceHandlers/wms';
 import { LegendItem, WMSLegend } from 'mapcontrols/WMSLegend';
-import { lastGeomapPanelInstance } from 'GeomapPanel';
+// import { lastGeomapPanelInstance } from 'GeomapPanel';
 
 // import {
   // RefreshEvent,
@@ -52,7 +52,8 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
     // Remove previous legend control if it exists and the layer is used as basemap
     // If the layer is used as map layer do not remove the legend but append the legend entries
     if (!options.basemapUsedAsMapLayer) {
-      WMSLegend.removeWMSLegendControlFromMap(map);
+      // WMSLegend.removeWMSLegendControlFromMap(map);
+      WMSLegend.getWMSLegendControlFromMap(map)?.clearLegendItems();
     }
 
     let layers: BaseLayer[] = [];
@@ -122,16 +123,17 @@ export const wms: ExtendMapLayerRegistryItem<WMSBaselayerConfig> = {
       }
     }
 
-    if (legendItems.length > 0) {
-      if (!options.basemapUsedAsMapLayer || !WMSLegend.getWMSLegendControlFromMap(map!)) {  // If the basemap layer does not provide a WMSLegend a new one has to be created
-        map.addControl(new WMSLegend(legendItems, {target: lastGeomapPanelInstance?.mapOverlay}));
-      } else {
-        // Append legend items if baselayer is used as map layer
-        WMSLegend.getWMSLegendControlFromMap(map!)?.addLegendItems(legendItems);
-        // INFO: There is no need to remove the items from the WMS legend when the toggle for a baselayer used as map layer is 
-        // deactivated because the options change is propgated to the top level and also the basemap layers are re-initialized
-        // so the previous WMS legend is removed and a new (empty) one is created that is filled with the new configuration
-      }
+    if (legendItems.length > 0 && WMSLegend.getWMSLegendControlFromMap(map!)) {
+      // if (!options.basemapUsedAsMapLayer || !WMSLegend.getWMSLegendControlFromMap(map!)) {  // If the basemap layer does not provide a WMSLegend a new one has to be created
+      //   map.addControl(new WMSLegend(legendItems, /*{target: lastGeomapPanelInstance?.mapOverlay}*/));
+      // } else {
+      //   // Append legend items if baselayer is used as map layer
+      //   WMSLegend.getWMSLegendControlFromMap(map!)?.addLegendItems(legendItems);
+      //   // INFO: There is no need to remove the items from the WMS legend when the toggle for a baselayer used as map layer is 
+      //   // deactivated because the options change is propgated to the top level and also the basemap layers are re-initialized
+      //   // so the previous WMS legend is removed and a new (empty) one is created that is filled with the new configuration
+      // }
+      WMSLegend.getWMSLegendControlFromMap(map!)?.addLegendItems(legendItems);
     }
 
     // Dummy promise returns epsgCode from the constants which is then used to initialize the image layer

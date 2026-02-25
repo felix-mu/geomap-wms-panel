@@ -60,5 +60,6 @@ export class CustomLayerSwitcher extends LayerSwitcher {
 
 interface CustomOptions extends Options {
   shownClassNameButton?: string,
-  hiddenClassNameButton?: string
+  hiddenClassNameButton?: string,
+  className?: string
 }

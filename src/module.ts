@@ -117,6 +117,13 @@ export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
           throw new Error('Function not implemented.');
         }
       }).*/
+      .addBooleanSwitch({
+        category,
+        path: 'controls.showWMSLegend',
+        name: 'Enable legend for WMS/WMTS layers',
+        description: 'Toggle "Show legend" in the specific layers to load legend image',
+        defaultValue: true,
+      })
       .addCustomEditor({
         category,
         path: 'controls.overviewMap',

@@ -64,6 +64,7 @@ import { fontmaki } from 'styles/fontmaki/fontmaki';
 import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
 import { getLayersExtent } from 'utils/getLayersExtent';
 import { Tooltip } from 'components/Tooltip';
+import { WMSLegend } from 'mapcontrols/WMSLegend';
 // import LayerGroup from 'ol/layer/Group';
 
 export interface MapLayerState {
@@ -120,7 +121,12 @@ export class GeomapPanel extends Component<Props, State> {
   readonly hoverEvent = new DataHoverEvent(this.hoverPayload);
   private subs = new Subscription();
   mapDiv?: HTMLDivElement;
-  mapOverlay?: HTMLDivElement;
+  mapOverlayTopRight1?: HTMLDivElement;
+  mapOverlayTopRight2?: HTMLDivElement;
+  mapOverlayTopLeft1?: HTMLDivElement;
+  mapOverlayBottomLeft?: HTMLDivElement;
+  mapOverlayBottomRight?: HTMLDivElement;
+
   private pointerMoveListenerEnabled = true;
   private dataHoverTimeout: ReturnType<typeof setTimeout> | undefined;
   private tooltipFixed = false;
@@ -718,26 +724,42 @@ export class GeomapPanel extends Component<Props, State> {
   }
 
   async initControls(options: ControlsOptions) {
-    if (!this.map || !this.mapOverlay) {
+    if (!this.map /*|| !this.mapOverlay*/) {
       return;
     }
 
     this.map.getControls().clear();
 
+    let topRight1: ReactNode[] = [];
+    let topRight2: ReactNode[] = [];
+    let topLeft1: ReactNode[] = [];
+    let bottomLeft: ReactNode[] = [];
+    let bottomRight: ReactNode[] = [];
+
     if (options.showZoom) {
-      const zoom = new Zoom({target: this.mapOverlay, className: cx('ol-zoom', styles.mapControl)});
+      const zoom = new Zoom({target: this.mapOverlayTopLeft1, className: cx('ol-zoom', styles.mapControl)});
       // (zoom as any).element.style.pointerEvents = "auto";
+      // topRight1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     zoom.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(zoom);
     }
 
     if (options.showScale) {
       const scaleLine = new ScaleLine({
-          target: this.mapOverlay,
+          target: this.mapOverlayBottomLeft,
           units: options.scaleUnits,
           minWidth: 100,
           className: cx('ol-scale-line', styles.mapControl)
         });
       // (scaleLine as any).element.style.pointerEvents = "auto";
+      // bottomLeft.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     scaleLine.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(
         scaleLine
       );
@@ -745,15 +767,21 @@ export class GeomapPanel extends Component<Props, State> {
 
     if (options.showLayercontrol) {
       const layerSwitcher = new CustomLayerSwitcher({
-          target: this.mapOverlay,
+          target: this.mapOverlayTopRight1,
           label: '',
           collapseLabel: '›',
           tipLabel: 'Select layers',
           groupSelectStyle: 'none',
           activationMode: 'click',
-          hiddenClassNameButton: "bi bi-layers"
+          hiddenClassNameButton: "bi bi-layers",
+          className: cx(styles.mapControl)
         });
       // (layerSwitcher as any).element.style.pointerEvents = "auto";
+      // topRight1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     layerSwitcher.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(
         // new LayerSwitcher({
         //   label: '',
@@ -768,16 +796,33 @@ export class GeomapPanel extends Component<Props, State> {
 
     // Add custom controls
     if (options.showSpatialFilter === true) {
-      const spatialFilter = new SpatialFilterControl(this.map, this.props, {target: this.mapOverlay});
+      const spatialFilter = new SpatialFilterControl(this.map, this.props, {target: this.mapOverlayTopLeft1, className: cx(styles.mapControl)});
       // (spatialFilter as any).element.style.pointerEvents = "auto";
+      // topLeft1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     spatialFilter.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(
         spatialFilter
-        );
+      );
+    }
+
+    if (options.showWMSLegend === true) {
+      const wmsLegend = new WMSLegend([], {target: this.mapOverlayTopLeft1, className: cx(styles.mapControl)});
+      this.map.addControl(
+        wmsLegend
+      );
     }
 
     if (options.showDataExtentZoom === true) {
-      const dataExtentZoom = new DataExtentZoom({target: this.mapOverlay});
+      const dataExtentZoom = new DataExtentZoom({target: this.mapOverlayTopLeft1, className: cx(styles.mapControl)});
       // (dataExtentZoom as any).element.style.pointerEvents = "auto";
+      // topLeft1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     dataExtentZoom.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(
         dataExtentZoom
       );
@@ -788,11 +833,16 @@ export class GeomapPanel extends Component<Props, State> {
       const handler = await item!.create(new Map({}), options.overviewMap as ExtendMapLayerOptions<any>, config.theme2);
       const layer = handler.init();
       const overviewMap = new CustomOverviewMapWrapper({
-          target: this.mapOverlay,
+          target: this.mapOverlayBottomRight,
           layers: [layer],
           className: cx('ol-custom-overviewmap', styles.mapControl)
         }).getOverviewMap();
       // (overviewMap as any).element.style.pointerEvents = "auto";
+      // topRight1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     overviewMap.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(
         overviewMap
       );
@@ -830,7 +880,7 @@ export class GeomapPanel extends Component<Props, State> {
 
     if (options.showAttribution) {
       const attribution = new Attribution({
-        target: this.mapOverlay,
+        target: this.mapOverlayBottomRight,
         collapsed: true, 
         collapsible: true ,
         label: '',
@@ -839,16 +889,20 @@ export class GeomapPanel extends Component<Props, State> {
         className: cx('ol-attribution', styles.mapControl)
       });
       // (attribution as any).element.style.pointerEvents = "auto";
+      // bottomRight.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     attribution.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(attribution);
     }
 
     // Update the react overlays
-    let topRight2: ReactNode[] = [];
     if (options.showDebug) {
-      topRight2 = [<DebugOverlay key="debug" map={this.map} />];
+      topRight2.push(<DebugOverlay key="debug" map={this.map} />);
     }
 
-    this.setState({ topRight2 });
+    this.setState({ topRight2: topRight2, topRight1: topRight1, topLeft1: topLeft1, bottomRight: bottomRight, bottomLeft: bottomLeft });
   }
 
   clearTooltip = () => {
@@ -862,7 +916,7 @@ export class GeomapPanel extends Component<Props, State> {
   };
 
   render() {
-    const { ttip, topRight2, bottomLeft } = this.state;
+    const { ttip, topRight1, topLeft1, topRight2, bottomLeft } = this.state;
 
     // Tooltip handling from: https://github.com/grafana/grafana/blob/17a3ec52b651a082bbf5604f75975c12cd2ba9ed/public/app/plugins/panel/geomap/GeomapPanel.tsx#L386
     // let { ttip, ttipOpen, topRight1, legends, topRight2 } = this.state;
@@ -883,9 +937,23 @@ export class GeomapPanel extends Component<Props, State> {
             this.pointerMoveListenerEnabled = true;
             }}>
             <div className={styles.map} ref={this.initMapRef as (instance: HTMLDivElement | null) => void}></div>
-            <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} ref={((node: HTMLDivElement | undefined) => {
-              this.mapOverlay = node;
-            }) as (instance: HTMLDivElement | null) => void}></GeomapOverlay>
+            <GeomapOverlay topLeft1={topLeft1} topRight1={topRight1} bottomLeft={bottomLeft} topRight2={topRight2}
+            refBottomLeft={((node: HTMLDivElement) => {
+              this.mapOverlayBottomLeft = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refBottomRight={((node: HTMLDivElement) => {
+              this.mapOverlayBottomRight = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refTopLeft1={((node: HTMLDivElement) => {
+              this.mapOverlayTopLeft1 = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refTopRight1={((node: HTMLDivElement) => {
+              this.mapOverlayTopRight1 = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refTopRight2={((node: HTMLDivElement) => {
+              this.mapOverlayTopRight2 = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            ></GeomapOverlay>
             <Tooltip tooltipData={{ttip: ttip, fixedFlag: this.tooltipFixed}} mapExtent={{
             extent: this.map?.getView().calculateExtent(this.map?.getSize()) as number[] ?? [], 
             projection: this.map?.getView().getProjection().getCode() ?? ""
@@ -932,6 +1000,8 @@ const styles = {
     height: "100%",
   }),
   mapControl: css({
-    pointerEvents: "auto"
+    pointerEvents: "auto",
+    position: "relative",
+    margin: "4px"
   })
 };
