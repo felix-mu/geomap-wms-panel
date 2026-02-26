@@ -54,7 +54,7 @@
     "@types/semver": "^7.7.1",
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",
-    "baseline-browser-mapping": "^2.9.18",
+    "baseline-browser-mapping": "^2.10.0",
     "commit-and-tag-version": "^12.6.1",
     "commitizen": "^4.3.0",
     "copy-webpack-plugin": "^13.0.1",
