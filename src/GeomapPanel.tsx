@@ -1001,7 +1001,7 @@ const styles = {
   }),
   mapControl: css({
     pointerEvents: "auto",
-    position: "relative",
-    margin: "4px"
+    position: "static",
+    marginBottom: "4px"
   })
 };

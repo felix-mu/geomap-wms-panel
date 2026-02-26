@@ -46,32 +46,41 @@ const getStyles = (topRight1Exists: boolean) => (theme: GrafanaTheme2) => ({
     width: '100%',
     height: '100%',
     zIndex: 500,
-    pointerEvents: 'none',
+    pointerEvents: 'none'
   }),
   TL1: css({
     left: '0.5em',
     pointerEvents: 'auto',
-    // position: 'absolute',
+    position: 'absolute',
     top: '0.5em',
     maxHeight: "45%",
-    // display: "inline-flex",
-    // flexDirection: "column"
+    display: "inline-flex",
+    flexDirection: "column",
+    height: "auto",
+    width: "auto",
+    alignSelf: "center"
   }),
   TR1: css({
     right: '0.5em',
     pointerEvents: 'auto',
-    // position: 'relative',
+    position: 'absolute',
     top: '0.5em',
-    // display: "inline-flex",
-    // flexDirection: "column"
+    display: "inline-flex",
+    flexDirection: "column",
+    height: "auto",
+    width: "auto",
+    alignSelf: "center"
   }),
   TR2: css({
     position: 'absolute',
     top: topRight1Exists ? '80px' : '8px',
     right: '8px',
     pointerEvents: 'auto',
-    // display: "inline-flex",
-    // flexDirection: "column"
+    display: "inline-flex",
+    flexDirection: "column",
+    height: "auto",
+    width: "auto",
+    alignSelf: "center"
   }),
   BL: css({
     position: 'absolute',
@@ -81,18 +90,24 @@ const getStyles = (topRight1Exists: boolean) => (theme: GrafanaTheme2) => ({
     maxHeight: "50%",
     overflowY: "auto",
     scrollbarWidth: "thin",
-    // display: "inline-flex",
-    // flexDirection: "column"
+    display: "inline-flex",
+    flexDirection: "column",
+    height: "auto",
+    width: "auto",
+    alignSelf: "center"
   }),
   BR: css({
-    // position: 'relative',
+    position: 'absolute',
     bottom: '8px',
     right: '8px',
     pointerEvents: 'auto',
     maxHeight: "50%",
     overflowY: "scroll",
     scrollbarWidth: "thin",
-    // display: "inline-flex",
-    // flexDirection: "column"
+    display: "inline-flex",
+    flexDirection: "column",
+    height: "auto",
+    width: "auto",
+    alignSelf: "center"
   }),
 });

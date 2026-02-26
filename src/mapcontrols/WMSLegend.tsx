@@ -12,6 +12,7 @@ import * as olCss from "ol/css";
 // import ReactDOM from 'react-dom';
 // import React from "react";
 import { Map } from "ol";
+import { controlStyles } from "./controlStyles";
 // import { createRoot, Root } from "react-dom/client";
 
 // class PanelOptionsChangedEvent extends BusEventBase {
@@ -67,7 +68,10 @@ export class WMSLegend extends Control {
     constructor(legendURLs: LegendItem[], /*baseLayer: BaseLayer, props: any,*/ opt_options?: any) {
         const options = opt_options || {};
 
+        const styles = controlStyles();
+
         const button = document.createElement('button');
+        button.className = `${styles.border}`;
         // button.innerHTML = '>';
         // button.ariaLabel = "wms legend collapse button";
         button.setAttribute("aria-label", "wms legend collapse button");
@@ -76,33 +80,26 @@ export class WMSLegend extends Control {
         icon.className = "bi bi-list-task";
         icon.style.cursor = "pointer";
         button.appendChild(icon);
-        // button.style.pointerEvents = "auto";
         button.style.cursor= "pointer";
         
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";
         legendContainer.setAttribute("aria-label", "wms legend container");
-        // legendContainer.style.overflow = "scroll";
-        legendContainer.style.height = "100%";
+        legendContainer.style.height = "95%";
+        legendContainer.style.width = "100%";
         legendContainer.style.padding = "5px 5px 5px 5px";
-        // legendContainer.className = styles.basemapLegend_hidden;
-        // const legendContainerRoot = createRoot(legendContainer);
-        // legendContainerRoot.render(<CustomScrollbar></CustomScrollbar>);
-        // ReactDOM.render(<CustomScrollbar></CustomScrollbar>, legendContainer);
+        legendContainer.style.position = "absolute";
+        legendContainer.style.overflow = "hidden";
+        legendContainer.style.resize = "both";
+        legendContainer.style.minHeight = "100px";
+        legendContainer.style.minWidth = "100px";
 
         const element = document.createElement('div');
-        // element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
-        element.className = `${olCss.CLASS_CONTROL} ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
-        element.style.top = "60%";
+        element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`; // ${olCss.CLASS_CONTROL} 
         element.style.zIndex = "500";
         element.style.pointerEvents = "auto";
-        // element.style.width = "30%";
-        // element.style.height = "30%";
-        // element.style.overflow = "scroll";
-        // element.style.resize = "both";
 
         element.appendChild(button);
-        // element.appendChild(legendContainer);
 
         super({
             element: element,
@@ -133,43 +130,29 @@ export class WMSLegend extends Control {
                 this.element.style.overflow = "";
                 this.element.style.resize = "";
                 this.element.style.paddingBottom = "";
+                // this.element.style.position = "";
+                // this.element.style.minHeight = "";
+                // this.element.style.minWidth = "";
                 // this.element.style.background = config.theme2.colors.background.primary; // "rgba(255,255,255, 0.4)";
+
+                // this.legendContainer.style.position = "";
                 
                 // this.root.unmount();
                 this.element.removeChild(this.legendContainer);
             } else {
                 button.getElementsByTagName('i')[0].remove();
                 button.innerHTML = "‹";
-                // button.getElementsByTagName('i')[0].setAttribute("class", "bi bi-chevron-left");
-                // this.legendContainer.className = styles.basemapLegend_visible;
-
-                this.element.style.overflow = "hidden"; // "scroll";
-                this.element.style.resize = "both";
-                this.element.style.paddingBottom = "30px";
-                // this.element.style.background = config.theme2.colors.background.primary; //"rgba(255,255,255, 1)";
                 
                 if(this.legendContainer.getElementsByTagName("div").length === 0) {
-                    // this.legendContainer.append(...this.buildLegend(this.legendURLs));
                     this.legendContainer.appendChild(this.buildLegend(this.legendURLs));
-                    // this.root = createRoot(this.legendContainer);
-                    // this.root.render(this.buildLegend(this.legendURLs));
                 }
 
                 this.element.appendChild(this.legendContainer);
-                // this.element.style.width = "30%";
-                this.element.style.height = "30%";
             }
 
             // Update legend state
             this.legendOpened = !this.legendOpened;
         };
-
-        // this.baseLayer = baseLayer;
-
-        // this.props.eventBus.getStream(PanelOptionsChangedEvent).subscribe((_evt: any) => {
-        //     this.legendContainer.replaceChildren();
-        // }
-        // );
 
         button.addEventListener("click", () => {
             eventHandler();
@@ -216,17 +199,11 @@ export class WMSLegend extends Control {
         legendDivElement.style.overflowY = "scroll";
         legendDivElement.style.height = "100%";
         legendDivElement.style.scrollbarWidth = "thin";
-        // legendDivElement.addEventListener("mouseover", (e: Event) => {
-        //     e.stopImmediatePropagation();
-        //     e.stopPropagation();
-        //     e.preventDefault();
-        // });
 
         for (let l of legendURLs) {
             let imageContainer = document.createElement("div");
             imageContainer.style.display = "block";
             imageContainer.ariaLabel = `wms legend image container ${index}`;
-            // imageContainer.setAttribute("aria-label", `wms legend image container ${index}`);
             imageContainer.style.borderBottom = `${this.theme.colors.border.strong} 1px solid`;
             imageContainer.style.paddingBottom = "4px";
             imageContainer.style.display = "block";
@@ -244,16 +221,8 @@ export class WMSLegend extends Control {
             label.style.display = "block";
             label.style.color = this.theme.colors.text.maxContrast;
 
-            // let divider = document.createElement("hr");
-            // divider.className = getStyles(this.theme).grafanaDivider; // divider
-
             imageContainer.appendChild(label);
             imageContainer.appendChild(image);
-            // imageContainer.appendChild(divider);
-
-            // legendItems.push(
-            //     imageContainer
-            // );
 
             legendDivElement.appendChild(imageContainer);
 
@@ -262,30 +231,6 @@ export class WMSLegend extends Control {
 
         return legendDivElement;
     }
-
-    // buildLegend(legendURLs: LegendItem[]): React.JSX.Element {
-    //     return (
-    //         <ScrollContainer>
-    //             {legendURLs.length > 0 && legendURLs.map((legendItem, index) => {
-    //                 return (
-    //                     <div key={legendItem.url} style={{
-    //                             borderBottom: `${this.theme.colors.border.strong} 1px solid`,
-    //                             paddingBottom: "4px",
-    //                             display: "block", 
-    //                             marginRight: "12px", 
-    //                             marginBottom: index === legendURLs.length - 1 ? "12px" : "auto"
-    //                         }} aria-label={`wms legend image container ${index}`}>
-    //                         <label style={{display: "block", color: this.theme.colors.text.maxContrast}}
-    //                             htmlFor={legendItem.url}>{legendItem.label}</label>
-    //                         <img id={legendItem.url} src={legendItem.url} className={getStyles(this.theme).legendImg}></img>
-    //                         {/* <hr className={getStyles(this.theme).grafanaDivider}></hr> */}
-    //                     </div>
-    //                 );
-    //             })
-    //             }
-    //         </ScrollContainer>
-    //     );
-    // }
 
 }
 
@@ -306,10 +251,6 @@ const getStyles = (theme: GrafanaTheme2) => {
         width: 50%;
         height: 100%;
     `,
-    // legendImage: css`
-    //     width: 100%;
-    //     height: auto;
-    // `,
     divider: css`
     border-top: 1px solid rgba(204, 204, 220, 0.12);
     `,
