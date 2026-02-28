@@ -1,6 +1,6 @@
 import { css } from "@emotion/css";
 import Zoom, { Options } from "ol/control/Zoom";
-import { controlStyles } from "./controlStyles";
+import { mapControlStyles } from "./mapControlStyles";
 import { CustomizableControl } from "./CustomizableControl";
 
 export class CustomZoom extends Zoom implements CustomizableControl {
@@ -13,7 +13,7 @@ export class CustomZoom extends Zoom implements CustomizableControl {
             zoomOutClassName: (options.zoomOutClassName ? options.zoomOutClassName + ' ' : '') + styles.zoomButton,
         });
 
-        this.element.classList.add(controlStyles().mapControl);
+        this.element.classList.add(mapControlStyles.mapControl);
         this.element.classList.add(styles.zoomStyle);
     }
 

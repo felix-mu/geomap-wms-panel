@@ -53,7 +53,7 @@ import { testIds } from 'e2eTestIds';
 import { Subscription } from 'rxjs';
 import { DataExtentZoom } from 'mapcontrols/DataExtentZoom';
 import { CustomLayerSwitcher } from 'mapcontrols/CustomLayerSwitcher';
-import { CustomOverviewMapWrapper } from 'mapcontrols/CustomOverviewMapWrapper';
+import { CustomOverviewMap } from 'mapcontrols/CustomOverviewMap';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
 import { olStyles } from './styles/ol/olStyles';
@@ -66,7 +66,7 @@ import { Tooltip } from 'components/Tooltip';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
 import { CustomZoom } from 'mapcontrols/CustomZoom';
 import { CLASS_CONTROL } from 'ol/css';
-import { controlStyles } from 'mapcontrols/controlStyles';
+import { mapControlStyles } from 'mapcontrols/mapControlStyles';
 // import LayerGroup from 'ol/layer/Group';
 
 export interface MapLayerState {
@@ -732,8 +732,6 @@ export class GeomapPanel extends Component<Props, State> {
 
     this.map.getControls().clear();
 
-    const mapControlStyles = controlStyles();
-
     let topRight1: ReactNode[] = [];
     let topRight2: ReactNode[] = [];
     let topLeft1: ReactNode[] = [];
@@ -837,11 +835,12 @@ export class GeomapPanel extends Component<Props, State> {
       const item = geomapLayerRegistry.getIfExists(options.overviewMap.type);
       const handler = await item!.create(new Map({}), options.overviewMap as ExtendMapLayerOptions<any>, config.theme2);
       const layer = handler.init();
-      const overviewMap = new CustomOverviewMapWrapper({
+      const overviewMap = new CustomOverviewMap({
           target: this.mapOverlayBottomRight,
           layers: [layer],
-          className: cx('ol-custom-overviewmap', mapControlStyles.mapControl)
-        }).getOverviewMap();
+          className: cx('ol-custom-overviewmap', mapControlStyles.mapControl, mapControlStyles.border)
+        });
+      overviewMap.removeCssClassFromElement(CLASS_CONTROL);
       // (overviewMap as any).element.style.pointerEvents = "auto";
       // topRight1.push(
       //   <div ref={(node: HTMLDivElement) => {

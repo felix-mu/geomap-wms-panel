@@ -1,5 +1,5 @@
 import Attribution, { Options } from "ol/control/Attribution";
-import { controlStyles } from "./controlStyles";
+import { mapControlStyles } from "./mapControlStyles";
 import { CustomizableControl } from "./CustomizableControl";
 import { css } from "@emotion/css";
 
@@ -13,7 +13,7 @@ export class CustomAttribution extends Attribution implements CustomizableContro
             // expandClassName: (options.expandClassName ? options.expandClassName + ' ' : '') + styles.attributionBorder
         });
 
-        this.element.classList.add(controlStyles().mapControl);
+        this.element.classList.add(mapControlStyles.mapControl);
         this.element.classList.add(styles.attributionStyle);
         this.element.style.marginLeft = "auto";
         this.element.style.maxWidth = "300px";

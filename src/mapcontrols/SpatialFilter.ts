@@ -10,7 +10,7 @@ import { Map } from "ol";
 import Polygon from "ol/geom/Polygon";
 import WKT from 'ol/format/WKT.js';
 import { locationService } from '@grafana/runtime';
-import { controlStyles } from "./controlStyles";
+import { mapControlStyles } from "./mapControlStyles";
 
 // Based on https://openlayers.org/en/latest/examples/custom-controls.html
 class SpatialFilterControl extends Control {
@@ -36,11 +36,9 @@ class SpatialFilterControl extends Control {
 
     constructor(map: Map, props: any, opt_options?: any) {
         const options = opt_options || {};
-
-        const styles = controlStyles();
     
         const button = document.createElement('button');
-        button.className = `${styles.border}`;
+        button.className = `${mapControlStyles.border}`;
         button.setAttribute("type", "button");
         button.title = options.tooltipTitle || "Spatial filter tool";
         // button.innerHTML = 'D';
@@ -58,7 +56,7 @@ class SpatialFilterControl extends Control {
         element.style.pointerEvents = "auto";
         // element.style.cursor = "pointer";
         element.appendChild(button);
-        element.classList.add(controlStyles().mapControl);
+        element.classList.add(mapControlStyles.mapControl);
     
         super({
           element: element,
