@@ -107,12 +107,13 @@ const getStyles = (topRight1Exists: boolean) => (theme: GrafanaTheme2) => ({
     right: '8px',
     pointerEvents: 'auto',
     maxHeight: "50%",
-    overflowY: "scroll",
+    overflowY: "auto",
     scrollbarWidth: "thin",
     display: "inline-flex",
     flexDirection: "column",
     height: "auto",
     width: "auto",
-    alignSelf: "center"
+    alignSelf: "center",
+    scrollbarGutter: "stable"
   }),
 });

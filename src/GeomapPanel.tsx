@@ -1,7 +1,7 @@
 import React, { Component, ReactNode } from 'react';
 import { DEFAULT_BASEMAP_CONFIG, geomapLayerRegistry, defaultBaseLayer } from './layers/registry';
 import { Map, MapBrowserEvent, View } from 'ol';
-import Attribution from 'ol/control/Attribution';
+import { CustomAttribution } from "./mapcontrols/CustomAttribution";
 import ScaleLine from 'ol/control/ScaleLine';
 import BaseLayer from 'ol/layer/Base';
 import { defaults as interactionDefaults } from 'ol/interaction';
@@ -814,14 +814,14 @@ export class GeomapPanel extends Component<Props, State> {
     }
 
     if (options.showWMSLegend === true) {
-      const wmsLegend = new WMSLegend([], {target: this.mapOverlayTopLeft1, className: cx(mapControlStyles.mapControl)});
+      const wmsLegend = new WMSLegend([], {target: this.mapOverlayTopLeft1});
       this.map.addControl(
         wmsLegend
       );
     }
 
     if (options.showDataExtentZoom === true) {
-      const dataExtentZoom = new DataExtentZoom({target: this.mapOverlayTopLeft1, className: cx(mapControlStyles.mapControl)});
+      const dataExtentZoom = new DataExtentZoom({target: this.mapOverlayTopLeft1});
       // (dataExtentZoom as any).element.style.pointerEvents = "auto";
       // topLeft1.push(
       //   <div ref={(node: HTMLDivElement) => {
@@ -884,15 +884,16 @@ export class GeomapPanel extends Component<Props, State> {
     this.mouseWheelZoom!.setActive(Boolean(options.mouseWheelZoom));
 
     if (options.showAttribution) {
-      const attribution = new Attribution({
+      const attribution = new CustomAttribution({
         target: this.mapOverlayBottomRight,
         collapsed: true, 
         collapsible: true ,
         label: '',
         expandClassName: 'bi bi-info-circle',
         // collapseClassName: ''
-        className: cx('ol-attribution', mapControlStyles.mapControl)
+        // className: cx('ol-attribution', mapControlStyles.mapControl)
       });
+      attribution.removeCssClassFromElement(CLASS_CONTROL);
       // (attribution as any).element.style.pointerEvents = "auto";
       // bottomRight.push(
       //   <div ref={(node: HTMLDivElement) => {
