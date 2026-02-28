@@ -85,19 +85,22 @@ export class WMSLegend extends Control {
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";
         legendContainer.setAttribute("aria-label", "wms legend container");
-        legendContainer.style.height = "95%";
-        legendContainer.style.width = "100%";
+        legendContainer.style.height = "50%";
+        legendContainer.style.width = "40%";
         legendContainer.style.padding = "5px 5px 5px 5px";
         legendContainer.style.position = "absolute";
         legendContainer.style.overflow = "hidden";
         legendContainer.style.resize = "both";
         legendContainer.style.minHeight = "100px";
         legendContainer.style.minWidth = "100px";
+        legendContainer.style.position = "fixed";
+        legendContainer.style.borderRadius = "4px";
 
         const element = document.createElement('div');
         element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`; // ${olCss.CLASS_CONTROL} 
         element.style.zIndex = "500";
         element.style.pointerEvents = "auto";
+        element.classList.add(controlStyles().mapControl);
 
         element.appendChild(button);
 

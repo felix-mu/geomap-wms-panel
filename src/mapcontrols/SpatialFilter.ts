@@ -58,6 +58,7 @@ class SpatialFilterControl extends Control {
         element.style.pointerEvents = "auto";
         // element.style.cursor = "pointer";
         element.appendChild(button);
+        element.classList.add(controlStyles().mapControl);
     
         super({
           element: element,

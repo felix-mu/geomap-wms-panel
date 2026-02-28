@@ -2,7 +2,6 @@ import React, { Component, ReactNode } from 'react';
 import { DEFAULT_BASEMAP_CONFIG, geomapLayerRegistry, defaultBaseLayer } from './layers/registry';
 import { Map, MapBrowserEvent, View } from 'ol';
 import Attribution from 'ol/control/Attribution';
-import Zoom from 'ol/control/Zoom';
 import ScaleLine from 'ol/control/ScaleLine';
 import BaseLayer from 'ol/layer/Base';
 import { defaults as interactionDefaults } from 'ol/interaction';
@@ -65,6 +64,9 @@ import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
 import { getLayersExtent } from 'utils/getLayersExtent';
 import { Tooltip } from 'components/Tooltip';
 import { WMSLegend } from 'mapcontrols/WMSLegend';
+import { CustomZoom } from 'mapcontrols/CustomZoom';
+import { CLASS_CONTROL } from 'ol/css';
+import { controlStyles } from 'mapcontrols/controlStyles';
 // import LayerGroup from 'ol/layer/Group';
 
 export interface MapLayerState {
@@ -730,6 +732,8 @@ export class GeomapPanel extends Component<Props, State> {
 
     this.map.getControls().clear();
 
+    const mapControlStyles = controlStyles();
+
     let topRight1: ReactNode[] = [];
     let topRight2: ReactNode[] = [];
     let topLeft1: ReactNode[] = [];
@@ -737,7 +741,8 @@ export class GeomapPanel extends Component<Props, State> {
     let bottomRight: ReactNode[] = [];
 
     if (options.showZoom) {
-      const zoom = new Zoom({target: this.mapOverlayTopLeft1, className: cx('ol-zoom', styles.mapControl)});
+      const zoom = new CustomZoom({target: this.mapOverlayTopLeft1});
+      zoom.removeCssClassFromElement(CLASS_CONTROL);
       // (zoom as any).element.style.pointerEvents = "auto";
       // topRight1.push(
       //   <div ref={(node: HTMLDivElement) => {
@@ -752,7 +757,7 @@ export class GeomapPanel extends Component<Props, State> {
           target: this.mapOverlayBottomLeft,
           units: options.scaleUnits,
           minWidth: 100,
-          className: cx('ol-scale-line', styles.mapControl)
+          className: cx('ol-scale-line', mapControlStyles.mapControl)
         });
       // (scaleLine as any).element.style.pointerEvents = "auto";
       // bottomLeft.push(
@@ -774,7 +779,7 @@ export class GeomapPanel extends Component<Props, State> {
           groupSelectStyle: 'none',
           activationMode: 'click',
           hiddenClassNameButton: "bi bi-layers",
-          className: cx(styles.mapControl)
+          className: cx(mapControlStyles.mapControl)
         });
       // (layerSwitcher as any).element.style.pointerEvents = "auto";
       // topRight1.push(
@@ -796,7 +801,7 @@ export class GeomapPanel extends Component<Props, State> {
 
     // Add custom controls
     if (options.showSpatialFilter === true) {
-      const spatialFilter = new SpatialFilterControl(this.map, this.props, {target: this.mapOverlayTopLeft1, className: cx(styles.mapControl)});
+      const spatialFilter = new SpatialFilterControl(this.map, this.props, {target: this.mapOverlayTopLeft1});
       // (spatialFilter as any).element.style.pointerEvents = "auto";
       // topLeft1.push(
       //   <div ref={(node: HTMLDivElement) => {
@@ -809,14 +814,14 @@ export class GeomapPanel extends Component<Props, State> {
     }
 
     if (options.showWMSLegend === true) {
-      const wmsLegend = new WMSLegend([], {target: this.mapOverlayTopLeft1, className: cx(styles.mapControl)});
+      const wmsLegend = new WMSLegend([], {target: this.mapOverlayTopLeft1, className: cx(mapControlStyles.mapControl)});
       this.map.addControl(
         wmsLegend
       );
     }
 
     if (options.showDataExtentZoom === true) {
-      const dataExtentZoom = new DataExtentZoom({target: this.mapOverlayTopLeft1, className: cx(styles.mapControl)});
+      const dataExtentZoom = new DataExtentZoom({target: this.mapOverlayTopLeft1, className: cx(mapControlStyles.mapControl)});
       // (dataExtentZoom as any).element.style.pointerEvents = "auto";
       // topLeft1.push(
       //   <div ref={(node: HTMLDivElement) => {
@@ -835,7 +840,7 @@ export class GeomapPanel extends Component<Props, State> {
       const overviewMap = new CustomOverviewMapWrapper({
           target: this.mapOverlayBottomRight,
           layers: [layer],
-          className: cx('ol-custom-overviewmap', styles.mapControl)
+          className: cx('ol-custom-overviewmap', mapControlStyles.mapControl)
         }).getOverviewMap();
       // (overviewMap as any).element.style.pointerEvents = "auto";
       // topRight1.push(
@@ -886,7 +891,7 @@ export class GeomapPanel extends Component<Props, State> {
         label: '',
         expandClassName: 'bi bi-info-circle',
         // collapseClassName: ''
-        className: cx('ol-attribution', styles.mapControl)
+        className: cx('ol-attribution', mapControlStyles.mapControl)
       });
       // (attribution as any).element.style.pointerEvents = "auto";
       // bottomRight.push(
@@ -998,10 +1003,5 @@ const styles = {
     zIndex: "0",
     width: "100%",
     height: "100%",
-  }),
-  mapControl: css({
-    pointerEvents: "auto",
-    position: "static",
-    marginBottom: "4px"
   })
 };

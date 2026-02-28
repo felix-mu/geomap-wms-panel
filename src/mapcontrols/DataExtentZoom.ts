@@ -45,6 +45,7 @@ export class DataExtentZoom extends Control {
         // element.style.bottom = "20%";
         // element.style.top = "unset";
         element.style.pointerEvents = "auto";
+        element.classList.add(controlStyles().mapControl);
 
         element.appendChild(button);
 
