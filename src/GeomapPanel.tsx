@@ -730,7 +730,11 @@ export class GeomapPanel extends Component<Props, State> {
       return;
     }
 
-    this.map.getControls().clear();
+    this.map.getControls().forEach((c) => {
+      c.dispose(); // clean up
+      c.setMap(null); // remove from map
+    });
+    // this.map.getControls().clear();
 
     let topRight1: ReactNode[] = [];
     let topRight2: ReactNode[] = [];
@@ -836,7 +840,7 @@ export class GeomapPanel extends Component<Props, State> {
       const handler = await item!.create(new Map({}), options.overviewMap as ExtendMapLayerOptions<any>, config.theme2);
       const layer = handler.init();
       const overviewMap = new CustomOverviewMap({
-          target: this.mapOverlayBottomRight,
+          target: this.mapOverlayBottomRight!,
           layers: [layer],
           className: cx('ol-custom-overviewmap', mapControlStyles.mapControl, mapControlStyles.border)
         });
@@ -884,11 +888,11 @@ export class GeomapPanel extends Component<Props, State> {
 
     if (options.showAttribution) {
       const attribution = new CustomAttribution({
-        target: this.mapOverlayBottomRight,
-        collapsed: true, 
-        collapsible: true ,
-        label: '',
-        expandClassName: 'bi bi-info-circle',
+        target: this.mapOverlayBottomRight!,
+        // collapsed: true, 
+        // collapsible: true ,
+        // label: '',
+        // expandClassName: 'bi bi-info-circle',
         // collapseClassName: ''
         // className: cx('ol-attribution', mapControlStyles.mapControl)
       });
