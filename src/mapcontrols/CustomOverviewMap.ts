@@ -57,6 +57,7 @@ class CustomOverviewMap extends OverviewMap implements CustomizableControl{
         this.controlButton = document.createElement("button");
         this.controlButton.appendChild(this.overviewMapIcon);
         this.controlButton.classList.add(mapControlStyles.border);
+        this.controlButton.title = "Overviewmap";
 
         this.controlButton.addEventListener("click", () => {
             if (this.isCollapsed) { // overview map is collapsed and will be opened now

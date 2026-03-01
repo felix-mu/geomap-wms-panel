@@ -63,6 +63,7 @@ export class CustomAttribution extends Attribution implements CustomizableContro
         this.controlButton = document.createElement("button");
         this.controlButton.appendChild(this.controlIcon);
         this.controlButton.classList.add(mapControlStyles.border);
+        this.controlButton.title = "Attribution";
 
         this.controlButton.addEventListener("click", () => {
             if (this.isCollapsed) { // overview map is collapsed and will be opened now
