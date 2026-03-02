@@ -1,5 +1,5 @@
 import { css } from "@emotion/css";
-import { GrafanaTheme2 } from "@grafana/data";
+import { BusEventBase, GrafanaTheme2 } from "@grafana/data";
 import { config } from "@grafana/runtime";
 // import { BusEventBase } from "@grafana/data";
 import Control from "ol/control/Control";
@@ -13,6 +13,9 @@ import * as olCss from "ol/css";
 // import React from "react";
 import { Map } from "ol";
 import { mapControlStyles } from "./mapControlStyles";
+import { CollapsibleControl } from "./CollapsibleControl";
+import { GeomapPanel } from "GeomapPanel";
+import { CollapsibleMapControlOpenedEvent } from "./controlEvents";
 // import { createRoot, Root } from "react-dom/client";
 
 // class PanelOptionsChangedEvent extends BusEventBase {
@@ -25,7 +28,7 @@ export type LegendItem = {
   id?: string
 }
 
-export class WMSLegend extends Control {
+export class WMSLegend extends Control implements CollapsibleControl {
     static CONTROL_NAME =  "WMSLegend";
 
     // private baseLayer: BaseLayer;
@@ -37,6 +40,9 @@ export class WMSLegend extends Control {
     private legendURLs: LegendItem[];
     private theme: GrafanaTheme2;
     // private root: Root;
+    public panelInstance: GeomapPanel;
+    public eventBusSrvSubscription: any;
+    protected button: HTMLButtonElement;
 
     static removeWMSLegendControlFromMap(map: Map) {
         for(let i = 0; i < map.getControls().getLength(); ++i) {
@@ -65,7 +71,7 @@ export class WMSLegend extends Control {
         return undefined;
     }
 
-    constructor(legendURLs: LegendItem[], /*baseLayer: BaseLayer, props: any,*/ opt_options?: any) {
+    constructor(legendURLs: LegendItem[], opt_options: any, panelInstance: GeomapPanel) {
         const options = opt_options || {};
 
         const button = document.createElement('button');
@@ -79,7 +85,7 @@ export class WMSLegend extends Control {
         icon.style.cursor = "pointer";
         button.appendChild(icon);
         button.style.cursor= "pointer";
-        
+
         const legendContainer = document.createElement("div");
         legendContainer.style.display = "block";
         legendContainer.setAttribute("aria-label", "wms legend container");
@@ -109,6 +115,8 @@ export class WMSLegend extends Control {
             target: options.target,
         });
 
+        this.button = button;
+        this.panelInstance = panelInstance;
         this.theme = config.theme2;
         // element.style.backgroundColor = this.theme.colors.background.primary; // "rgba(255,255,255, 0.4)";
         legendContainer.style.backgroundColor = this.theme.colors.background.primary;
@@ -123,10 +131,10 @@ export class WMSLegend extends Control {
                 // button.innerHTML = ">";
                 // this.legendContainer.className = styles.basemapLegend_hidden;
                 // button.getElementsByTagName('i')[0].setAttribute("class", "bi bi-list-task");
-                button.innerHTML = "";
+                this.button.innerHTML = "";
                 const icon = document.createElement('i');
                 icon.className = "bi bi-list-task";
-                button.appendChild(icon);
+                this.button.appendChild(icon);
 
                 this.element.style.width = "";
                 this.element.style.height = "";
@@ -143,14 +151,16 @@ export class WMSLegend extends Control {
                 // this.root.unmount();
                 this.element.removeChild(this.legendContainer);
             } else {
-                button.getElementsByTagName('i')[0].remove();
-                button.innerHTML = "‹";
+                this.button.getElementsByTagName('i')[0].remove();
+                this.button.innerHTML = "‹";
                 
                 if(this.legendContainer.getElementsByTagName("div").length === 0) {
                     this.legendContainer.appendChild(this.buildLegend(this.legendURLs));
                 }
 
                 this.element.appendChild(this.legendContainer);
+
+                this.dispatchCollapseEvent();
             }
 
             // Update legend state
@@ -161,6 +171,51 @@ export class WMSLegend extends Control {
             eventHandler();
         });
 
+        this.eventBusSrvSubscription = this.panelInstance.mapControlEventBus.getStream(CollapsibleMapControlOpenedEvent)
+            .subscribe((evt) => this.handleCollapseEvent(evt));
+    }
+
+    handleCollapseEvent(event: BusEventBase): void {
+        // Do not handle event if it comes from another panel instance or the event was emitted by this control itself
+        // eslint-disable-next-line
+        if ((event as CollapsibleMapControlOpenedEvent).payload.panelOrigin != this.panelInstance ||
+        // eslint-disable-next-line
+            (event as CollapsibleMapControlOpenedEvent).payload.controlOrigin == this) {
+            return;
+        }
+
+        // if it is already collapsed do nothing
+        if (this.isLegendOpened() === false) {
+            return;
+        }
+
+        this.button.innerHTML = "";
+        const icon = document.createElement('i');
+        icon.className = "bi bi-list-task";
+        this.button.appendChild(icon);
+
+        this.element.style.width = "";
+        this.element.style.height = "";
+        this.element.style.overflow = "";
+        this.element.style.resize = "";
+        this.element.style.paddingBottom = "";
+
+        this.element.removeChild(this.legendContainer);
+
+        // Update legend state
+        this.legendOpened = !this.legendOpened;
+    }
+
+    dispatchCollapseEvent(): void {
+        this.panelInstance.mapControlEventBus.publish(new CollapsibleMapControlOpenedEvent({
+            panelOrigin: this.panelInstance,
+            controlOrigin: this
+        }));
+    }
+
+    protected disposeInternal(): void {
+        super.disposeInternal();
+        this.eventBusSrvSubscription.unsubscribe();
     }
 
     getControlName(): string {
@@ -192,7 +247,7 @@ export class WMSLegend extends Control {
 
     // TODO: add unit tests
     removeLegendItemsByLayerIdentifier() {
-
+        throw new Error("Method not implemented.");
     }
 
     buildLegend(legendURLs: LegendItem[]): HTMLDivElement {

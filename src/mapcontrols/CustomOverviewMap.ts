@@ -2,12 +2,17 @@ import OverviewMap, { Options } from "ol/control/OverviewMap";
 import { CustomizableControl } from "./CustomizableControl";
 // import { css } from "@emotion/react";
 import { mapControlStyles } from "./mapControlStyles";
+import { CollapsibleMapControlOpenedEvent } from "./controlEvents";
+import { CollapsibleControl } from "./CollapsibleControl";
+import { BusEventBase } from "@grafana/data";
+import { GeomapPanel } from "GeomapPanel";
+// import { listen } from "ol/events";
 
 export interface CustomOverviewmapOptions extends Options {
     target: HTMLElement
 }
 
-class CustomOverviewMap extends OverviewMap implements CustomizableControl{
+class CustomOverviewMap extends OverviewMap implements CustomizableControl, CollapsibleControl {
     protected overviewMapContainer: HTMLDivElement;
     protected controlButton: HTMLButtonElement;
     protected overviewMapIcon: HTMLElement;
@@ -15,8 +20,10 @@ class CustomOverviewMap extends OverviewMap implements CustomizableControl{
     protected customMapOverlayTarget: HTMLElement;
     protected isCollapsed = true;
     protected mapControlButtonContainer: HTMLDivElement;
+    public panelInstance: GeomapPanel;
+    public eventBusSrvSubscription: any;
 
-    constructor(options: CustomOverviewmapOptions) {
+    constructor(options: CustomOverviewmapOptions, panelInstance: GeomapPanel) {
         const icon = document.createElement("i");
         icon.setAttribute("class", "bi bi-map");
         icon.style.cursor = "pointer";
@@ -28,12 +35,12 @@ class CustomOverviewMap extends OverviewMap implements CustomizableControl{
         super({
             ...options,
             target: undefined,
-            collapsible: false // always open
+            collapsible: true // always open
         });
 
-        this.customMapOverlayTarget = options.target;
+        this.panelInstance = panelInstance;
 
-        this.setCollapsed(false);
+        this.customMapOverlayTarget = options.target;
 
         // Remove any buttons
         this.element.querySelectorAll("button").forEach((btn) => {
@@ -59,6 +66,9 @@ class CustomOverviewMap extends OverviewMap implements CustomizableControl{
         this.controlButton.classList.add(mapControlStyles.border);
         this.controlButton.title = "Overviewmap";
 
+        this.eventBusSrvSubscription = this.panelInstance.mapControlEventBus.getStream(CollapsibleMapControlOpenedEvent)
+            .subscribe((evt) => this.handleCollapseEvent(evt));
+
         this.controlButton.addEventListener("click", () => {
             if (this.isCollapsed) { // overview map is collapsed and will be opened now
                 this.controlButton.removeChild(this.overviewMapIcon);
@@ -66,10 +76,14 @@ class CustomOverviewMap extends OverviewMap implements CustomizableControl{
                 this.isCollapsed = false;
 
                 this.customMapOverlayTarget.appendChild(this.overviewMapContainer);
+                this.setCollapsed(false);
+
+                this.dispatchCollapseEvent();
             } else {
                 this.controlButton.removeChild(this.collapseHTMLElement);
                 this.controlButton.appendChild(this.overviewMapIcon);
                 this.isCollapsed = true;
+                this.setCollapsed(true);
 
                 this.customMapOverlayTarget.removeChild(this.overviewMapContainer);
             }
@@ -84,10 +98,39 @@ class CustomOverviewMap extends OverviewMap implements CustomizableControl{
         this.customMapOverlayTarget.appendChild(this.mapControlButtonContainer);
     }
 
+    dispatchCollapseEvent(): void {
+        this.panelInstance.mapControlEventBus.publish(new CollapsibleMapControlOpenedEvent({
+            panelOrigin: this.panelInstance,
+            controlOrigin: this
+        }));
+    }
+    
+    handleCollapseEvent(event: BusEventBase): void {
+        // Do not handle event if it comes from another panel instance or the event was emitted by this control itself
+        // eslint-disable-next-line
+        if ((event as CollapsibleMapControlOpenedEvent).payload.panelOrigin != this.panelInstance ||
+        // eslint-disable-next-line
+            (event as CollapsibleMapControlOpenedEvent).payload.controlOrigin == this) {
+            return;
+        }
+
+        // if it is already collapsed do nothing
+        if (this.isCollapsed) {
+            return;
+        }
+
+        this.controlButton.removeChild(this.collapseHTMLElement);
+        this.controlButton.appendChild(this.overviewMapIcon);
+        this.isCollapsed = true;
+
+        this.customMapOverlayTarget.removeChild(this.overviewMapContainer);
+    }
+
     public disposeInternal(): void {
         super.disposeInternal();
         this.overviewMapContainer.remove();
         this.mapControlButtonContainer.remove();
+        this.eventBusSrvSubscription.unsubscribe();
     }
 
     public removeCssClassFromElement(classToRemove: string) {

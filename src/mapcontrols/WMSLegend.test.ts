@@ -4,6 +4,7 @@
 
 import { WMSLegend, LegendItem } from "./WMSLegend";
 import { cleanup } from '@testing-library/react';
+import { GeomapPanel, Props } from "GeomapPanel";
 import { Map } from "ol";
 import { act } from "react";
 // import {
@@ -19,14 +20,14 @@ afterEach(cleanup);
 
 describe("Build legend method", () => {
     test("empty legends url array should return empty div array", async () => {
-        const wmsLegend: WMSLegend = new WMSLegend([]);
+        const wmsLegend: WMSLegend = new WMSLegend([], {}, new GeomapPanel({} as Props));
         const wmsLegendContainer: HTMLDivElement = wmsLegend.buildLegend([]);
         expect(wmsLegendContainer.querySelectorAll("[aria-label*='wms legend image container']")).toHaveLength(0);
     });
 
     test("legends url array should return same size", () => {
         const legendItems: LegendItem[] = [{label: "", url: ""}, {label: "", url: ""}];
-        const wmsLegend: WMSLegend = new WMSLegend(legendItems);
+        const wmsLegend: WMSLegend = new WMSLegend(legendItems, {}, new GeomapPanel({} as Props));
         const wmsLegendContainer: HTMLDivElement = wmsLegend.buildLegend(legendItems);
         expect(wmsLegendContainer.querySelectorAll("[aria-label*='wms legend image container']")).toHaveLength(legendItems.length);
     });
@@ -34,7 +35,7 @@ describe("Build legend method", () => {
 
 describe("Get control name", () => {
     test("should return control name", () => {
-        const wmsLegend: WMSLegend = new WMSLegend([]);
+        const wmsLegend: WMSLegend = new WMSLegend([], {}, new GeomapPanel({} as Props));
         expect(wmsLegend.getControlName()).toBe(WMSLegend.CONTROL_NAME);
     });
 });
@@ -42,7 +43,7 @@ describe("Get control name", () => {
 describe("Test event listener", () => {
     test("click event should build and open legend", () => {
         const items = [{label: "", url: ""}, {label: "", url: ""}];
-        const wmsLegend: WMSLegend = new WMSLegend(items);
+        const wmsLegend: WMSLegend = new WMSLegend(items, {}, new GeomapPanel({} as Props));
         const el = wmsLegend.getElement();
         const btn = el.getElementsByTagName("button")[0];
         act(() => {
@@ -62,7 +63,7 @@ describe("Test event listener", () => {
 
     test("click event should close opened legend and remove legend container", () => {
         const items = [{label: "", url: ""}, {label: "", url: ""}];
-        const wmsLegend: WMSLegend = new WMSLegend(items);
+        const wmsLegend: WMSLegend = new WMSLegend(items, {}, new GeomapPanel({} as Props));
         const el = wmsLegend.getElement();
         const btn = el.getElementsByTagName("button")[0];
         btn.dispatchEvent(new Event("click"));
@@ -75,7 +76,7 @@ describe("Test event listener", () => {
 describe("Remove control from map", () => {
     test("wms legend control should be removed from map", () => {
         const map = new Map({});
-        map.addControl(new WMSLegend([]));
+        map.addControl(new WMSLegend([], {}, new GeomapPanel({} as Props)));
 
         WMSLegend.removeWMSLegendControlFromMap(map);
 

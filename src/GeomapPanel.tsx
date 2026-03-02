@@ -31,6 +31,7 @@ import {
   getFieldDisplayValuesProxy,
   ScopedVars,
   BusEventWithPayload,
+  EventBusSrv,
   // getFieldDisplayValues,
   // GrafanaTheme2
 } from '@grafana/data';
@@ -79,7 +80,7 @@ export interface MapLayerState {
 let sharedView: View | undefined = undefined;
 export let lastGeomapPanelInstance: GeomapPanel | undefined = undefined;
 
-type Props = PanelProps<GeomapPanelOptions>;
+export type Props = PanelProps<GeomapPanelOptions>;
 interface State extends OverlayProps {
   ttip?: GeomapHoverPayload;
   ttipOpen: boolean;
@@ -132,6 +133,8 @@ export class GeomapPanel extends Component<Props, State> {
   private pointerMoveListenerEnabled = true;
   private dataHoverTimeout: ReturnType<typeof setTimeout> | undefined;
   private tooltipFixed = false;
+
+  public mapControlEventBus = new EventBusSrv();
 
   constructor(props: Props/*, state: State*/) {
     super(props);
@@ -816,7 +819,7 @@ export class GeomapPanel extends Component<Props, State> {
     }
 
     if (options.showWMSLegend === true) {
-      const wmsLegend = new WMSLegend([], {target: this.mapOverlayTopLeft1});
+      const wmsLegend = new WMSLegend([], {target: this.mapOverlayTopLeft1}, this);
       this.map.addControl(
         wmsLegend
       );
@@ -843,7 +846,7 @@ export class GeomapPanel extends Component<Props, State> {
           target: this.mapOverlayBottomRight!,
           layers: [layer],
           className: cx('ol-custom-overviewmap', mapControlStyles.mapControl, mapControlStyles.border)
-        });
+        }, this);
       overviewMap.removeCssClassFromElement(CLASS_CONTROL);
       // (overviewMap as any).element.style.pointerEvents = "auto";
       // topRight1.push(
@@ -896,7 +899,7 @@ export class GeomapPanel extends Component<Props, State> {
         // expandClassName: 'bi bi-info-circle',
         // collapseClassName: ''
         // className: cx('ol-attribution', mapControlStyles.mapControl)
-      });
+      }, this);
       attribution.removeCssClassFromElement(CLASS_CONTROL);
       // (attribution as any).element.style.pointerEvents = "auto";
       // bottomRight.push(

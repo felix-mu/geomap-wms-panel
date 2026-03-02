@@ -3,13 +3,17 @@ import { mapControlStyles } from "./mapControlStyles";
 import { CustomizableControl } from "./CustomizableControl";
 import { css } from "@emotion/css";
 // import { Map } from "ol";
+import { CollapsibleControl } from "./CollapsibleControl";
+import { CollapsibleMapControlOpenedEvent } from "./controlEvents";
+import { BusEventBase } from "@grafana/data";
+import { GeomapPanel } from "GeomapPanel";
 
  export interface CustomAttributionOptions extends Options {
         target: HTMLElement,
         // map: Map
     }
 
-export class CustomAttribution extends Attribution implements CustomizableControl {
+export class CustomAttribution extends Attribution implements CustomizableControl, CollapsibleControl {
     protected containerElement: HTMLDivElement;
     protected controlButton: HTMLButtonElement;
     protected controlIcon: HTMLElement;
@@ -17,8 +21,11 @@ export class CustomAttribution extends Attribution implements CustomizableContro
     protected customMapOverlayTarget: HTMLElement;
     protected isCollapsed = true;
     protected controlButtonContainer: HTMLDivElement;
+    public eventBusSrvSubscription: any;
+    public panelInstance: GeomapPanel;
 
-    constructor(options: CustomAttributionOptions) {
+
+    constructor(options: CustomAttributionOptions, panelInstance: GeomapPanel) {
         // options = options ? options : {};
 
         const icon = document.createElement("i");
@@ -33,6 +40,8 @@ export class CustomAttribution extends Attribution implements CustomizableContro
             ...options,
             target: undefined,
         });
+
+        this.panelInstance = panelInstance;
 
         // this.element.classList.add(mapControlStyles.mapControl);
         // this.element.classList.add(styles.attributionStyle);
@@ -85,6 +94,9 @@ export class CustomAttribution extends Attribution implements CustomizableContro
         this.controlButton.classList.add(mapControlStyles.border);
         this.controlButton.title = "Attribution";
 
+        this.eventBusSrvSubscription = this.panelInstance.mapControlEventBus.getStream(CollapsibleMapControlOpenedEvent)
+            .subscribe((evt) => this.handleCollapseEvent(evt));
+
         this.controlButton.addEventListener("click", () => {
             if (this.isCollapsed) { // overview map is collapsed and will be opened now
                 this.controlButton.removeChild(this.controlIcon);
@@ -92,6 +104,8 @@ export class CustomAttribution extends Attribution implements CustomizableContro
                 this.isCollapsed = false;
 
                 this.customMapOverlayTarget.appendChild(this.containerElement);
+
+                this.dispatchCollapseEvent();
             } else {
                 this.controlButton.removeChild(this.collapseHTMLElement);
                 this.controlButton.appendChild(this.controlIcon);
@@ -110,10 +124,39 @@ export class CustomAttribution extends Attribution implements CustomizableContro
         this.customMapOverlayTarget.appendChild(this.controlButtonContainer);
     }
 
+    dispatchCollapseEvent(): void {
+        this.panelInstance.mapControlEventBus.publish(new CollapsibleMapControlOpenedEvent({
+            panelOrigin: this.panelInstance,
+            controlOrigin: this
+        }));
+    }
+
+    handleCollapseEvent(event: BusEventBase): void {
+        // Do not handle event if it comes from another panel instance or the event was emitted by this control itself
+        // eslint-disable-next-line
+        if ((event as CollapsibleMapControlOpenedEvent).payload.panelOrigin != this.panelInstance ||
+        // eslint-disable-next-line
+            (event as CollapsibleMapControlOpenedEvent).payload.controlOrigin == this) {
+            return;
+        }
+
+        // if it is already collapsed do nothing
+        if (this.isCollapsed) {
+            return;
+        }
+
+        this.controlButton.removeChild(this.collapseHTMLElement);
+        this.controlButton.appendChild(this.controlIcon);
+        this.isCollapsed = true;
+
+        this.customMapOverlayTarget.removeChild(this.containerElement);
+    }
+
     protected disposeInternal(): void {
         super.disposeInternal();
         this.containerElement.remove();
         this.controlButtonContainer.remove();
+        this.eventBusSrvSubscription.unsubscribe();
     }
 
     removeCssClassFromElement(classToRemove: string) {
