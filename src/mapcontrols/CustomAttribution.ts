@@ -14,13 +14,13 @@ import { GeomapPanel } from "GeomapPanel";
     }
 
 export class CustomAttribution extends Attribution implements CustomizableControl, CollapsibleControl {
-    protected containerElement: HTMLDivElement;
-    protected controlButton: HTMLButtonElement;
-    protected controlIcon: HTMLElement;
-    protected collapseHTMLElement: HTMLElement;
-    protected customMapOverlayTarget: HTMLElement;
-    protected isCollapsed = true;
-    protected controlButtonContainer: HTMLDivElement;
+    public containerElement: HTMLDivElement;
+    public controlButton: HTMLButtonElement;
+    public controlIcon: HTMLElement;
+    public collapseHTMLElement: HTMLElement;
+    public customMapOverlayTarget: HTMLElement;
+    public isCollapsed = true;
+    public controlButtonContainer: HTMLDivElement;
     public eventBusSrvSubscription: any;
     public panelInstance: GeomapPanel;
 
@@ -47,6 +47,8 @@ export class CustomAttribution extends Attribution implements CustomizableContro
         // this.element.classList.add(styles.attributionStyle);
         // this.element.style.marginLeft = "auto";
         this.element.style.maxWidth = "300px";
+        this.element.style.textAlign = "left";
+        // this.element.dir = "rtl"
         this.element.classList.add('ol-attribution', styles.attributionBorder, styles.attributionStyle);
 
         this.customMapOverlayTarget = options.target;
@@ -73,6 +75,7 @@ export class CustomAttribution extends Attribution implements CustomizableContro
         textContainerElement.style.position = "absolute";
         textContainerElement.style.bottom = "4px";
         textContainerElement.style.right = "0";
+        textContainerElement.style.width = "max-content";
         // textContainerElement.style.bottom = "8px";
         // textContainerElement.style.translate = "-15px";
         textContainerElement.classList.add(mapControlStyles.border);
@@ -170,14 +173,18 @@ export class CustomAttribution extends Attribution implements CustomizableContro
 
 const styles = {
     attributionStyle: css`
-    border-radius: 2px;
-    direction: rtl;
+    border-radius: 4px;
+    /*direction: rtl;*/
     overflow: auto;
     scrollbar-width: thin;
     padding: 8px;
     align-items: start;
+    list-style-type: none;
     ul {
         margin: 0;
+        /*li {
+            float: left;
+        }*/
     }
     /*height: 25px;*/
     max-width: 300px;

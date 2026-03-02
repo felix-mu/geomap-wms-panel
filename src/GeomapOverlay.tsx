@@ -74,7 +74,12 @@ const getStyles = (topRight1Exists: boolean) => (theme: GrafanaTheme2) => ({
     flexDirection: "column",
     height: "auto",
     width: "auto",
-    alignSelf: "center"
+    alignSelf: "center",
+    overflowY: "auto",
+    paddingRight: "5px",
+    paddingLeft: "5px",
+    scrollbarWidth: "thin",
+    scrollbarGutter: "stable"
   }),
   TR2: css({
     position: 'absolute',

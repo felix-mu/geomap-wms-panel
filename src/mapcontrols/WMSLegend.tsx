@@ -13,7 +13,6 @@ import * as olCss from "ol/css";
 // import React from "react";
 import { Map } from "ol";
 import { mapControlStyles } from "./mapControlStyles";
-import { CollapsibleControl } from "./CollapsibleControl";
 import { GeomapPanel } from "GeomapPanel";
 import { CollapsibleMapControlOpenedEvent } from "./controlEvents";
 // import { createRoot, Root } from "react-dom/client";
@@ -28,7 +27,7 @@ export type LegendItem = {
   id?: string
 }
 
-export class WMSLegend extends Control implements CollapsibleControl {
+export class WMSLegend extends Control {
     static CONTROL_NAME =  "WMSLegend";
 
     // private baseLayer: BaseLayer;

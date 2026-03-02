@@ -782,10 +782,9 @@ export class GeomapPanel extends Component<Props, State> {
           collapseLabel: '›',
           tipLabel: 'Select layers',
           groupSelectStyle: 'none',
-          activationMode: 'click',
-          
-          className: cx(mapControlStyles.mapControl)
-        });
+          activationMode: 'click',  
+          className: mapControlStyles.mapControl
+        }, this);
         layerSwitcher.removeCssClassFromElement(CLASS_CONTROL);
       // (layerSwitcher as any).element.style.pointerEvents = "auto";
       // topRight1.push(

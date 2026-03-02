@@ -3,7 +3,6 @@ import { CustomizableControl } from "./CustomizableControl";
 // import { css } from "@emotion/react";
 import { mapControlStyles } from "./mapControlStyles";
 import { CollapsibleMapControlOpenedEvent } from "./controlEvents";
-import { CollapsibleControl } from "./CollapsibleControl";
 import { BusEventBase } from "@grafana/data";
 import { GeomapPanel } from "GeomapPanel";
 // import { listen } from "ol/events";
@@ -12,7 +11,7 @@ export interface CustomOverviewmapOptions extends Options {
     target: HTMLElement
 }
 
-class CustomOverviewMap extends OverviewMap implements CustomizableControl, CollapsibleControl {
+class CustomOverviewMap extends OverviewMap implements CustomizableControl {
     protected overviewMapContainer: HTMLDivElement;
     protected controlButton: HTMLButtonElement;
     protected overviewMapIcon: HTMLElement;
