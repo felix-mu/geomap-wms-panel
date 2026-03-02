@@ -889,6 +889,7 @@ export class GeomapPanel extends Component<Props, State> {
     if (options.showAttribution) {
       const attribution = new CustomAttribution({
         target: this.mapOverlayBottomRight!,
+        // map: this.map
         // collapsed: true, 
         // collapsible: true ,
         // label: '',

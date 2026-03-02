@@ -1,10 +1,12 @@
 import Attribution, { Options } from "ol/control/Attribution";
 import { mapControlStyles } from "./mapControlStyles";
 import { CustomizableControl } from "./CustomizableControl";
-// import { css } from "@emotion/css";
+import { css } from "@emotion/css";
+// import { Map } from "ol";
 
  export interface CustomAttributionOptions extends Options {
-        target: HTMLElement
+        target: HTMLElement,
+        // map: Map
     }
 
 export class CustomAttribution extends Attribution implements CustomizableControl {
@@ -36,6 +38,7 @@ export class CustomAttribution extends Attribution implements CustomizableContro
         // this.element.classList.add(styles.attributionStyle);
         // this.element.style.marginLeft = "auto";
         this.element.style.maxWidth = "300px";
+        this.element.classList.add('ol-attribution', styles.attributionBorder, styles.attributionStyle);
 
         this.customMapOverlayTarget = options.target;
 
@@ -46,14 +49,31 @@ export class CustomAttribution extends Attribution implements CustomizableContro
             btn.remove();
         });
 
-        // Container for map
+        // Overlay for map
         this.containerElement = document.createElement("div");
         this.containerElement.style.position = "fixed";
+        // this.containerElement.style.width = "100%";
+        // this.containerElement.style.height = "100%";
+        this.containerElement.style.zIndex = "1000";
+        // this.containerElement.style.display = "flex";
+        // this.containerElement.style.flexDirection = "column-reverse";
         this.containerElement.style.bottom = "8px";
-        this.containerElement.style.translate = "-15px";
-        this.containerElement.classList.add(mapControlStyles.border);
+        
+        const textContainerElement = document.createElement("div");
+        // textContainerElement.style.float = "right";
+        textContainerElement.style.position = "absolute";
+        textContainerElement.style.bottom = "4px";
+        textContainerElement.style.right = "0";
+        // textContainerElement.style.bottom = "8px";
+        // textContainerElement.style.translate = "-15px";
+        textContainerElement.classList.add(mapControlStyles.border);
 
-        this.setTarget(this.containerElement); // add new target
+        this.containerElement.appendChild(textContainerElement);
+
+        // options.map.getTargetElement().appendChild(this.containerElement);
+
+        // this.setTarget(this.containerElement); // add new target
+        this.setTarget(textContainerElement); // add new target
 
         this.controlIcon = icon;
 
@@ -105,16 +125,21 @@ export class CustomAttribution extends Attribution implements CustomizableContro
     }
 }
 
-// const styles = {
-//     attributionStyle: css`
-//     border-radius: 2px;
-//     /*button {
-//         border-radius: 4px;
-//         border-width: 1px;
-//     };*/
-//     `,
-//     attributionBorder: css`
-//     border-radius: 4px;
-//     border-width: 1px;
-//     `
-// };
+const styles = {
+    attributionStyle: css`
+    border-radius: 2px;
+    direction: rtl;
+    overflow: auto;
+    scrollbar-width: thin;
+    height: 25px;
+    max-width: 300px;
+    /*button {
+        border-radius: 4px;
+        border-width: 1px;
+    };*/
+    `,
+    attributionBorder: css`
+    border-radius: 4px;
+    border-width: 1px;
+    `
+};
