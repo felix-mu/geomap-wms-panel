@@ -131,8 +131,15 @@ const styles = {
     direction: rtl;
     overflow: auto;
     scrollbar-width: thin;
-    height: 25px;
+    padding: 8px;
+    align-items: start;
+    ul {
+        margin: 0;
+    }
+    /*height: 25px;*/
     max-width: 300px;
+    min-height: 25px;
+    max-height: 40px;
     /*button {
         border-radius: 4px;
         border-width: 1px;
