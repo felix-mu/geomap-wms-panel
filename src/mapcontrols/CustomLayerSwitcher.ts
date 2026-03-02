@@ -1,65 +1,57 @@
 import LayerSwitcher, { Options } from "ol-layerswitcher";
-
-export class CustomLayerSwitcher extends LayerSwitcher {
-    protected shownClassNameButton: string;
-    protected hiddenClassNameButton: string;
-    protected icon: HTMLElement;
-    protected text: Text;
-
-    constructor(opts: CustomOptions) {
-      const {shownClassNameButton, hiddenClassNameButton, ...opt_options} = opts;
-      super({ ...opt_options });
-      this.element.style.pointerEvents = "auto";
-
-      this.shownClassNameButton = shownClassNameButton ? shownClassNameButton : "";
-      this.hiddenClassNameButton = hiddenClassNameButton ? hiddenClassNameButton : "";
-
-      this.icon = document.createElement('i');
-      this.icon.setAttribute("class", hiddenClassNameButton!);
-      this.icon.style.cursor = "pointer";
-      this.button.appendChild(this.icon);
-      // this.button.style.pointerEvents = "auto";
-
-      this.text = document.createTextNode("");
-      this.button.appendChild(this.text);
-
-      this.updateButton();
-    }
-    
-    protected updateButton(): void {
-
-      if (!this.icon || !this.text) {
-        return;
-      }
-
-      if (this.element.classList.contains(this.shownClassName)) {
-        // this.button.textContent = this.collapseLabel;
-        // this.button.innerText = this.collapseLabel;
-        this.button.setAttribute('title', this.collapseTipLabel);
-        this.button.setAttribute('aria-label', this.collapseTipLabel);
-        if (this.text) {
-          this.text.textContent = this.collapseLabel;
-        }
-        if (this.icon) {
-              this.icon.setAttribute("class", this.shownClassNameButton);
-        }
-      } else {
-        // this.button.textContent = this.label;
-        // this.button.innerText = this.label;
-        this.button.setAttribute('title', this.tipLabel);
-        this.button.setAttribute('aria-label', this.tipLabel);
-        if (this.text) {
-          this.text.textContent = this.label;
-        }
-        if (this.icon) {
-              this.icon.setAttribute("class", this.hiddenClassNameButton);
-        }
-      }
-    }
-}
+import { CustomizableControl } from "./CustomizableControl";
+import { CollapsibleControl } from "./CollapsibleControl";
+import { BusEventBase } from "@grafana/data";
+import { GeomapPanel } from "GeomapPanel";
+import { AbstractCollapsibleControl } from "./AbstractCollapsibleControl";
 
 interface CustomOptions extends Options {
-  shownClassNameButton?: string,
-  hiddenClassNameButton?: string,
-  className?: string
+  target: HTMLElement
+  className: string
+}
+
+export class CustomLayerSwitcher extends LayerSwitcher implements CustomizableControl, CollapsibleControl {
+    protected containerElement: HTMLDivElement;
+    protected controlButton: HTMLButtonElement;
+    protected controlIcon: HTMLElement;
+    protected collapseHTMLElement: HTMLElement;
+    protected customMapOverlayTarget: HTMLElement;
+    protected isCollapsed = true;
+    protected controlButtonContainer: HTMLDivElement;
+    public eventBusSrvSubscription: any;
+    public panelInstance: GeomapPanel;
+
+    constructor(opts: CustomOptions, panelInstance: GeomapPanel) {
+      super({
+        ...opts,
+        target: undefined
+      });
+      this.element.style.pointerEvents = "auto";
+      this.element.classList.add(opts.className);
+      
+      this.panelInstance = panelInstance;
+
+      // Remove any buttons
+      this.element.querySelectorAll("button").forEach((btn) => {
+          btn.remove();
+      });
+
+
+
+    }
+
+  dispatchCollapseEvent(): void {
+    throw new Error("Method not implemented.");
+  }
+  handleCollapseEvent(event: BusEventBase): void {
+    throw new Error("Method not implemented.");
+  }
+
+    removeCssClassFromElement(classToRemove: string) {
+        this.element.classList.remove(classToRemove);
+    }
+
+    addCssClassToElement(classToAdd: string) {
+        this.element.classList.add(classToAdd);
+    }
 }

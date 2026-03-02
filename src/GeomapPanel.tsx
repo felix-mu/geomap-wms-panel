@@ -777,15 +777,16 @@ export class GeomapPanel extends Component<Props, State> {
 
     if (options.showLayercontrol) {
       const layerSwitcher = new CustomLayerSwitcher({
-          target: this.mapOverlayTopRight1,
+          target: this.mapOverlayTopRight1!,
           label: '',
           collapseLabel: '›',
           tipLabel: 'Select layers',
           groupSelectStyle: 'none',
           activationMode: 'click',
-          hiddenClassNameButton: "bi bi-layers",
+          
           className: cx(mapControlStyles.mapControl)
         });
+        layerSwitcher.removeCssClassFromElement(CLASS_CONTROL);
       // (layerSwitcher as any).element.style.pointerEvents = "auto";
       // topRight1.push(
       //   <div ref={(node: HTMLDivElement) => {
