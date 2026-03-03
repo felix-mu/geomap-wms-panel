@@ -916,7 +916,7 @@ export class GeomapPanel extends Component<Props, State> {
 
     // Update the react overlays
     if (options.showDebug) {
-      topRight2.push(<DebugOverlay key="debug" map={this.map} />);
+      header.push(<DebugOverlay key="debug" map={this.map} />);
     }
 
     this.setState({ topRight2: topRight2, topRight1: topRight1, header: header,
@@ -934,7 +934,7 @@ export class GeomapPanel extends Component<Props, State> {
   };
 
   render() {
-    const { ttip, topRight1, topLeft1, topRight2, bottomLeft } = this.state;
+    const { ttip, topRight1, topLeft1, topRight2, bottomLeft, footer, header, bottomRight } = this.state;
 
     // Tooltip handling from: https://github.com/grafana/grafana/blob/17a3ec52b651a082bbf5604f75975c12cd2ba9ed/public/app/plugins/panel/geomap/GeomapPanel.tsx#L386
     // let { ttip, ttipOpen, topRight1, legends, topRight2 } = this.state;
@@ -956,6 +956,7 @@ export class GeomapPanel extends Component<Props, State> {
             }}>
             <div className={styles.map} ref={this.initMapRef as (instance: HTMLDivElement | null) => void}></div>
             <GeomapOverlay topLeft1={topLeft1} topRight1={topRight1} bottomLeft={bottomLeft} topRight2={topRight2}
+            footer={footer} header={header} bottomRight={bottomRight}
             refBottomLeft={((node: HTMLDivElement) => {
               this.mapOverlayBottomLeft = node;
             }) as (instance: HTMLDivElement | null) => void}

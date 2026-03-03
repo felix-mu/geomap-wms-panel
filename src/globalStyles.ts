@@ -1,5 +1,6 @@
 import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
+import tinycolor from 'tinycolor2';
 
 export function getGlobalStyles(theme: GrafanaTheme2) {
   // NOTE: this works with
@@ -41,7 +42,7 @@ export function getGlobalStyles(theme: GrafanaTheme2) {
 
   return css`
     .ol-scale-line {
-    background: ${theme.colors.background.elevated}; /* rgba(0,60,136,0.3); */
+    background: ${tinycolor(theme.colors.background.primary).setAlpha(0.9).toString()}; /* rgba(0,60,136,0.3); */
     position: static;
   }
 

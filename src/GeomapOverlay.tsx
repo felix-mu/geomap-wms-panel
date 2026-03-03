@@ -112,7 +112,9 @@ const getStyles = (topRight1Exists: boolean) => (theme: GrafanaTheme2) => ({
     flexDirection: "column",
     height: "auto",
     width: "auto",
-    alignSelf: "center"
+    alignSelf: "center",
+    paddingRight: "5px",
+    paddingLeft: "5px",
   }),
   BL: css({
     position: 'absolute',
@@ -126,7 +128,9 @@ const getStyles = (topRight1Exists: boolean) => (theme: GrafanaTheme2) => ({
     flexDirection: "column",
     height: "auto",
     width: "auto",
-    alignSelf: "center"
+    alignSelf: "center",
+    paddingRight: "5px",
+    paddingLeft: "5px",
   }),
   footer: css({
     position: 'absolute',
@@ -140,7 +144,9 @@ const getStyles = (topRight1Exists: boolean) => (theme: GrafanaTheme2) => ({
     width: "100%",
     alignSelf: "center",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    paddingRight: "5px",
+    paddingLeft: "5px",
   }),
   BR: css({
     position: 'absolute',
@@ -155,6 +161,8 @@ const getStyles = (topRight1Exists: boolean) => (theme: GrafanaTheme2) => ({
     height: "auto",
     width: "auto",
     alignSelf: "center",
-    scrollbarGutter: "stable"
+    scrollbarGutter: "stable",
+    paddingRight: "5px",
+    paddingLeft: "5px",
   }),
 });
