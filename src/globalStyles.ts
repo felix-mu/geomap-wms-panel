@@ -41,13 +41,14 @@ export function getGlobalStyles(theme: GrafanaTheme2) {
 
   return css`
     .ol-scale-line {
-    background: ${theme.colors.border.weak}; /* rgba(0,60,136,0.3); */
+    background: ${theme.colors.background.elevated}; /* rgba(0,60,136,0.3); */
+    position: static;
   }
 
   .ol-scale-line-inner {
-    border: 1px solid ${theme.colors.text.primary}; /* #eee; */
+    border: 1px solid ${theme.colors.text.maxContrast}; /* #eee; */
     border-top: 0;
-    color: ${theme.colors.text.primary}; /* #eee; */
+    color: ${theme.colors.text.maxContrast}; /* #eee; */
   }
 
   .ol-control {

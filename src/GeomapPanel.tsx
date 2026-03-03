@@ -129,6 +129,8 @@ export class GeomapPanel extends Component<Props, State> {
   mapOverlayTopLeft1?: HTMLDivElement;
   mapOverlayBottomLeft?: HTMLDivElement;
   mapOverlayBottomRight?: HTMLDivElement;
+  mapOverlayHeader?: HTMLDivElement;
+  mapOverlayFooter?: HTMLDivElement;
 
   private pointerMoveListenerEnabled = true;
   private dataHoverTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -741,8 +743,10 @@ export class GeomapPanel extends Component<Props, State> {
 
     let topRight1: ReactNode[] = [];
     let topRight2: ReactNode[] = [];
+    let header: ReactNode[] = [];
     let topLeft1: ReactNode[] = [];
     let bottomLeft: ReactNode[] = [];
+    let footer: ReactNode[] = [];
     let bottomRight: ReactNode[] = [];
 
     if (options.showZoom) {
@@ -759,10 +763,10 @@ export class GeomapPanel extends Component<Props, State> {
 
     if (options.showScale) {
       const scaleLine = new ScaleLine({
-          target: this.mapOverlayBottomLeft,
+          target: this.mapOverlayFooter,
           units: options.scaleUnits,
           minWidth: 100,
-          className: cx('ol-scale-line', mapControlStyles.mapControl)
+          // className: cx('ol-scale-line', mapControlStyles.mapControl)
         });
       // (scaleLine as any).element.style.pointerEvents = "auto";
       // bottomLeft.push(
@@ -915,7 +919,8 @@ export class GeomapPanel extends Component<Props, State> {
       topRight2.push(<DebugOverlay key="debug" map={this.map} />);
     }
 
-    this.setState({ topRight2: topRight2, topRight1: topRight1, topLeft1: topLeft1, bottomRight: bottomRight, bottomLeft: bottomLeft });
+    this.setState({ topRight2: topRight2, topRight1: topRight1, header: header,
+      topLeft1: topLeft1, bottomRight: bottomRight, footer: footer, bottomLeft: bottomLeft });
   }
 
   clearTooltip = () => {
@@ -954,6 +959,9 @@ export class GeomapPanel extends Component<Props, State> {
             refBottomLeft={((node: HTMLDivElement) => {
               this.mapOverlayBottomLeft = node;
             }) as (instance: HTMLDivElement | null) => void}
+            refFooter={((node: HTMLDivElement) => {
+              this.mapOverlayFooter = node;
+            }) as (instance: HTMLDivElement | null) => void}
             refBottomRight={((node: HTMLDivElement) => {
               this.mapOverlayBottomRight = node;
             }) as (instance: HTMLDivElement | null) => void}
@@ -965,6 +973,9 @@ export class GeomapPanel extends Component<Props, State> {
             }) as (instance: HTMLDivElement | null) => void}
             refTopRight2={((node: HTMLDivElement) => {
               this.mapOverlayTopRight2 = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refHeader={((node: HTMLDivElement) => {
+              this.mapOverlayHeader = node;
             }) as (instance: HTMLDivElement | null) => void}
             ></GeomapOverlay>
             <Tooltip tooltipData={{ttip: ttip, fixedFlag: this.tooltipFixed}} mapExtent={{
