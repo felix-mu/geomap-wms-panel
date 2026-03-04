@@ -45,7 +45,7 @@ export function MarkersLegend(props: MarkersLegendProps) {
 
     return (
       <>
-        <Label>{color?.field?.name}</Label>
+        <Label style={{color: theme.colors.text.maxContrast}}>{color?.field?.name}</Label>
         <div
           className={style.gradientContainer}
           style={{ backgroundImage: `linear-gradient(to right, ${colors.map((c) => c).join(', ')}` }}
