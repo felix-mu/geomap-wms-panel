@@ -1,6 +1,6 @@
 import { selectors } from '@grafana/e2e-selectors';
 import { Field, Label } from '@grafana/ui';
-import React, { ReactNode } from 'react';
+import React, { JSXElementConstructor, ReactElement, ReactNode } from 'react';
 import Highlighter from 'react-highlight-words';
 import { OptionsPaneCategoryDescriptor } from './OptionsPaneCategoryDescriptor';
 
@@ -76,7 +76,7 @@ export class OptionsPaneItemDescriptor {
         key={key}
         aria-label={selectors.components.PanelEditor.OptionsPane.fieldLabel(key)}
       >
-        {render() as React.ReactElement}
+        {render() as ReactElement<Record<string, unknown>, string | JSXElementConstructor<any>>}
       </Field>
     );
   }
