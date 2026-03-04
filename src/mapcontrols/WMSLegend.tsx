@@ -217,6 +217,10 @@ export class WMSLegend extends Control {
         this.eventBusSrvSubscription.unsubscribe();
     }
 
+    public getLegendURLs(): LegendItem[] {
+        return this.legendURLs;
+    }
+
     getControlName(): string {
         return WMSLegend.CONTROL_NAME;
     }
