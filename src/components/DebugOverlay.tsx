@@ -35,73 +35,11 @@ export function DebugOverlay({ map }: Props) {
 
   return (
       <div className={style.infoWrap}>
-        <table>
-          <tbody>
-            <tr>
-              <th>Zoom:</th>
-              <td>{debugOverlayState.zoom?.toFixed(1)}</td>
-            </tr>
-            <tr>
-              <th>Center:&nbsp;</th>
-              <td>
-                {debugOverlayState.center[0].toFixed(5)}, {debugOverlayState.center[1].toFixed(5)}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <span>Zoom:&nbsp;{debugOverlayState.zoom?.toFixed(1)} &nbsp;</span>
+        <span>Center:&nbsp;{debugOverlayState.center[0].toFixed(5)}, {debugOverlayState.center[1].toFixed(5)}</span>
       </div>
     );
 }
-
-// interface State {
-//   zoom?: number;
-//   center: Coordinate;
-// }
-
-// export class DebugOverlay extends PureComponent<Props, State> {
-//   style = useStyles2(getStyles);
-
-//   constructor(props: Props) {
-//     super(props);
-//     this.state = { zoom: 0, center: [0, 0] };
-//   }
-
-//   updateViewState = () => {
-//     const view = this.props.map.getView();
-//     this.setState({
-//       zoom: view.getZoom(),
-//       center: transform(view.getCenter()!, view.getProjection(), 'EPSG:4326'),
-//     });
-//   };
-
-//   componentDidMount() {
-//     this.props.map.on('moveend', this.updateViewState);
-//     this.updateViewState();
-//   }
-
-//   render() {
-//     const { zoom, center } = this.state;
-
-//     return (
-//       <div className={this.style.infoWrap}>
-//         <table>
-//           <tbody>
-//             <tr>
-//               <th>Zoom:</th>
-//               <td>{zoom?.toFixed(1)}</td>
-//             </tr>
-//             <tr>
-//               <th>Center:&nbsp;</th>
-//               <td>
-//                 {center[0].toFixed(5)}, {center[1].toFixed(5)}
-//               </td>
-//             </tr>
-//           </tbody>
-//         </table>
-//       </div>
-//     );
-//   }
-// }
 
 const getStyles = (theme: GrafanaTheme2) => ({
   infoWrap: css`
@@ -109,5 +47,6 @@ const getStyles = (theme: GrafanaTheme2) => ({
     background: ${tinycolor(theme.colors.background.primary).setAlpha(0.7).toString()};
     border-radius: 2px;
     padding: 8px;
+    font-size: ${theme.typography.bodySmall.fontSize};
   `,
 });

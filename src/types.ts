@@ -30,6 +30,8 @@ export interface ControlsOptions {
 
   // Custom control: overview map
   overviewMap?: OverviewMapConfig
+
+  showWMSLegend?: boolean
 }
 
 export interface OverviewMapConfig<TConfig = any> extends ExtendMapLayerOptions {

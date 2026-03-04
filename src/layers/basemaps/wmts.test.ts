@@ -34,6 +34,7 @@ import { createTheme } from '@grafana/data';
 import Control from "ol/control/Control";
 import { WMSLegend } from "mapcontrols/WMSLegend";
 import { /*register,*/ setEPSGLookup } from "ol/proj/proj4";
+import { GeomapPanel, Props } from "GeomapPanel";
 // import proj4 from "proj4";
 
 const capabilitiesXMLDocument = `
@@ -547,6 +548,11 @@ describe("WMTS base layer", () => {
 
     test("should return non-empty layer group and map should have a legend control when enabled", async () => {
         const map = new Map({});
+        map.addControl(new WMSLegend(
+            [],
+            {},
+            new GeomapPanel({} as Props)
+        ));
         const options = {
             type: "wmts",
             config: {
@@ -565,17 +571,23 @@ describe("WMTS base layer", () => {
         const wmtsBaselayer = await wmts.create(map, options, theme);
         const layerGrp = wmtsBaselayer.init();
         expect(layerGrp.getLayersArray().length).toBe(1);
-        expect(map.getControls().getArray().filter((el: Control) => { 
+        const wmsLegend: WMSLegend = map.getControls().getArray().filter((el: Control) => { 
             try {
                 return (el as WMSLegend).getControlName() === WMSLegend.CONTROL_NAME
             } catch (exc) {
                 return false;
             }
-        }).length).toBe(1);
+        })[0] as WMSLegend;
+        expect(wmsLegend.getLegendURLs().length).toBe(1);
     });
 
     test("should return non-empty layer group and map should not have a legend control when disabled", async () => {
         const map = new Map({});
+        map.addControl(new WMSLegend(
+            [],
+            {},
+            new GeomapPanel({} as Props)
+        ));
         const options = {
             type: "wmts",
             config: {
@@ -594,12 +606,13 @@ describe("WMTS base layer", () => {
         const wmtsBaselayer = await wmts.create(map, options, theme);
         const layerGrp = wmtsBaselayer.init();
         expect(layerGrp.getLayersArray().length).toBe(1);
-        expect(map.getControls().getArray().filter((el: Control) => { 
+        const wmsLegend: WMSLegend = map.getControls().getArray().filter((el: Control) => { 
             try {
                 return (el as WMSLegend).getControlName() === WMSLegend.CONTROL_NAME
             } catch (exc) {
                 return false;
             }
-        }).length).toBe(0);
+        })[0] as WMSLegend;
+        expect(wmsLegend.getLegendURLs().length).toBe(0);
     });
 });
