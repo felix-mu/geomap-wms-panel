@@ -1202,7 +1202,7 @@
           "id": "auto",
           "lat": 33,
           "lon": 120,
-          "zoom": 4
+          "zoom": 15
         }
       },
       "pluginVersion": "2.0.1",
@@ -1478,7 +1478,7 @@
           "id": "auto",
           "lat": 33,
           "lon": 120,
-          "zoom": 4
+          "zoom": 15
         }
       },
       "pluginVersion": "2.0.1",
@@ -1555,6 +1555,6 @@
   "timezone": "browser",
   "title": "dashboard_e2e",
   "uid": "adfx6j5",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

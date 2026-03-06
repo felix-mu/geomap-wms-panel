@@ -8,6 +8,7 @@ import { lastGeomapPanelInstance } from '../GeomapPanel';
 import { toLonLat } from 'ol/proj';
 import { FitMapViewEditor } from './FitMapViewEditor';
 import { ExtentMapViewEditor } from './ExtentMapViewEditor';
+import { getCurrentMapViewZoomLevel } from './minMaxZoomLevelEditorUtils';
 
 export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPanelOptions>> = ({
   value,
@@ -60,6 +61,13 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
     },
     [value, onChange]
   );
+
+  const setMaxZoomLevel = useCallback(() => {
+    const zoomLevel = +getCurrentMapViewZoomLevel()?.toFixed(2)!;
+    let values_new = { ...value, maxZoom: zoomLevel };
+    delete values_new.zoom; // Set zoom to undefined since it would supersede maxZoom in initViewExtent
+    onChange(values_new);
+  }, [value, onChange]);
 
   return (
     <>
@@ -117,7 +125,31 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
         </>
       )}
       {value?.id === MapCenterID.Fit && (
-        <FitMapViewEditor value={value} onChange={onChange} context={context} />
+          <FitMapViewEditor value={value} onChange={onChange} context={context} />
+      )}
+      {(value?.id === MapCenterID.Fit || value?.id === MapCenterID.Auto) && (
+        <>
+          <InlineFieldRow>
+              <InlineField label="Max zoom" labelWidth={labelWidth} grow={true}>
+                <NumberInput
+                  value={value?.maxZoom ?? value?.zoom}
+                  min={1}
+                  max={28}
+                  step={0.01}
+                  onChange={(v) => {
+                    let values_new = { ...value, maxZoom: v, zoom: centerPointRegistry.getIfExists(value?.id)?.zoom };
+                    if (isNaN(values_new.maxZoom ?? NaN) === false) {
+                      delete values_new.zoom; // Set zoom to undefined since it would supersede maxZoom in initViewExtent
+                    }
+                    onChange(values_new); 
+                  }}
+                />
+              </InlineField>
+          </InlineFieldRow>
+          <Button style={{marginBottom: "4px"}} data-testid="geomap wms panel map view editor set max view zoom button" variant="secondary" size="sm" fullWidth onClick={setMaxZoomLevel}>
+              <span>Use current zoom level</span>
+          </Button>
+        </>
       )}
       <Field label="Ignore dashboard refresh" description="Toggle to ignore map view updates on dashboard refresh events" aria-label="map view editor ignore dashboard refresh switch">
         <Switch value={value?.ignoreDashboardRefresh ?? false} onChange={(e) => {
