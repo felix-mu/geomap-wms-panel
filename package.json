@@ -62,7 +62,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jsdoc": "^62.6.0",
+    "eslint-plugin-jsdoc": "^62.7.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.0",
     "eslint-webpack-plugin": "^5.0.2",
