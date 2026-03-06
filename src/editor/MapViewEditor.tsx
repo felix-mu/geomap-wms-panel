@@ -132,7 +132,7 @@ export const MapViewEditor: FC<StandardEditorProps<MapViewConfig, any, GeomapPan
           <InlineFieldRow>
               <InlineField label="Max zoom" labelWidth={labelWidth} grow={true}>
                 <NumberInput
-                  value={value?.maxZoom ?? value?.zoom}
+                  value={value?.maxZoom}
                   min={1}
                   max={28}
                   step={0.01}
