@@ -50,7 +50,6 @@ export class WMSLegend extends Control {
         }
     }
 
-    // TODO: add unit tests
     static getWMSLegendControlFromMap(map: Map): WMSLegend | undefined {
         for(let i = 0; i < map.getControls().getLength(); ++i) {
             try {
@@ -187,19 +186,20 @@ export class WMSLegend extends Control {
         return this.element;
     }
 
-    // TODO: add unit tests
     addLegendItem(item: LegendItem) {
         this.legendURLs.push(item);
     }
 
-    // TODO: add unit tests
     addLegendItems(items: LegendItem[]) {
         this.legendURLs = this.legendURLs.concat(items);
     }
 
-    // TODO: add unit tests
-    removeLegendItemsByLayerIdentifier() {
+    getLegendItems(): LegendItem[] {
+        return this.legendURLs;
+    }
 
+    removeLegendItemsByLayerIdentifier() {
+        throw new Error("Method not implemented");
     }
 
     buildLegend(legendURLs: LegendItem[]): HTMLDivElement {

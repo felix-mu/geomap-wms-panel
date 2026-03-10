@@ -5,6 +5,7 @@
 import { WMSLegend, LegendItem } from "./WMSLegend";
 import { cleanup } from '@testing-library/react';
 import { Map } from "ol";
+import Zoom from "ol/control/Zoom";
 import { act } from "react";
 // import {
 //   getByLabelText,
@@ -88,4 +89,84 @@ describe("Remove control from map", () => {
 
         expect(wmsLegendControlCounter).toBe(0);
     })
+});
+
+describe("tests for getWMSLegendControlFromMap", () => {
+    test("emtpy controls array should return undefined", () => {
+        const map = new Map();
+        const wmsLegendControl = WMSLegend.getWMSLegendControlFromMap(map);
+
+        expect(wmsLegendControl).toBeUndefined();
+    });
+
+    test("array without wms legend control should return undefined", () => {
+        const map = new Map();
+        map.addControl(new Zoom());
+
+        const wmsLegendControl = WMSLegend.getWMSLegendControlFromMap(map);
+
+        expect(wmsLegendControl).toBeUndefined();
+    });
+
+    test("array with one wms legend control should return wms legend", () => {
+        const map = new Map();
+        map.addControl(new WMSLegend([]));
+
+        const wmsLegendControl = WMSLegend.getWMSLegendControlFromMap(map);
+
+        expect(wmsLegendControl).toBeTruthy();
+    });
+
+    test("array with multiple wms legend controls should return first wms legend", () => {
+        const map = new Map();
+        const wmsLegendA = new WMSLegend([]);
+        const wmsLegendB = new WMSLegend([]);
+        map.addControl(wmsLegendA);
+        map.addControl(wmsLegendB);
+
+        const wmsLegendControl = WMSLegend.getWMSLegendControlFromMap(map);
+
+        expect(wmsLegendControl).toBe(wmsLegendA);
+    });
+});
+
+describe("tests for addLegendItem", () => {
+    test("adding a legend item should increase the legend items by one", () => {
+        const l = new WMSLegend([]);
+        l.addLegendItem({
+            label: "",
+            url: ""
+        });
+
+        expect(l.getLegendItems().length).toBe(1);
+    });
+});
+
+describe("tests for addLegendItems", () => {
+    test("adding legend items should increase the legend items length accordingly", () => {
+        const l = new WMSLegend([
+            {
+                label: "",
+                url: ""
+            }
+        ]);
+        l.addLegendItems([
+            {
+                label: "",
+                url: ""
+            },
+            {
+                label: "",
+                url: ""
+            }
+        ]);
+
+        expect(l.getLegendItems().length).toBe(3);
+    });
+    test("adding an empty array as legend items should increase the legend items length by zero", () => {
+        const l = new WMSLegend([]);
+        l.addLegendItems([]);
+
+        expect(l.getLegendItems().length).toBe(0);
+    });
 });
