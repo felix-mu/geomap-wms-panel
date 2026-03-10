@@ -661,7 +661,7 @@ export class GeomapPanel extends Component<Props, State> {
       center: [0, 0],
       zoom: 1,
       showFullExtent: true, // alows zooming so the full range is visiable
-      extent: config.mapViewExtent && config.mapViewExtent.length === 4 ? config.mapViewExtent : undefined
+      extent: config.mapViewExtent && config.mapViewExtent.length === 4 ? config.mapViewExtent : undefined,
     });
 
     // With shared views, all panels use the same view instance
@@ -702,11 +702,14 @@ export class GeomapPanel extends Component<Props, State> {
           }
         } else if (v.id === MapCenterID.Auto) {
           const extent = getLayersExtent(this.layers, true);
+          const maxZoom = config.zoom ?? config.maxZoom;
           if (!isEqual(extent, createEmpty())) {
-            view.fit(extent, {size: this.map?.getSize()});
-            const zoom = view.getZoom();
-            if (zoom) {
-              view.setZoom(zoom - 0.5);
+            const res = view.getResolutionForExtent(extent, this.map?.getSize());
+            view.fit(extent, {size: this.map?.getSize(), maxZoom: maxZoom});
+            view.setResolution(res * (10 / 100 + 1));
+            const adjustedZoom = view.getZoom();
+            if (adjustedZoom && maxZoom && adjustedZoom > maxZoom) {
+              view.setZoom(maxZoom);
             }
           }
         } else {
@@ -723,7 +726,7 @@ export class GeomapPanel extends Component<Props, State> {
       view.setMaxZoom(config.maxZoom);
     }
     if (config.minZoom) {
-      view.setMaxZoom(config.minZoom);
+      view.setMinZoom(config.minZoom);
     }
     if (config.zoom && v?.id !== MapCenterID.Fit && v?.id !== MapCenterID.Auto) {
       view.setZoom(config.zoom);

@@ -102,5 +102,6 @@ export const centerPointRegistry = new Registry<MapCenterItems>(() => [
   {
     id: MapCenterID.Auto as string,
     name: 'Auto center',
+    zoom: 15, // max zoom
   },
 ]);
