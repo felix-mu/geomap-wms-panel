@@ -5,6 +5,7 @@
 import { WMSLegend, LegendItem } from "./WMSLegend";
 import { cleanup } from '@testing-library/react';
 import { GeomapPanel, Props } from "GeomapPanel";
+import { wms } from "layers/basemaps/wms";
 import { Map } from "ol";
 import Zoom from "ol/control/Zoom";
 import { act } from "react";
@@ -169,5 +170,17 @@ describe("tests for addLegendItems", () => {
         l.addLegendItems([]);
 
         expect(l.getLegendItems().length).toBe(0);
+    });
+});
+
+describe("tests for clearLegendItems", () => {
+    test("clearing the legend items should yield an array of length zero", () => {
+        const wmsLegend = new WMSLegend([{
+            label: "",
+            url: ""
+        }], {}, new GeomapPanel({} as Props));
+        wmsLegend.clearLegendItems();
+
+        expect(wmsLegend.getLegendItems()).toHaveLength(0);
     });
 });
