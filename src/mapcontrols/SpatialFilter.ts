@@ -10,6 +10,7 @@ import { Map } from "ol";
 import Polygon from "ol/geom/Polygon";
 import WKT from 'ol/format/WKT.js';
 import { locationService } from '@grafana/runtime';
+import { mapControlStyles } from "./mapControlStyles";
 
 // Based on https://openlayers.org/en/latest/examples/custom-controls.html
 class SpatialFilterControl extends Control {
@@ -37,6 +38,7 @@ class SpatialFilterControl extends Control {
         const options = opt_options || {};
     
         const button = document.createElement('button');
+        button.className = `${mapControlStyles.border}`;
         button.setAttribute("type", "button");
         button.title = options.tooltipTitle || "Spatial filter tool";
         // button.innerHTML = 'D';
@@ -48,11 +50,13 @@ class SpatialFilterControl extends Control {
         button.style.cursor= "pointer";
     
         const element = document.createElement('div');
-        element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE} ${olCss.CLASS_CONTROL}`;
+        element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`; //  ${olCss.CLASS_CONTROL}
         button.setAttribute("aria-label", "spatial filter tool button");
-        element.style.top = "50%";
+        // element.style.top = "50%";
+        element.style.pointerEvents = "auto";
         // element.style.cursor = "pointer";
         element.appendChild(button);
+        element.classList.add(mapControlStyles.mapControl);
     
         super({
           element: element,
@@ -123,7 +127,7 @@ class SpatialFilterControl extends Control {
             // let a = getAppEvents();
             // console.log(a);
             // (a as any).emitter.emit(new RefreshEvent());
-        }
+          }
         );
         
         this.drawInteraction.setActive(false);

@@ -1,8 +1,7 @@
 import React, { Component, ReactNode } from 'react';
 import { DEFAULT_BASEMAP_CONFIG, geomapLayerRegistry, defaultBaseLayer } from './layers/registry';
 import { Map, MapBrowserEvent, View } from 'ol';
-import Attribution from 'ol/control/Attribution';
-import Zoom from 'ol/control/Zoom';
+import { CustomAttribution } from "./mapcontrols/CustomAttribution";
 import ScaleLine from 'ol/control/ScaleLine';
 import BaseLayer from 'ol/layer/Base';
 import { defaults as interactionDefaults } from 'ol/interaction';
@@ -32,6 +31,7 @@ import {
   getFieldDisplayValuesProxy,
   ScopedVars,
   BusEventWithPayload,
+  EventBusSrv,
   // getFieldDisplayValues,
   // GrafanaTheme2
 } from '@grafana/data';
@@ -54,7 +54,7 @@ import { testIds } from 'e2eTestIds';
 import { Subscription } from 'rxjs';
 import { DataExtentZoom } from 'mapcontrols/DataExtentZoom';
 import { CustomLayerSwitcher } from 'mapcontrols/CustomLayerSwitcher';
-import { CustomOverviewMapWrapper } from 'mapcontrols/CustomOverviewMapWrapper';
+import { CustomOverviewMap } from 'mapcontrols/CustomOverviewMap';
 // import { VariablesChangedEvent } from 
 // import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from 'ol/extent';
 import { olStyles } from './styles/ol/olStyles';
@@ -64,6 +64,10 @@ import { fontmaki } from 'styles/fontmaki/fontmaki';
 import { fontmaki2 } from 'styles/fontmaki/fontmaki2';
 import { getLayersExtent } from 'utils/getLayersExtent';
 import { Tooltip } from 'components/Tooltip';
+import { WMSLegend } from 'mapcontrols/WMSLegend';
+import { CustomZoom } from 'mapcontrols/CustomZoom';
+import { CLASS_CONTROL } from 'ol/css';
+import { mapControlStyles } from 'mapcontrols/mapControlStyles';
 // import LayerGroup from 'ol/layer/Group';
 
 export interface MapLayerState {
@@ -76,7 +80,7 @@ export interface MapLayerState {
 let sharedView: View | undefined = undefined;
 export let lastGeomapPanelInstance: GeomapPanel | undefined = undefined;
 
-type Props = PanelProps<GeomapPanelOptions>;
+export type Props = PanelProps<GeomapPanelOptions>;
 interface State extends OverlayProps {
   ttip?: GeomapHoverPayload;
   ttipOpen: boolean;
@@ -120,9 +124,19 @@ export class GeomapPanel extends Component<Props, State> {
   readonly hoverEvent = new DataHoverEvent(this.hoverPayload);
   private subs = new Subscription();
   mapDiv?: HTMLDivElement;
+  mapOverlayTopRight1?: HTMLDivElement;
+  mapOverlayTopRight2?: HTMLDivElement;
+  mapOverlayTopLeft1?: HTMLDivElement;
+  mapOverlayBottomLeft?: HTMLDivElement;
+  mapOverlayBottomRight?: HTMLDivElement;
+  mapOverlayHeader?: HTMLDivElement;
+  mapOverlayFooter?: HTMLDivElement;
+
   private pointerMoveListenerEnabled = true;
   private dataHoverTimeout: ReturnType<typeof setTimeout> | undefined;
   private tooltipFixed = false;
+
+  public mapControlEventBus = new EventBusSrv();
 
   constructor(props: Props/*, state: State*/) {
     super(props);
@@ -720,25 +734,71 @@ export class GeomapPanel extends Component<Props, State> {
   }
 
   async initControls(options: ControlsOptions) {
-    if (!this.map) {
+    if (!this.map /*|| !this.mapOverlay*/) {
       return;
     }
-    this.map.getControls().clear();
+
+    this.map.getControls().forEach((c) => {
+      c.dispose(); // clean up
+      c.setMap(null); // remove from map
+    });
+    // this.map.getControls().clear();
+
+    let topRight1: ReactNode[] = [];
+    let topRight2: ReactNode[] = [];
+    let header: ReactNode[] = [];
+    let topLeft1: ReactNode[] = [];
+    let bottomLeft: ReactNode[] = [];
+    let footer: ReactNode[] = [];
+    let bottomRight: ReactNode[] = [];
 
     if (options.showZoom) {
-      this.map.addControl(new Zoom());
+      const zoom = new CustomZoom({target: this.mapOverlayTopLeft1});
+      zoom.removeCssClassFromElement(CLASS_CONTROL);
+      // (zoom as any).element.style.pointerEvents = "auto";
+      // topRight1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     zoom.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
+      this.map.addControl(zoom);
     }
 
     if (options.showScale) {
-      this.map.addControl(
-        new ScaleLine({
+      const scaleLine = new ScaleLine({
+          target: this.mapOverlayFooter,
           units: options.scaleUnits,
           minWidth: 100,
-        })
+          // className: cx('ol-scale-line', mapControlStyles.mapControl)
+        });
+      // (scaleLine as any).element.style.pointerEvents = "auto";
+      // bottomLeft.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     scaleLine.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
+      this.map.addControl(
+        scaleLine
       );
     }
 
     if (options.showLayercontrol) {
+      const layerSwitcher = new CustomLayerSwitcher({
+          target: this.mapOverlayTopRight1!,
+          label: '',
+          collapseLabel: '›',
+          tipLabel: 'Select layers',
+          groupSelectStyle: 'none',
+          activationMode: 'click',  
+          className: mapControlStyles.mapControl
+        }, this);
+        layerSwitcher.removeCssClassFromElement(CLASS_CONTROL);
+      // (layerSwitcher as any).element.style.pointerEvents = "auto";
+      // topRight1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     layerSwitcher.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(
         // new LayerSwitcher({
         //   label: '',
@@ -747,38 +807,62 @@ export class GeomapPanel extends Component<Props, State> {
         //   groupSelectStyle: 'none',
         //   activationMode: 'click',
         // })
-        new CustomLayerSwitcher({
-          label: '',
-          collapseLabel: '›',
-          tipLabel: 'Select layers',
-          groupSelectStyle: 'none',
-          activationMode: 'click',
-          hiddenClassNameButton: "bi bi-layers"
-        })
+        layerSwitcher
       );
     }
 
     // Add custom controls
     if (options.showSpatialFilter === true) {
+      const spatialFilter = new SpatialFilterControl(this.map, this.props, {target: this.mapOverlayTopLeft1});
+      // (spatialFilter as any).element.style.pointerEvents = "auto";
+      // topLeft1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     spatialFilter.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(
-        new SpatialFilterControl(this.map, this.props)
-        );
+        spatialFilter
+      );
+    }
+
+    if (options.showWMSLegend === true) {
+      const wmsLegend = new WMSLegend([], {target: this.mapOverlayTopLeft1}, this);
+      this.map.addControl(
+        wmsLegend
+      );
     }
 
     if (options.showDataExtentZoom === true) {
+      const dataExtentZoom = new DataExtentZoom({target: this.mapOverlayTopLeft1});
+      // (dataExtentZoom as any).element.style.pointerEvents = "auto";
+      // topLeft1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     dataExtentZoom.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(
-        new DataExtentZoom()
-        );
+        dataExtentZoom
+      );
     }
 
     if (options.overviewMap && options.overviewMap.enabled === true) {
       const item = geomapLayerRegistry.getIfExists(options.overviewMap.type);
       const handler = await item!.create(new Map({}), options.overviewMap as ExtendMapLayerOptions<any>, config.theme2);
       const layer = handler.init();
+      const overviewMap = new CustomOverviewMap({
+          target: this.mapOverlayBottomRight!,
+          layers: [layer],
+          className: cx('ol-custom-overviewmap', mapControlStyles.mapControl, mapControlStyles.border)
+        }, this);
+      overviewMap.removeCssClassFromElement(CLASS_CONTROL);
+      // (overviewMap as any).element.style.pointerEvents = "auto";
+      // topRight1.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     overviewMap.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
       this.map.addControl(
-        new CustomOverviewMapWrapper({
-          layers: [layer]
-        }).getOverviewMap()
+        overviewMap
       );
     }
 
@@ -813,22 +897,33 @@ export class GeomapPanel extends Component<Props, State> {
     this.mouseWheelZoom!.setActive(Boolean(options.mouseWheelZoom));
 
     if (options.showAttribution) {
-      this.map.addControl(new Attribution({
-        collapsed: true, 
-        collapsible: true ,
-        label: '',
-        expandClassName: 'bi bi-info-circle',
+      const attribution = new CustomAttribution({
+        target: this.mapOverlayBottomRight!,
+        // map: this.map
+        // collapsed: true, 
+        // collapsible: true ,
+        // label: '',
+        // expandClassName: 'bi bi-info-circle',
         // collapseClassName: ''
-      }));
+        // className: cx('ol-attribution', mapControlStyles.mapControl)
+      }, this);
+      attribution.removeCssClassFromElement(CLASS_CONTROL);
+      // (attribution as any).element.style.pointerEvents = "auto";
+      // bottomRight.push(
+      //   <div ref={(node: HTMLDivElement) => {
+      //     attribution.setTarget(node as HTMLDivElement);
+      //   }}></div>
+      // );
+      this.map.addControl(attribution);
     }
 
     // Update the react overlays
-    let topRight2: ReactNode[] = [];
     if (options.showDebug) {
-      topRight2 = [<DebugOverlay key="debug" map={this.map} />];
+      header.push(<DebugOverlay key="debug" map={this.map} />);
     }
 
-    this.setState({ topRight2 });
+    this.setState({ topRight2: topRight2, topRight1: topRight1, header: header,
+      topLeft1: topLeft1, bottomRight: bottomRight, footer: footer, bottomLeft: bottomLeft });
   }
 
   clearTooltip = () => {
@@ -842,7 +937,7 @@ export class GeomapPanel extends Component<Props, State> {
   };
 
   render() {
-    const { ttip, topRight2, bottomLeft } = this.state;
+    const { ttip, topRight1, topLeft1, topRight2, bottomLeft, footer, header, bottomRight } = this.state;
 
     // Tooltip handling from: https://github.com/grafana/grafana/blob/17a3ec52b651a082bbf5604f75975c12cd2ba9ed/public/app/plugins/panel/geomap/GeomapPanel.tsx#L386
     // let { ttip, ttipOpen, topRight1, legends, topRight2 } = this.state;
@@ -863,7 +958,30 @@ export class GeomapPanel extends Component<Props, State> {
             this.pointerMoveListenerEnabled = true;
             }}>
             <div className={styles.map} ref={this.initMapRef as (instance: HTMLDivElement | null) => void}></div>
-            <GeomapOverlay bottomLeft={bottomLeft} topRight2={topRight2} />
+            <GeomapOverlay topLeft1={topLeft1} topRight1={topRight1} bottomLeft={bottomLeft} topRight2={topRight2}
+            footer={footer} header={header} bottomRight={bottomRight}
+            refBottomLeft={((node: HTMLDivElement) => {
+              this.mapOverlayBottomLeft = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refFooter={((node: HTMLDivElement) => {
+              this.mapOverlayFooter = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refBottomRight={((node: HTMLDivElement) => {
+              this.mapOverlayBottomRight = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refTopLeft1={((node: HTMLDivElement) => {
+              this.mapOverlayTopLeft1 = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refTopRight1={((node: HTMLDivElement) => {
+              this.mapOverlayTopRight1 = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refTopRight2={((node: HTMLDivElement) => {
+              this.mapOverlayTopRight2 = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            refHeader={((node: HTMLDivElement) => {
+              this.mapOverlayHeader = node;
+            }) as (instance: HTMLDivElement | null) => void}
+            ></GeomapOverlay>
             <Tooltip tooltipData={{ttip: ttip, fixedFlag: this.tooltipFixed}} mapExtent={{
             extent: this.map?.getView().calculateExtent(this.map?.getSize()) as number[] ?? [], 
             projection: this.map?.getView().getProjection().getCode() ?? ""
@@ -908,5 +1026,5 @@ const styles = {
     zIndex: "0",
     width: "100%",
     height: "100%",
-  }),
+  })
 };

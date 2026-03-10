@@ -8,6 +8,7 @@ import { createEmpty, extend } from "ol/extent";
 import { isEqual } from "lodash";
 import VectorLayer from "ol/layer/Vector";
 import { Vector } from "ol/source";
+import { mapControlStyles } from "./mapControlStyles";
 
 export const DATA_EXTENT_ZOOM_TEST_ID = "data-testid dataextentzoom-button";
 
@@ -23,6 +24,7 @@ export class DataExtentZoom extends Control {
         const options = opt_options || {};
 
         const button = document.createElement('button');
+        button.className = `${mapControlStyles.border}`;
         // button.ariaLabel = "wms legend collapse button";
         button.setAttribute("data-testid", DATA_EXTENT_ZOOM_TEST_ID);
         button.title = options.tooltipTitle || "Zoom to data extent";
@@ -37,10 +39,11 @@ export class DataExtentZoom extends Control {
 
         const element = document.createElement('div');
         // element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
-        element.className = `${olCss.CLASS_CONTROL} ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`;
-        element.style.bottom = "20%";
-        element.style.top = "unset";
-        // element.style.pointerEvents = "auto";
+        element.className = `ol-zoom ol-touch ${olCss.CLASS_UNSELECTABLE}`; // ${olCss.CLASS_CONTROL} 
+        // element.style.bottom = "20%";
+        // element.style.top = "unset";
+        element.style.pointerEvents = "auto";
+        element.classList.add(mapControlStyles.mapControl);
 
         element.appendChild(button);
 
