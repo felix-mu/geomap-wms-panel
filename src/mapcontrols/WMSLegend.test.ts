@@ -5,7 +5,6 @@
 import { WMSLegend, LegendItem } from "./WMSLegend";
 import { cleanup } from '@testing-library/react';
 import { GeomapPanel, Props } from "GeomapPanel";
-import { wms } from "layers/basemaps/wms";
 import { Map } from "ol";
 import Zoom from "ol/control/Zoom";
 import { act } from "react";
