@@ -20,8 +20,8 @@ jobs:
       fail-if-incompatible: 'yes'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
         with:
           node-version: '24'
       - name: Install dependencies
