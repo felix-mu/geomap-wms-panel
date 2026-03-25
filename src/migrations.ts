@@ -3,6 +3,7 @@ import { GeomapPanelOptions } from './types';
 import { MapCenterID } from './view';
 import { major } from 'semver';
 import { wms, WMSBaselayerConfig } from 'layers/basemaps/wms';
+import { defaultOptions, MARKERS_LAYER_ID, MarkersConfig } from 'layers/data/markersLayer';
 
 /**
  * This is called when the panel changes from another panel
@@ -153,18 +154,16 @@ export function migrationHandler(panel: PanelModel<GeomapPanelOptions>) {
     // Get basemap name from config
     const basemapType = options.basemap.type; // type is defined from layer.id -> LayerEditor.tsx type: layer.id,
 
-    if (basemapType && basemapType === wms.id) {
-      if (options.basemap.config.wms === undefined) {
-        /*
-        This handles the case if the major version conincidentally equals the major version of the current plugin.
-        This happens if the visualisation was changed from another panel to the Geomap WMS Panel of v1.x.
-        If a migration should take place it is expected that the panel options.basemap.config contains the property 'wms'
-        as defined in 'WMSConfigV1'. Otherwise it is expected that either the basemap is not of type WMS (no migration needed),
-        the WMS basemap is not configured which would require manual configuration anyways,
-        or that the pluginVersion in deed was set from the current plugin version.
-        */
-        return options;
-      }
+    if (basemapType && basemapType === wms.id && options.basemap.config.wms) {
+      /*
+      if (options.basemap.config.wms === undefined)
+      This handles the case if the major version conincidentally equals the major version of the current plugin.
+      This happens if the visualisation was changed from another panel to the Geomap WMS Panel of v1.x.
+      If a migration should take place it is expected that the panel options.basemap.config contains the property 'wms'
+      as defined in 'WMSConfigV1'. Otherwise it is expected that either the basemap is not of type WMS (no migration needed),
+      the WMS basemap is not configured which would require manual configuration anyways,
+      or that the pluginVersion in deed was set from the current plugin version.
+      */
 
       const url: string = options.basemap.config.wms.url ?? "";
       const attribution: string = options.basemap.config.attribution ?? "";
@@ -186,12 +185,27 @@ export function migrationHandler(panel: PanelModel<GeomapPanelOptions>) {
       };
 
       options.basemap.config = wmsConfigV2;
-
-      return options;
-    } else {
-      // If not of type WMS no migration is needed and the options can be returned as is
-      return options;
     }
+
+    // Migrate icon size configuration
+    if (options.layers && options.layers.length > 0) {
+      const layers = options.layers.map((layer) => {
+        if (layer.type === MARKERS_LAYER_ID) {
+          if ((layer.config as MarkersConfig)?.iconSize) {
+            layer.config.iconSize = {
+              ...defaultOptions.iconSize,
+              fixed: (layer.config as MarkersConfig)?.iconSize
+            }
+          }
+          return layer;
+        } else {
+          return layer;
+        }
+      });
+      
+      options.layers = layers;
+    }
+
   }
 
   return options;

@@ -48,7 +48,7 @@ export interface MarkersConfig {
   shape?: string;
   showLegend?: boolean;
   showPin?: boolean;
-  iconSize?: number;
+  iconSize?: ScaleDimensionConfig;
   enableGradient?: boolean;
   enableShadow?: boolean;
   pinShape?: any;
@@ -59,7 +59,7 @@ export interface MarkersConfig {
   selectIcon?: any;
 }
 
-const defaultOptions: MarkersConfig = {
+export const defaultOptions: MarkersConfig = {
   size: {
     fixed: 5,
     min: 2,
@@ -80,7 +80,11 @@ const defaultOptions: MarkersConfig = {
   enableGradient: false,
   enableShadow: false,
   pinShape: 'marker',
-  iconSize: 9,
+  iconSize: {
+    fixed: 9,
+    min: 1,
+    max: 10
+  },
   cluster: false,
   clusterDistance: 20,
   clusterMinDistance: 0,
@@ -270,7 +274,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
             form: config.pinShape,
             fontSize: 0.5,
             color: '#fff',
-            radius: config.iconSize,
+            radius: customStyle.iconSize,
             glyph: config.selectIcon,
             offsetY: enableShadow ? -(Number(config.iconSize) + 1) : -Number(config.iconSize),
             gradient: enableGradient,
@@ -365,6 +369,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
 
             const colorDim = getColorDimension(frame, config.color, theme);
             const sizeDim = getScaledDimension(frame, config.size);
+            const iconSizeDim = getScaledDimension(frame, config.iconSize ?? defaultOptions.iconSize!);
 
             // Map each data value into new points
             for (let i = 0; i < frame.length; i++) {
@@ -398,7 +403,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
                 if (showPin || cluster) {
                   const center = getCenter(info.points[i].getExtent());
                   const pin = new Feature(new Point(center));
-                  pin.setStyle(markerStyle({ color: color }));
+                  pin.setStyle(markerStyle({ color: color, iconSize: iconSizeDim.get(i) }));
                   pin.set('style', { color: color, fillColor: fillColor });
                   if (cluster) {
                     pin.set('config', { frame: frame, config: config.color });
@@ -537,11 +542,23 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
         defaultValue: pinshape.marker,
         showIf: (cfg) => cfg.config?.showPin === true,
       })
-      .addNumberInput({
+      .addCustomEditor({
         path: 'config.iconSize',
+        id: 'config.iconSize',
         name: 'Pin size',
-        defaultValue: defaultOptions.iconSize,
+        // defaultValue: defaultOptions.iconSize,
         showIf: (cfg) => cfg.config?.showPin === true,
+        editor: ScaleDimensionEditor,
+        defaultValue: {
+          // Configured values
+          fixed: defaultOptions.iconSize,
+          min: 1,
+          max: 10
+        },
+        settings: {
+          min: 1,
+          max: 100, // possible in the UI
+        },
       })
       .addCustomEditor({
         id: 'config.geoJsonStrokeSize',

@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4462868374929408,
+  "id": 0,
   "links": [],
   "panels": [
     {
@@ -77,6 +77,7 @@
           "showLayercontrol": true,
           "showScale": false,
           "showSpatialFilter": false,
+          "showWMSLegend": true,
           "showZoom": true
         },
         "layers": [
@@ -290,6 +291,7 @@
           "showLayercontrol": true,
           "showScale": false,
           "showSpatialFilter": false,
+          "showWMSLegend": true,
           "showZoom": true
         },
         "layers": [
@@ -553,6 +555,7 @@
           "showLayercontrol": true,
           "showScale": false,
           "showSpatialFilter": false,
+          "showWMSLegend": true,
           "showZoom": true
         },
         "layers": [
@@ -800,6 +803,7 @@
           "showLayercontrol": true,
           "showScale": false,
           "showSpatialFilter": false,
+          "showWMSLegend": true,
           "showZoom": true
         },
         "layers": [
@@ -1080,6 +1084,7 @@
           "showLayercontrol": true,
           "showScale": true,
           "showSpatialFilter": true,
+          "showWMSLegend": true,
           "showZoom": true
         },
         "layers": [
@@ -1200,8 +1205,8 @@
         ],
         "view": {
           "id": "auto",
-          "lat": 33,
-          "lon": 120,
+          "lat": 10,
+          "lon": 106,
           "zoom": 15
         }
       },
@@ -1342,6 +1347,7 @@
           "showLayercontrol": true,
           "showScale": true,
           "showSpatialFilter": true,
+          "showWMSLegend": true,
           "showZoom": true
         },
         "layers": [
@@ -1356,14 +1362,19 @@
                 "fixed": "dark-green"
               },
               "enableGradient": false,
-              "enableShadow": false,
+              "enableShadow": true,
               "fillOpacity": 0.4,
               "geoJsonStrokeSize": {
                 "fixed": 5,
                 "max": 10,
                 "min": 1
               },
-              "iconSize": 15,
+              "iconSize": {
+                "field": "id",
+                "fixed": 20,
+                "max": 19,
+                "min": 15
+              },
               "pinShape": "bubble",
               "selectIcon": "fa-wifi",
               "shape": "circle",
@@ -1553,8 +1564,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "dashboard_e2e",
-  "uid": "adfx6j5",
-  "version": 2,
+  "title": "dashboard_e2e Copy2",
+  "uid": "addlxrr",
+  "version": 3,
   "weekStart": ""
 }
