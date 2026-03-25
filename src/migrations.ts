@@ -187,25 +187,26 @@ export function migrationHandler(panel: PanelModel<GeomapPanelOptions>) {
       options.basemap.config = wmsConfigV2;
     }
 
-    // Migrate icon size configuration
-    if (options.layers && options.layers.length > 0) {
-      const layers = options.layers.map((layer) => {
-        if (layer.type === MARKERS_LAYER_ID) {
-          if ((layer.config as MarkersConfig)?.iconSize) {
-            layer.config.iconSize = {
-              ...defaultOptions.iconSize,
-              fixed: (layer.config as MarkersConfig)?.iconSize
-            }
-          }
-          return layer;
-        } else {
-          return layer;
-        }
-      });
-      
-      options.layers = layers;
-    }
+  }
 
+  // Migrate icon size configuration from simple number type to object {fixed: number; min: number; max: number}
+  if (options.layers && options.layers.length > 0) {
+    const layers = options.layers.map((layer) => {
+      if (layer.type === MARKERS_LAYER_ID) {
+        if ((layer.config as MarkersConfig)?.iconSize && 
+          typeof (layer.config as MarkersConfig)?.iconSize === "number") { // if iconSize is of simple type number it must be migrated
+          layer.config.iconSize = {
+            ...defaultOptions.iconSize,
+            fixed: (layer.config as MarkersConfig)?.iconSize
+          }
+        }
+        return layer;
+      } else {
+        return layer;
+      }
+    });
+    
+    options.layers = layers;
   }
 
   return options;
