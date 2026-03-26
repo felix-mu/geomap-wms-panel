@@ -94,7 +94,7 @@
     "@emotion/react": "^11.1.5",
     "@grafana/data": "^12.4.1",
     "@grafana/runtime": "^12.4.1",
-    "@grafana/ui": "^12.4.1",
+    "@grafana/ui": "^12.4.2",
     "@hello-pangea/dnd": "18.0.1",
     "@types/proj4": "^2.19.0",
     "@types/tinycolor2": "^1.4.3",
