@@ -118,7 +118,8 @@
     "react-router": "6.30.2",
     "tmp": "0.2.4",
     "lodash": "4.17.23",
-    "flatted": "3.4.2"
+    "flatted": "3.4.2",
+    "handlebars": "4.7.9"
   },
   "config": {
     "commitizen": {
