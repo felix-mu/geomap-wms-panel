@@ -39,7 +39,7 @@
     "@playwright/test": "^1.57.0",
     "@stylistic/eslint-plugin": "^5.8.0",
     "@swc/core": "^1.15.8",
-    "@swc/helpers": "^0.5.18",
+    "@swc/helpers": "^0.5.21",
     "@swc/jest": "^0.2.26",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
