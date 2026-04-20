@@ -50,8 +50,8 @@ export function MarkersLegend(props: MarkersLegendProps) {
           className={style.gradientContainer}
           style={{ backgroundImage: `linear-gradient(to right, ${colors.map((c) => c).join(', ')}` }}
         >
-          <div style={{ color: theme.colors.getContrastText(colors[0]) }}>{fmt(colorRange.min)}</div>
-          <div style={{ color: theme.colors.getContrastText(colors[colors.length - 1]) }}>{fmt(colorRange.max)}</div>
+          <div style={{ color: theme.colors.getContrastText(colors[0]) }}>{fmt(color.field?.config?.min ?? colorRange.min)}</div>
+          <div style={{ color: theme.colors.getContrastText(colors[colors.length - 1]) }}>{fmt(color.field?.config?.max ?? colorRange.max)}</div>
         </div>
       </>
     );
