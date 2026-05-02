@@ -54,7 +54,7 @@ jobs:
         id: finder
         if: (inputs.comment-pr == 'yes' && steps.run-levitate.outputs.is-compatible-exit-code == 1) || (env.comment-pr == 'yes' && env.skip-comment-if-compatible == 'no')
       # write a comment with levitate output
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - uses: marocchino/sticky-pull-request-comment@v3
         if: (env.comment-pr == 'yes' && steps.run-levitate.outputs.is-compatible-exit-code == 1) || (env.comment-pr == 'yes' && env.skip-comment-if-compatible == 'no')
         with:
           number: ${{ steps.finder.outputs.pr }}
