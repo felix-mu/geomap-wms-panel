@@ -36,7 +36,8 @@ import {
   // GrafanaTheme2
 } from '@grafana/data';
 import { /*getTemplateSrv,*/ config,/*, RefreshEvent, TimeRangeUpdatedEvent*/ 
-/*RefreshEvent,*/ locationService} from '@grafana/runtime';
+/*RefreshEvent,*/ locationService,
+RefreshEvent} from '@grafana/runtime';
 
 import { ControlsOptions, GeomapPanelOptions, MapViewConfig } from './types';
 import { centerPointRegistry, MapCenterID } from './view';
@@ -106,6 +107,9 @@ interface State extends OverlayProps {
 class MyPanelEditExitedEvent extends BusEventWithPayload<number> {
   static type = 'panel-edit-finished';
 }
+// class VariablesChangedEvent extends BusEventWithPayload<any> {
+//   static type = "variables-changed";
+// }
 
 export class GeomapPanel extends Component<Props, State> {
   globalCSS = getGlobalStyles(config.theme2);
@@ -142,6 +146,19 @@ export class GeomapPanel extends Component<Props, State> {
     super(props);
     // this.state = {};
     this.state = { ttipOpen: false };
+
+    // Re-render layer switcher titles on variable changes: https://github.com/grafana/grafana/blob/2a9d7c18219e9421c3c9a44cb40df19657ba5dbb/public/app/features/dashboard/state/DashboardModel.ts#L396
+    this.subs.add(
+      this.props.eventBus.getStream(RefreshEvent).subscribe((evt) => { // RefreshEvent
+        this.map?.getLayers().forEach(l => {
+          l.set("title", this.props.replaceVariables(l.get("title_editor") ?? l.get("title")));
+        });
+        const layerSwitcher: CustomLayerSwitcher | undefined = this.map?.getControls().getArray().find(e => e instanceof CustomLayerSwitcher);
+        if (layerSwitcher) {
+          layerSwitcher.renderPanel();
+        }
+      })
+    );
 
     this.subs.add(
       this.props.eventBus.getStream(MyPanelEditExitedEvent).subscribe((evt) => {
@@ -620,8 +637,9 @@ export class GeomapPanel extends Component<Props, State> {
       // If it is a basemap create group with title to make it visible in the legend: https://github.com/walkermatt/ol-layerswitcher/blob/main/examples/layerswitcher.js#L10
       // const layer = item.isBaseMap ? new Group({layers: [handler.init()], title: overlay.name, combine: true,} as GroupLayerOptions) : handler.init();
       let layer = handler.init();
+      layer.set("title", this.props.replaceVariables(overlay.name ?? "")); // Interpolate variable in title
+      layer.set("title_editor", overlay.name); // Preserve original title from editor
       if (item.isBaseMap) {
-        layer.set("title", overlay.name);
         layer.set("combine", true);
       }
 
