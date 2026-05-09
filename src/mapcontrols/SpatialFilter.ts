@@ -33,6 +33,7 @@ class SpatialFilterControl extends Control {
     props: any;
     currentGeometry: string | undefined;
     icon: Element;
+    drawing = false;
 
     constructor(map: Map, props: any, opt_options?: any) {
         const options = opt_options || {};
@@ -78,6 +79,20 @@ class SpatialFilterControl extends Control {
             type: "Polygon",
         });
 
+        map.getViewport().addEventListener("keydown", (event) => {
+          if((event as KeyboardEvent).key === "Escape" && this.drawing === true) {
+            this.drawInteraction.abortDrawing();
+            this.isActive = false;
+            this.drawInteraction.setActive(false);
+            this.drawSource.clear();
+            this.getMap()?.getViewport().blur();
+
+            // Set icon
+            this.icon.className = "bi bi-funnel";
+            this.drawing = false;
+          }
+        });
+
         this.drawInteraction.on("drawend", (event: DrawEvent) => {
             // this.currentGeometry = event.feature.getGeometry() as Polygon;
             this.currentGeometry = new WKT().writeGeometry(
@@ -108,6 +123,8 @@ class SpatialFilterControl extends Control {
 
             // Disable mouse pointer
             this.drawInteraction.setActive(false);
+
+            this.drawing = false;
 
             // let ev = getAppEvents();
             // console.log(ev);
@@ -146,12 +163,18 @@ class SpatialFilterControl extends Control {
             this.isActive = true;
             this.drawInteraction.setActive(true);
 
+            this.getMap()!.getViewport().tabIndex = 0;
+            this.getMap()!.getViewport().focus();
+
             // Set icon
             this.icon.className = "bi bi-x-square";
+
+            this.drawing = true;
         } else {
             this.isActive = false;
             this.drawInteraction.setActive(false);
             this.drawSource.clear();
+            this.getMap()?.getViewport().blur();
 
             this.currentGeometry = SpatialFilterControl.defaultSpatialFilterGeometry;
 
@@ -170,6 +193,8 @@ class SpatialFilterControl extends Control {
 
             // Set icon
             this.icon.className = "bi bi-funnel";
+
+            this.drawing = false;
         }
 
       }
