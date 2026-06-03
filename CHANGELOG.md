@@ -1,4 +1,11 @@
 # Changelog
+## [2.0.3](https://github.com/felix-mu/geomap-wms-panel/compare/v2.0.2...v2.0.3) (2026-06-03)
+
+
+### Bug Fixes
+
+* **wms.ts:** correct handling of 0 opacity in wms basemap layer ([5e46c3f](https://github.com/felix-mu/geomap-wms-panel/commit/5e46c3fa459c070a8a5745ba25ae46d69ebd1620))
+
 ## [2.0.2](https://github.com/felix-mu/geomap-wms-panel/compare/v2.0.1...v2.0.2) (2025-11-14)
 
 
