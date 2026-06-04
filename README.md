@@ -313,7 +313,7 @@ git add . && npm run commit
 git push origin main
 ```
 ```bash
-git tag v<version> && git push origin main v<version>
+git tag v<version> && git push origin v<version>
 ```
 
 # Contributing
