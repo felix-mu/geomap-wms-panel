@@ -80,7 +80,7 @@ The JSON definition of the panel might be edited directly in the Grafana GUI.
 7. Optionally provide an attribution for the WMS endpoint
 8. To remove an entry click on the button _- Remove WMS_
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/grafana_multiple_layers.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/grafana_multiple_layers.PNG)
 
 ### Example 1): WMS Basemap with 3 layers
 Layer names:
@@ -88,7 +88,7 @@ Layer names:
 - g_stadtspaziergang_moosach_route_a
 - baustellen_2_weeks
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/multiple_layers_wms.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/multiple_layers_wms.PNG)
 
 ### Example 2): WMS Basemap with 3 layers (layer names have whitespaces)
 Layer names:
@@ -96,30 +96,30 @@ Layer names:
 - Linie_u_Stadtplanü. bis 150k
 - stehende Gewässer generalisiert
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/mutli-layer-whitespaces.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/mutli-layer-whitespaces.PNG)
 
 ## ⚠️ Troubleshooting data layers when merging multiple datasource queries into one map layer
 In some occasions it might be necessary to join mutliple datasource queries into one output dataset to summarize information coming from different sources in a single map layer. This can be achieved by applying [transformations](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/) on the returned data frames.
 
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/multiple_queries.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/multiple_queries.png)
 
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/transform_data.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/transform_data.png)
 
 This often results in data structure like the following which might be inspected in the [debug](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#debug-a-transformation) view in the transformations panel missing the metadata properties like query "name" and "refId".
 
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe_after_transformation.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/dataframe_after_transformation.png)
 
 The above data structure is not compatible with Geomap Panel Plugin's query input which expects a data frame with metadata fields like "refId" or "meta".
 
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/dataframe.png)
 
 A workaround to solve this problem is to use the [prepare time series transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#prepare-time-series) with the setting _"Wide time series"_ as last transformation in the processing chain.
 
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/preparetimeseries.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/preparetimeseries.png)
 
 The latter trasnformation a "meta" field to the data object and therefore can now be processed by the Geomap Panel Plugin.
 
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/dataframe_final.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/dataframe_final.png)
 
 ## Using the spatial filter tool
 An additional feature of the Geomap WMS Plugin is the spatial filter tool that allows drawing a polygon on the map panel to be used as filter for a data query. The polygon is representated as [Well-known-text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) and stored in a dashboard variable "geomap_wms_spatial_filter_geometry".
@@ -134,27 +134,27 @@ To enable the spatial filter tool follow the steps below:
 
 1. Create a [dashboard variable](https://grafana.com/docs/grafana/latest/dashboards/variables/add-template-variables/) of type "Textbox" or "Custom" (eventually set the display property to "Nothing" to hide the variable from the user) and the name "geomap_wms_spatial_filter_geometry" (**the spatial filter tool will update this variable internally and as for now does not provide the functionality of setting a different variable name externally**). As initial value use e.g. `POLYGON((-180 -90,180 -90,180 90,-180 90,-180 -90))`, to selec all, if no polygon is drawn.
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_2.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/spatial_filter_2.png)
 
 2. Use the dashboard variable in a datasource query, e.g. the SensorThings API, which allows the filtering by providing a WKT in the geometry function:
 
 `/Things?$expand=Locations&$filter=substringof(name,'${tree_sensor:csv}') and st_intersects(Locations/location, geography'${geomap_wms_spatial_filter_geometry}')`
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_5.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/spatial_filter_5.png)
 
 3. Enable the tool in the panel editor, press save or apply and leave edit mode
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_3.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/spatial_filter_3.png)
 
 4. Activate the tool in the panel
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_0.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/spatial_filter_0.png)
 
 5. Draw a polygon as spatial filter geometry. To apply the geometry set the last point on the starting point. After that the panels and datasources which use the variable "geomap_wms_spatial_filter_geometry" are updated automatically. To delete the geometry click on the cross symbol.
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_1.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/spatial_filter_1.png)
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/spatial_filter_4.png)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/spatial_filter_4.png)
 
 ## Using data links
 The Geomap WMS Panel Plugin allows the use of [dataLinks](https://grafana.com/docs/grafana/latest/panels-visualizations/configure-data-links/) to update a dashboard variable with data of the clicked feature. This enables interactions between the map panel and other panels in the dashbaord, which use the same dashboard variable in their data queries.
@@ -164,17 +164,17 @@ To make use of this functionality a datalink has to be created (see the [officia
 
 This example demonstrates how to configure the Geomap WMS Panel Plugin to update a dashboard variable "ladestationen" with the value of the data field of name "name" by clicking on a feature on the map.
 
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/datalinks_3.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/datalinks_3.png)
 
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/datalinks_0.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/datalinks_0.png)
 
 Clicking on a certain feature on the map results in both, updating the map as well as all the panels which use the dashboard variable "ladestationen" in their queries.
 
 Before:
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/datalinks_1.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/datalinks_1.png)
 
 After:
-![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/datalinks_2.png)
+![alt text](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/datalinks_2.png)
 
 # Development
 ## Status of the original repository
@@ -237,8 +237,8 @@ Run the [docker-compose.yaml](https://github.com/felix-mu/geomap-wms-panel/blob/
 
 If the plugin was build with `npm run dev` the Webpack directories are loaded to the browser. This enables the use of developmer tools of the browser to set breakpoints and debug the plugin source code (it is recommended to deactivate the cache).
 
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/debugging_1.PNG)
-![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/main/debugging.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/debugging_1.PNG)
+![](https://raw.githubusercontent.com/felix-mu/geomap-wms-panel/refs/tags/v2.0.3/debugging.PNG)
 
 ## ⚠️ Troubleshooting
 After each build the Docker-Container must be restarted to reload the new version of the plugin. If the changes of the plugin are **not** noticed it might help to clear the browser cache and refresh the page.
