@@ -105,7 +105,7 @@
     "proj4": "^2.20.4",
     "react-highlight-words": "^0.21.0",
     "react-use": "^17.6.0",
-    "semver": "7.7.4",
+    "semver": "7.8.4",
     "tinycolor2": "^1.4.2",
     "tslib": "2.8.1",
     "uuid": "^14.0.0"
