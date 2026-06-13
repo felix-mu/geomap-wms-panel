@@ -69,6 +69,7 @@ import { WMSLegend } from 'mapcontrols/WMSLegend';
 import { CustomZoom } from 'mapcontrols/CustomZoom';
 import { CLASS_CONTROL } from 'ol/css';
 import { mapControlStyles } from 'mapcontrols/mapControlStyles';
+import { GeolocationControl } from 'mapcontrols/GeolocationControl';
 // import LayerGroup from 'ol/layer/Group';
 
 export interface MapLayerState {
@@ -881,6 +882,13 @@ export class GeomapPanel extends Component<Props, State> {
       // );
       this.map.addControl(
         overviewMap
+      );
+    }
+
+    if (options.enableGeolocation === true) {
+      const geolocationControl = new GeolocationControl({target: this.mapOverlayBottomRight!});
+      this.map.addControl(
+        geolocationControl
       );
     }
 

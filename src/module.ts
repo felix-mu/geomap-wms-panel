@@ -132,5 +132,12 @@ export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
         defaultValue: {enabled: false},
         editor: OverviewMapEditor,
         id: 'overviewmap'
+      })
+      .addBooleanSwitch({
+        category,
+        path: 'controls.geolocation',
+        description: 'Enable geolocation',
+        name: 'Enable geolocation of device',
+        defaultValue: false,
       });
   });

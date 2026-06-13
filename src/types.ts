@@ -32,6 +32,8 @@ export interface ControlsOptions {
   overviewMap?: OverviewMapConfig
 
   showWMSLegend?: boolean
+
+  enableGeolocation?: boolean
 }
 
 export interface OverviewMapConfig<TConfig = any> extends ExtendMapLayerOptions {
