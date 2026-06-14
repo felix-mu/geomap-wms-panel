@@ -9,6 +9,7 @@ import { DEFAULT_BASEMAP_CONFIG } from './layers/registry';
 import { OverviewMapEditor } from 'editor/OverviewMapEditor';
 import { initPluginTranslations } from '@grafana/i18n';
 import pluginJson from 'plugin.json';
+import { GeolocationEditor } from 'editor/GeolocationEditor';
 
 await initPluginTranslations(pluginJson.id);
 
@@ -133,11 +134,13 @@ export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
         editor: OverviewMapEditor,
         id: 'overviewmap'
       })
-      .addBooleanSwitch({
+      .addCustomEditor({
         category,
         path: 'controls.geolocation',
         description: 'Enable geolocation',
         name: 'Enable geolocation of device',
-        defaultValue: false,
+        defaultValue: {enabled: false, refreshInterval: ""},
+        id: 'geolocation',
+        editor: GeolocationEditor
       });
   });
