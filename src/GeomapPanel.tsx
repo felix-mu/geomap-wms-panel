@@ -885,7 +885,7 @@ export class GeomapPanel extends Component<Props, State> {
       );
     }
 
-    if (options.enableGeolocation === true) {
+    if (options.geolocation?.enabled === true) {
       const geolocationControl = new GeolocationControl({target: this.mapOverlayBottomRight!});
       this.map.addControl(
         geolocationControl

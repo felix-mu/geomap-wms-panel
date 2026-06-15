@@ -137,8 +137,8 @@ export const plugin = new PanelPlugin<GeomapPanelOptions>(GeomapPanel)
       .addCustomEditor({
         category,
         path: 'controls.geolocation',
-        description: 'Enable geolocation',
-        name: 'Enable geolocation of device',
+        description: 'Show current geolocation on the map',
+        name: 'Enable geolocation',
         defaultValue: {enabled: false, refreshInterval: ""},
         id: 'geolocation',
         editor: GeolocationEditor

@@ -38,7 +38,7 @@ export interface ControlsOptions {
 
 export interface GeolocationConfig {
   enabled: boolean;
-  refreshInterval: number;
+  // refreshInterval: number;
 }
 
 export interface OverviewMapConfig<TConfig = any> extends ExtendMapLayerOptions {
