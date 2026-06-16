@@ -6,7 +6,7 @@ import { Point } from "ol/geom";
 import { Icon, Style } from "ol/style";
 import { fromLonLat } from 'ol/proj';
 
-import geolocationIcon from "../styles/icons/geolocation.svg";
+import geolocationIcon from "styles/icons/geolocation.svg";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 
@@ -151,7 +151,10 @@ export class GeolocationControl extends Control {
 
         const vectorLayer = new VectorLayer({
             source: vectorSource,
-            style: iconStyle
+            style: iconStyle,
+            properties: {
+                "name": "geolocation-layer"
+            }
         });
 
         return { geolocationLayer: vectorLayer, geolocationFeature: gF };
