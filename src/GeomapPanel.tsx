@@ -573,6 +573,10 @@ export class GeomapPanel extends Component<Props, State> {
         this.clearTooltip();
       }
     } else {
+      // Only start timeout if there is data to show
+      if (ttip.data === undefined) {
+        return;
+      }
       // The pointermove event is triggered as long as the pointer is moving on the feature
       // so also start the timeout when the tooltip data stays the same since otherwise during the movement over the feature the
       // time out function is cleared on the next event trigger

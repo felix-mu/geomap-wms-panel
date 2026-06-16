@@ -120,7 +120,7 @@ export class GeolocationControl extends Control {
         if (view) {
             view.setCenter(
                 // Set geolocation or if undefined leave it the current view center
-                (this.geolocationFeature?.getGeometry() as Point).getCoordinates() ?? view.getCenter()
+                (this.geolocationFeature?.getGeometry() as Point)?.getCoordinates() ?? view.getCenter()
             );
         }
     }
