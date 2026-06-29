@@ -2,8 +2,8 @@ import Control, { Options } from "ol/control/Control";
 import { mapControlStyles } from "./mapControlStyles";
 import * as olCss from "ol/css";
 import { Feature } from "ol";
-import { Point } from "ol/geom";
-import { Icon, Style } from "ol/style";
+import { Circle, Point } from "ol/geom";
+import { Fill, Icon, Stroke, Style } from "ol/style";
 import { fromLonLat } from 'ol/proj';
 
 import geolocationIcon from "styles/icons/geolocation.svg";
@@ -19,6 +19,8 @@ interface GeolocationControlOptions extends Options {
 export class GeolocationControl extends Control {
     private isInitialized = false;
     private geolocationFeature?: Feature;
+    private geolocationFeatureAccuracy?: Feature;
+    private watchId?: number
 
     constructor(opt_options: GeolocationControlOptions) {
         const options = opt_options || {};
@@ -60,37 +62,31 @@ export class GeolocationControl extends Control {
     }
 
     public geoLocationButtonClickEventHandler() {
-        if (!this.isInitialized) {
-            this.isInitialized = true;
+        // Create map layer and initialize geolocation service from device
+        if (!("geolocation" in navigator)) {
+            /* geolocation is not available */
+            return;
+        }
 
-            // Create map layer and initialize geolocation service from device
-            if (!("geolocation" in navigator)) {
-                /* geolocation is not available */
+        navigator.geolocation.getCurrentPosition((position) => {
+            // doSomething(position.coords.latitude, position.coords.longitude);
+            if (!this.getMap()) {
                 return;
             }
 
-            navigator.geolocation.getCurrentPosition((position) => {
-                // doSomething(position.coords.latitude, position.coords.longitude);
-                if (!this.getMap()) {
-                    return;
-                }
+            if (!this.isInitialized) {
+                this.isInitialized = true;
 
-                const { geolocationLayer, geolocationFeature } =
-                    GeolocationControl.createGeolocationLayer(position.coords.longitude, position.coords.latitude);
+                const { geolocationLayer, geolocationFeature, geolocationFeatureAccuracy } =
+                    GeolocationControl.createGeolocationLayer(
+                        position.coords.longitude, position.coords.latitude, position.coords.accuracy);
 
                 // Save reference to feature for updates
                 this.geolocationFeature = geolocationFeature;
+                this.geolocationFeatureAccuracy = geolocationFeatureAccuracy;
 
                 this.getMap()?.addLayer(geolocationLayer);
-
-                this.setMapCenterFromGeolocation();
-            });
-
-            if (!this.geolocationFeature) {
-                return;
-            }
-
-            navigator.geolocation.watchPosition((position) => {
+            } else {
                 if (!this.geolocationFeature) {
                     return;
                 }
@@ -101,17 +97,50 @@ export class GeolocationControl extends Control {
                         fromLonLat([position.coords.longitude, position.coords.latitude])
                     )
                 );
+
+                if(this.geolocationFeatureAccuracy && position.coords.accuracy) {
+                    this.geolocationFeatureAccuracy.setGeometry(
+                        new Circle(
+                            // Project to default CRS of openlayers: https://openlayers.org/en/latest/apidoc/module-ol_proj.html#.fromLonLat
+                            fromLonLat([position.coords.longitude, position.coords.latitude]),
+                            position.coords.accuracy
+                        )
+                    );
+                }
+            }
+
+            this.setMapCenterFromGeolocation();
+
+            if (this.watchId) {
+                navigator.geolocation.clearWatch(this.watchId);
+            }
+
+            this.watchId = navigator.geolocation.watchPosition((position) => {
+                if (!this.geolocationFeature) {
+                    return;
+                }
+
+                this.geolocationFeature.setGeometry(
+                    new Point(
+                        // Project to default CRS of openlayers: https://openlayers.org/en/latest/apidoc/module-ol_proj.html#.fromLonLat
+                        fromLonLat([position.coords.longitude, position.coords.latitude])
+                    )
+                );
+
+                if(this.geolocationFeatureAccuracy && position.coords.accuracy) {
+                    this.geolocationFeatureAccuracy.setGeometry(
+                        new Circle(
+                            // Project to default CRS of openlayers: https://openlayers.org/en/latest/apidoc/module-ol_proj.html#.fromLonLat
+                            fromLonLat([position.coords.longitude, position.coords.latitude]),
+                            position.coords.accuracy
+                        )
+                    );
+                }
+
+                this.setMapCenterFromGeolocation();
             });
 
-            return;
-        }
-
-        // Re-center the map extent to current device location
-        if (!this.getMap()) {
-            return;
-        }
-
-        this.setMapCenterFromGeolocation();
+        });
     }
 
     private setMapCenterFromGeolocation() {
@@ -125,16 +154,8 @@ export class GeolocationControl extends Control {
         }
     }
 
-    public static createGeolocationLayer(longitude: number, latitude: number) {
-        const iconStyle = new Style({
-            image: new Icon({
-                src: `${geolocationIcon}`,
-                anchor: [0.5, 1],
-                anchorOrigin: "bottom-left",
-                anchorXUnits: "fraction",
-                anchorYUnits: "fraction"
-            }),
-        });
+    public static createGeolocationLayer(longitude: number, latitude: number, accuracy?: number) {
+        const iconStyle = styles.iconStyle;
 
         const gF: Feature = new Feature(
             new Point(
@@ -143,11 +164,24 @@ export class GeolocationControl extends Control {
             )
         )
 
+        const gfA = accuracy ? new Feature(
+            new Circle(
+                // Project to default CRS of openlayers: https://openlayers.org/en/latest/apidoc/module-ol_proj.html#.fromLonLat
+                fromLonLat([longitude, latitude]),
+                accuracy
+            )
+        ) : undefined;
+
         const vectorSource = new VectorSource({
             features: [
                 gF
             ]
         });
+
+        if (gfA) {
+            gfA.setStyle(styles["circleStyle"]);
+            vectorSource.addFeature(gfA);
+        }
 
         const vectorLayer = new VectorLayer({
             source: vectorSource,
@@ -157,7 +191,30 @@ export class GeolocationControl extends Control {
             }
         });
 
-        return { geolocationLayer: vectorLayer, geolocationFeature: gF };
+        return { geolocationLayer: vectorLayer, geolocationFeature: gF, geolocationFeatureAccuracy: gfA };
     }
 
+}
+
+const styles = {
+    "iconStyle": new Style({
+            image: new Icon({
+                src: `${geolocationIcon}`,
+                anchor: [0.5, 1],
+                anchorOrigin: "top-left",
+                anchorXUnits: "fraction",
+                anchorYUnits: "fraction"
+            }),
+        }),
+    "circleStyle": new Style(
+                {
+                    fill: new Fill({
+                        color: 'rgba(255, 255, 255, 0.5)',
+                    }),
+                    stroke: new Stroke({
+                        color: 'rgba(255, 0, 0, 0.5)',
+                        width: 1
+                    })
+                }
+            ),
 }
