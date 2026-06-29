@@ -68,6 +68,11 @@ export class GeolocationControl extends Control {
             return;
         }
 
+        // Immediately re-center to last location instead of waiting for updated location
+        if(this.isInitialized) {
+            this.setMapCenterFromGeolocation();
+        }
+
         navigator.geolocation.getCurrentPosition((position) => {
             // doSomething(position.coords.latitude, position.coords.longitude);
             if (!this.getMap()) {
@@ -209,10 +214,10 @@ const styles = {
     "circleStyle": new Style(
                 {
                     fill: new Fill({
-                        color: 'rgba(255, 255, 255, 0.5)',
+                        color: 'rgba(255, 255, 255, 0.4)',
                     }),
                     stroke: new Stroke({
-                        color: 'rgba(255, 0, 0, 0.5)',
+                        color: 'rgba(255, 0, 0, 0.4)',
                         width: 1
                     })
                 }
