@@ -20,6 +20,7 @@ module.exports = {
     // '^ol-ext/(.*)$': '<rootDir>/src/__mocks__/ol-ext.js',
     '^styles/bootstrap/bootstrapIcons(.*)$': '<rootDir>/src/__mocks__/bootstrapIcons.ts',
     '^styles/fontmaki/fontmaki(.*)$': '<rootDir>/src/__mocks__/fontmaki.ts',
+    '^styles/icons/geolocation\\.svg$': '<rootDir>/src/__mocks__/geolocation.ts',
   },
   transform: {
     '^.+\\.(t|j)sx?$': [

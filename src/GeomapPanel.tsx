@@ -69,6 +69,7 @@ import { WMSLegend } from 'mapcontrols/WMSLegend';
 import { CustomZoom } from 'mapcontrols/CustomZoom';
 import { CLASS_CONTROL } from 'ol/css';
 import { mapControlStyles } from 'mapcontrols/mapControlStyles';
+import { GeolocationControl } from 'mapcontrols/GeolocationControl';
 // import LayerGroup from 'ol/layer/Group';
 
 export interface MapLayerState {
@@ -572,6 +573,10 @@ export class GeomapPanel extends Component<Props, State> {
         this.clearTooltip();
       }
     } else {
+      // Only start timeout if there is data to show
+      if (ttip.data === undefined) {
+        return;
+      }
       // The pointermove event is triggered as long as the pointer is moving on the feature
       // so also start the timeout when the tooltip data stays the same since otherwise during the movement over the feature the
       // time out function is cleared on the next event trigger
@@ -881,6 +886,13 @@ export class GeomapPanel extends Component<Props, State> {
       // );
       this.map.addControl(
         overviewMap
+      );
+    }
+
+    if (options.geolocation?.enabled === true) {
+      const geolocationControl = new GeolocationControl({target: this.mapOverlayBottomRight!});
+      this.map.addControl(
+        geolocationControl
       );
     }
 
