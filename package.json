@@ -31,7 +31,7 @@
   "author": "Felix Müller",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "@babel/core": "^7.21.4",
+    "@babel/core": "^8.0.1",
     "@grafana/e2e-selectors": "^13.1.0",
     "@grafana/eslint-config": "^10.0.0",
     "@grafana/plugin-e2e": "^3.6.1",
