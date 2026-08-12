@@ -122,7 +122,9 @@
     "handlebars": "4.7.9",
     "minimatch": "3.1.5",
     "ws": "8.21.0",
-    "websocket-driver": "0.7.5"
+    "websocket-driver": "0.7.5",
+    "fast-uri": "3.1.5",
+    "js-yaml": "4.1.1"
   },
   "config": {
     "commitizen": {
