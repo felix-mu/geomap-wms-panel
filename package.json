@@ -121,7 +121,8 @@
     "flatted": "3.4.2",
     "handlebars": "4.7.9",
     "minimatch": "3.1.5",
-    "ws": "8.21.0"
+    "ws": "8.21.0",
+    "websocket-driver": "0.7.5"
   },
   "config": {
     "commitizen": {
