@@ -22,7 +22,7 @@ export function getThresholdItems(fieldConfig: FieldConfig, theme: GrafanaTheme2
   //   });
   // }
 
-  // Taken from https://github.com/grafana/grafana/blob/main/public/app/core/components/TimelineChart/utils.ts#L488
+  // Taken from https://github.com/grafana/grafana/blob/5d189285069d02af604bfaeedb21a0b6ec4c4d0a/public/app/core/components/TimelineChart/utils.ts#L500
   // Do not use the infinity sign
   const steps = thresholds.steps;
   const getDisplay = getValueFormat(
