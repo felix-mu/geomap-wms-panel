@@ -63,6 +63,7 @@ export const heatmapLayer: ExtendMapLayerRegistryItem<HeatmapConfig> = {
       update: (data: PanelData) => {
         const frame = data.series[0];
         if (!frame) {
+          source.clear();
           return;
         }
         source.update(frame);
