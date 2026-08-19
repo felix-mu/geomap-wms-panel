@@ -348,6 +348,12 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
       legend: legend,
       update: (data: PanelData) => {
         if (!data.series?.length) {
+          vectorLayer.getLayersArray().forEach(l => {
+            const source: source.Vector = l.getSource() as source.Vector<Feature<Geometry>>
+            if (source) {
+              source.clear()
+            }
+          })
           return; // ignore empty
         }
 
