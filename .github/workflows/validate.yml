@@ -2,9 +2,9 @@ name: Plugin Validation
 on:
   workflow_call: # https://docs.github.com/en/actions/using-workflows/reusing-workflows
   push:
-    branches: [ "main" ]
+    branches: [ "main", 'release/**' ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", 'release/**' ]
 
 jobs:
 
