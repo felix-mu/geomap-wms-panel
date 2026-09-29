@@ -51,7 +51,7 @@ export const lastPointTracker: ExtendMapLayerRegistryItem<LastPointConfig> = {
     return {
       init: () => vectorLayer,
       update: (data: PanelData) => {
-        const frame = data.series[0];
+        const frame = data.series.filter(e => e.refId === options.query?.options)[0]; // Check if refId is existing based on MatcherConfig from the Frameselectioneditor.tsx
         if (frame && frame.length) {
           const info = dataFrameToPoints(frame, matchers);
           if (info.warning) {
