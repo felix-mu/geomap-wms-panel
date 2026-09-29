@@ -11,7 +11,7 @@ module.exports = {
   // Jest configuration provided by @grafana/create-plugin
   ...require('./.config/jest.config'),
   // Inform Jest to only transform specific node_module packages.
-  transformIgnorePatterns: [nodeModulesToTransform([...grafanaESModules, 'geotiff', 'quick-lru', 'marked', 'react-calendar', 'get-user-locale', 'memoize', 'mimic-function', 'rbush', 'quickselect', 'earcut', 'ol-ext']),
+  transformIgnorePatterns: [nodeModulesToTransform([...grafanaESModules, 'geotiff', 'quick-lru', 'marked', 'react-calendar', 'get-user-locale', 'memoize', 'mimic-function', 'rbush', 'quickselect', 'earcut', 'ol-ext', '@react-hookz', '@ver0']),
 ],
   moduleNameMapper: {
     '\\.(css|scss|sass)$': 'identity-obj-proxy',
