@@ -50,7 +50,7 @@
     "commit-and-tag-version": "^12.4.1",
     "commitizen": "^4.3.0",
     "copy-webpack-plugin": "^11.0.0",
-    "css-loader": "^6.7.3",
+    "css-loader": "^7.1.2",
     "cz-conventional-changelog": "^3.3.0",
     "eslint-webpack-plugin": "^4.0.1",
     "fork-ts-checker-webpack-plugin": "^9.0.2",
@@ -106,7 +106,9 @@
     "tmp": "0.2.4",
     "lodash": "4.17.23",
     "flatted": "3.4.2",
-    "handlebars": "4.7.9"
+    "handlebars": "4.7.9",
+    "websocket-driver": "0.7.5",
+    "postcss": "8.5.18"
   },
   "config": {
     "commitizen": {
