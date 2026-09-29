@@ -120,9 +120,9 @@
     "handlebars": "4.7.9",
     "ws": "8.21.0",
     "websocket-driver": "0.7.5",
-    "fast-uri": "3.1.6",
+    "fast-uri": "4.1.4",
     "js-yaml": "4.3.2",
-    "nanoid": "3.3.17"
+    "nanoid": "3.3.18"
   },
   "config": {
     "commitizen": {
