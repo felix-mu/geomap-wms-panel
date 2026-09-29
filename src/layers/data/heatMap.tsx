@@ -61,8 +61,8 @@ export const heatmapLayer: ExtendMapLayerRegistryItem<HeatmapConfig> = {
     return {
       init: () => vectorLayer,
       update: (data: PanelData) => {
-        const frame = data.series[0];
-        if (!frame) {
+        const frame = data.series.filter(e => e.refId === options.query?.options)[0]; // Check if refId is existing based on MatcherConfig from the Frameselectioneditor.tsx
+        if (!frame || frame.length === 0) {
           source.clear();
           return;
         }
