@@ -1,4 +1,11 @@
 # Changelog
+## [2.0.4](https://github.com/felix-mu/geomap-wms-panel/compare/v2.0.3...v2.0.4) (2026-09-29)
+
+
+### Features
+
+* check for refId in dataframes to decide to clear source in data layers ([edab938](https://github.com/felix-mu/geomap-wms-panel/commit/edab938b420e94654103085680bf207b6334b688))
+
 ## [2.0.3](https://github.com/felix-mu/geomap-wms-panel/compare/v2.0.2...v2.0.3) (2026-06-03)
 
 
