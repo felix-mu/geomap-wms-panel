@@ -4,8 +4,10 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorTileLayer from 'ol/layer/VectorTile';
 import VectorSource from 'ol/source/Vector';
 import { apply } from 'ol-mapbox-style';
+import { ExtendMapLayerOptions, ExtendMapLayerRegistryItem } from 'extension';
+import { GrafanaTheme2 } from '@grafana/data';
+import Map from 'ol/Map';
 
-import { type MapLayerRegistryItem } from '@grafana/data';
 
 // https://docs.carto.com/faqs/carto-basemaps
 
@@ -42,19 +44,15 @@ function clampStyleToWidestTile(layer: VectorTileLayer) {
   layer.setStyle((feature, resolution) => styleFunction(feature, Math.min(resolution, widest)));
 }
 
-export const carto: MapLayerRegistryItem<CartoConfig> = {
+export const carto: ExtendMapLayerRegistryItem<CartoConfig> = {
   id: 'carto',
   name: 'CARTO basemap',
   description: 'Add layer CARTO vector basemaps',
   isBaseMap: true,
-  requiresAttribution: true,
+  // requiresAttribution: true,
   defaultOptions: defaultCartoConfig,
 
-  /**
-   * Function that configures transformation and returns a transformer
-   * @param options
-   */
-  create: async (_map, options, _eventBus, theme) => ({
+  create: async (map: Map, options: ExtendMapLayerOptions<CartoConfig>, theme: GrafanaTheme2) => ({
     init: () => {
       const cfg = { ...defaultCartoConfig, ...options.config };
       const dark = !cfg.theme || cfg.theme === LayerTheme.Auto ? theme.isDark : cfg.theme === LayerTheme.Dark;
@@ -85,29 +83,29 @@ export const carto: MapLayerRegistryItem<CartoConfig> = {
 
       return layer;
     },
-
-    registerOptionsUI: (builder) => {
-      builder
-        .addRadio({
-          path: 'config.theme',
-          name: 'Theme',
-          settings: {
-            options: [
-              { value: LayerTheme.Auto, label: 'Auto', description: 'Match grafana theme' },
-              { value: LayerTheme.Light, label: 'Light' },
-              { value: LayerTheme.Dark, label: 'Dark' },
-            ],
-          },
-          defaultValue: defaultCartoConfig.theme!,
-        })
-        .addBooleanSwitch({
-          path: 'config.showLabels',
-          name: 'Show labels',
-          description: '',
-          defaultValue: defaultCartoConfig.showLabels,
-        });
-    },
   }),
+
+  registerOptionsUI: (builder) => { 
+    builder
+      .addRadio({
+        path: 'config.theme',
+        name: 'Theme',
+        settings: {
+          options: [
+            { value: LayerTheme.Auto, label: 'Auto', description: 'Match grafana theme' },
+            { value: LayerTheme.Light, label: 'Light' },
+            { value: LayerTheme.Dark, label: 'Dark' },
+          ],
+        },
+        defaultValue: defaultCartoConfig.theme!,
+      })
+      .addBooleanSwitch({
+        path: 'config.showLabels',
+        name: 'Show labels',
+        description: '',
+        defaultValue: defaultCartoConfig.showLabels,
+      });
+  },
 };
 
 export const cartoLayers = [carto];
