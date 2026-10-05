@@ -1,6 +1,7 @@
 import { cartoLayers } from './carto';
 import { esriLayers } from './esri';
 import { genericLayers } from './generic';
+import { maplibreLayers } from './maplibre';
 import { osmLayers } from './osm';
 import { wmsLayers } from './wms';
 import { wmtsLayers } from './wmts';
@@ -14,5 +15,6 @@ export const basemapLayers = [
   ...esriLayers, // keep formatting
   ...genericLayers,
   ...wmsLayers,
-  ...wmtsLayers
+  ...wmtsLayers,
+  ...maplibreLayers
 ];
