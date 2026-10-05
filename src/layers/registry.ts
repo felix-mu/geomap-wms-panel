@@ -1,6 +1,6 @@
 import { Registry, GrafanaTheme2 } from '@grafana/data';
 import Map from 'ol/Map';
-import { carto } from './basemaps/carto';
+import { standard } from './basemaps/osm';
 import { config } from '@grafana/runtime';
 import { basemapLayers } from './basemaps';
 import { dataLayers } from './data';
@@ -28,7 +28,7 @@ export const defaultBaseLayer: ExtendMapLayerRegistryItem = {
     }
 
     // For now use carto as our default basemap
-    return carto.create(map, options, theme);
+    return standard.create(map, options, theme);
   },
 };
 
