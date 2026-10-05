@@ -54,6 +54,7 @@ export interface ExtendMapLayerOptions<TConfig = any> {
   basemapUsedAsMapLayer?: boolean;
   minZoom?: number;
   maxZoom?: number;
+  noRepeat?: boolean;
 }
 
 export interface ExtendMapLayerRegistryItem<TConfig = ExtendMapLayerOptions> extends RegistryItemWithOptions {
