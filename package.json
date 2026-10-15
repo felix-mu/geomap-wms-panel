@@ -103,7 +103,7 @@
     "ol-layerswitcher": "^4.1.2",
     "ol-mapbox-style": "^13.5.1",
     "proj4": "^2.20.4",
-    "react-highlight-words": "^0.21.0",
+    "react-highlight-words": "^1.0.0",
     "react-use": "^17.6.0",
     "semver": "7.7.4",
     "tinycolor2": "^1.4.2",
