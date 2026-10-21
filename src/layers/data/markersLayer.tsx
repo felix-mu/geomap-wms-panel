@@ -382,7 +382,7 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
               // Get the circle color for a specific data value depending on color scheme
               const color = colorDim.get(i);
               // Set the opacity determined from user configuration
-              const fillColor = tinycolor(color).setAlpha(opacity).toRgbString();
+              const fillColor = tinycolor(color).setAlpha(opacity * tinycolor(color).getAlpha()).toRgbString();
               // Get circle size from user configuration
               const radius = sizeDim.get(i);
 
