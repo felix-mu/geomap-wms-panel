@@ -97,7 +97,7 @@
     "@hello-pangea/dnd": "18.0.1",
     "@types/proj4": "^2.19.0",
     "@types/tinycolor2": "^1.4.3",
-    "bootstrap-icons": "^1.11.2",
+    "bootstrap-icons": "^1.13.2",
     "ol": "10.7.0",
     "ol-ext": "^4.0.38",
     "ol-layerswitcher": "^4.1.2",
