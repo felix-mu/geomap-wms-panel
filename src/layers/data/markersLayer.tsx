@@ -5,6 +5,7 @@ import {
   formattedValueToString,
   getScaleCalculator,
   getFieldColorModeForField,
+  getFieldDisplayName,
 } from '@grafana/data';
 import GeoMap from 'ol/Map';
 import Feature from 'ol/Feature';
@@ -372,7 +373,9 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
               // console.log('Could not find locations', info.warning);
               continue; // ???
             }
-
+            
+            const valueField = frame.fields.find((field) => field.name === config.color.field);
+            getFieldDisplayName(valueField!, frame);
             const colorDim = getColorDimension(frame, config.color, theme);
             const sizeDim = getScaledDimension(frame, config.size);
             const iconSizeDim = getScaledDimension(frame, config.iconSize ?? defaultOptions.iconSize!);

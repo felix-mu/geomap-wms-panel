@@ -45,7 +45,7 @@ export function MarkersLegend(props: MarkersLegendProps) {
 
     return (
       <>
-        <Label style={{color: theme.colors.text.maxContrast}}>{color?.field?.name}</Label>
+        <Label style={{color: theme.colors.text.maxContrast}}>{color?.field?.state?.displayName ?? color?.field?.name}</Label>
         <div
           className={style.gradientContainer}
           style={{ backgroundImage: `linear-gradient(to right, ${colors.map((c) => c).join(', ')}` }}
@@ -65,7 +65,7 @@ export function MarkersLegend(props: MarkersLegendProps) {
   const items = getThresholdItems(color.field!.config, config.theme2);
   return (
     <div className={style.infoWrap}>
-      <Label>{color?.field?.name}</Label>
+      <Label>{color?.field?.state?.displayName ?? color?.field?.name}</Label>
       <div className={style.legend}>
         {items.map((item: VizLegendItem, idx: number) => (
           <div key={`${idx}/${item.label}`} className={style.legendItem}>
