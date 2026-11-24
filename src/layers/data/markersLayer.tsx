@@ -161,11 +161,11 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
           displacement: [0, 8],
         }),
         text: new Text({
-          font: '12px',
+          font: '14px',
           fill: new Fill({
             color: '#fff',
           }),
-          offsetY: 6,
+          offsetY: 8,
         }),
       });
 
@@ -417,11 +417,8 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
                   const center = getCenter(info.points[i].getExtent());
                   const pin = new Feature(new Point(center));
 
-                  // Only set icon style if showPin is true
-                  // if (showPin) {
-                    pin.setStyle(markerStyle({ color: color, iconSize: iconSizeDim.get(i) }));
-                    pin.set('style', { color: color, fillColor: fillColor });
-                  // }
+                  pin.setStyle(markerStyle({ color: color, iconSize: iconSizeDim.get(i) }));
+                  pin.set('style', { color: color, fillColor: fillColor });
 
                   if (cluster) {
                     pin.set('config', { frame: frame, config: config.color });
