@@ -398,7 +398,9 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
                 const geoType = info.points[i].getType();
                 const geometry = new Feature(info.points[i]);
                 if (geoType === 'Point') {
-                  geometry.setStyle(shape!.make(color, fillColor, radius));
+                  geometry.setStyle([
+                    shape!.make(color, fillColor, radius)
+                  ]);
                 } else {
                   const strokeSize = getScaledDimension(frame, config.geoJsonStrokeSize);
                   let style = new Style({
@@ -418,7 +420,14 @@ export const markersLayer: ExtendMapLayerRegistryItem<MarkersConfig> = {
                   const pin = new Feature(new Point(center));
 
                   pin.setStyle(markerStyle({ color: color, iconSize: iconSizeDim.get(i) }));
-                  pin.set('style', { color: color, fillColor: fillColor });
+
+                  // Add all properties needed to recreate the icon style
+                  pin.set('style', {
+                    color: color, 
+                    fillColor: fillColor, 
+                    iconSize: showPin ? iconSizeDim.get(i) : undefined, 
+                    radius: showPin ? iconSizeDim.get(i) : undefined
+                  });
 
                   if (cluster) {
                     pin.set('config', { frame: frame, config: config.color });
